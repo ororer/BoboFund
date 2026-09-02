@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>BoboFund | האוצר של בובו</title>
+  
+  <!-- Tailwind CSS, Supabase & Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Heebo:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Heebo', 'Plus Jakarta Sans', 'sans-serif'],
+            mono: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            obsidian: '#0A0D12',
+            surface: '#121721',
+            surfaceCard: '#171E2C',
+            surfaceHover: '#1F283B',
+            borderSubtle: '#263045',
+            accentEmerald: '#10B981',
+            accentGold: '#F59E0B'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background: radial-gradient(circle at 50% 0%, #151F2E 0%, #0A0D12 75%);
+      letter-spacing: -0.01em;
+    }
+    .glass-panel {
+      background: rgba(23, 30, 44, 0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .kpi-glow {
+      position: relative;
+    }
+    .kpi-glow::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 1.25rem;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), transparent 45%, rgba(16, 185, 129, 0.12));
+      z-index: -1;
+    }
+  </style>
+</head>
+<body class="text-slate-200 min-h-screen antialiased flex flex-col font-sans selection:bg-emerald-500/20 selection:text-emerald-300">
+
+  <!-- Top Navigation -->
+  <nav class="border-b border-borderSubtle/60 bg-obsidian/85 backdrop-blur-xl sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+      
+      <!-- Brand: BoboFund -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-400 via-emerald-400 to-teal-300 p-[1px] shadow-lg shadow-emerald-500/15">
+          <div class="w-full h-full bg-obsidian rounded-[15px] flex items-center justify-center">
+            <!-- Baby Plant / Growth Shield Icon -->
+            <svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21V10m0 0a4 4 0 014-4h1.5a.5.5 0 01.5.5v1.5a4 4 0 01-4 4H12zm0 0a4 4 0 00-4-4H6.5a.5.5 0 00-.5.5V8a4 4 0 004 4H12z" />
+            </svg>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-lg tracking-tight text-white">Bobo<span class="text-emerald-400 font-mono">Fund</span></span>
+            <span id="vaultBadge" class="text-[10px] font-mono font-bold bg-surface text-amber-300 px-2 py-0.5 rounded-full border border-amber-500/30">קרן אישית</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-2.5">
+        <button onclick="openConfigModal()" title="סנכרון ענן ושיתוף" class="px-3 py-1.5 rounded-xl border border-borderSubtle bg-surfaceCard hover:bg-surfaceHover text-xs font-medium text-slate-300 flex items-center gap-1.5 transition">
+          <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+          <span id="syncStatusLabel">שיתוף ענן</span>
+        </button>
+
+        <button onclick="openAddModal()" class="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold px-3.5 py-1.5 rounded-xl text-xs flex items-center gap-1.5 transition shadow-lg shadow-emerald-500/20">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+          <span>קופה חדשה</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-6xl mx-auto px-5 pt-8 pb-20 w-full flex-1">
+
+    <!-- Hero Section -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-xs font-bold text-amber-400/90 tracking-wide uppercase">העתיד של בובו מתחיל כאן</span>
+          <span class="w-1 h-1 rounded-full bg-slate-600"></span>
+          <span class="text-xs text-slate-400">מעקב חסכונות והשקעות</span>
+        </div>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">הקופות והאוצר של בובו</h2>
+        <p class="text-xs md:text-sm text-slate-400 mt-1 font-light">שקל לשקל, צעד לצעד • צמיחה, תשואה וניהול תיק משותף</p>
+      </div>
+      <div class="text-left font-mono">
+        <span class="text-[10px] uppercase tracking-wider text-slate-500 block">סנכרון אחרון</span>
+        <span id="lastSyncedTime" class="text-xs text-slate-300 font-medium">עכשיו</span>
+      </div>
+    </div>
+
+    <!-- KPI Matrix -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+      
+      <!-- Total Balance -->
+      <div class="glass-panel kpi-glow rounded-2xl p-5 relative overflow-hidden">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">סך הכל נצבר לבובו</div>
+        <div id="totalBalance" class="text-2xl md:text-3xl font-extrabold font-mono text-white tracking-tight">₪0</div>
+        <div class="mt-2 text-[11px] text-slate-500">שווי שוק נוכחי של כל הקופות</div>
+      </div>
+
+      <!-- Net Deposits -->
+      <div class="glass-panel kpi-glow rounded-2xl p-5 relative overflow-hidden">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">סך הפקדות (הקרן שהופקדה)</div>
+        <div id="totalDeposits" class="text-2xl md:text-3xl font-extrabold font-mono text-slate-300 tracking-tight">₪0</div>
+        <div class="mt-2 text-[11px] text-slate-500">בסיס הכסף שהושקע</div>
+      </div>
+
+      <!-- Profit -->
+      <div class="glass-panel kpi-glow rounded-2xl p-5 relative overflow-hidden">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">רווח נקי שנצבר</div>
+        <div id="totalProfit" class="text-2xl md:text-3xl font-extrabold font-mono text-emerald-400 tracking-tight">₪0</div>
+        <div class="mt-2 text-[11px] text-slate-500">רווח הון מצטבר בש״ח</div>
+      </div>
+
+      <!-- Weighted ROI -->
+      <div class="glass-panel kpi-glow rounded-2xl p-5 relative overflow-hidden">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">תשואה משוקללת כוללת</div>
+        <div id="totalRoi" class="text-2xl md:text-3xl font-extrabold font-mono text-emerald-400 tracking-tight">0.00%</div>
+        <div class="mt-2 text-[11px] text-slate-500">תשואת התיק מאז ההתחלה</div>
+      </div>
+    </div>
+
+    <!-- Funds Header -->
+    <div class="flex items-center justify-between mb-5 border-b border-borderSubtle/60 pb-3">
+      <div class="flex items-center gap-2">
+        <h3 class="text-base font-bold text-white">כל הקופות הפעילות</h3>
+        <span id="fundCount" class="text-xs font-mono font-bold bg-surfaceCard text-emerald-400 px-2 py-0.5 rounded-full border border-borderSubtle">0</span>
+      </div>
+      <div class="flex gap-2 text-xs">
+        <button onclick="exportJSON()" class="text-slate-400 hover:text-white px-2.5 py-1 rounded-lg border border-borderSubtle bg-surfaceCard transition">ייצוא גיבוי</button>
+      </div>
+    </div>
+
+    <!-- Cards Grid -->
+    <div id="fundsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden text-center py-20 border border-dashed border-borderSubtle rounded-3xl bg-surface/30">
+      <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-surfaceCard border border-borderSubtle flex items-center justify-center text-slate-500">
+        <svg class="w-6 h-6 text-amber-400/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21V10m0 0a4 4 0 014-4h1.5a.5.5 0 01.5.5v1.5a4 4 0 01-4 4H12zm0 0a4 4 0 00-4-4H6.5a.5.5 0 00-.5.5V8a4 4 0 004 4H12z"/></svg>
+      </div>
+      <h4 class="text-base font-bold text-slate-200 mb-1">עדיין לא הוגדרו קופות ב-BoboFund</h4>
+      <p class="text-xs text-slate-500 max-w-sm mx-auto mb-5">זה הזמן להוסיף את קופת הגמל להשקעה, תוכנית החיסכון או הפיקדון הראשון עבור בובו.</p>
+      <button onclick="openAddModal()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition">
+        הוסף קופה ראשונה לבובו
+      </button>
+    </div>
+
+  </main>
+
+  <!-- Modal: Sync & Shared Vault Config -->
+  <div id="configModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-surfaceCard border border-borderSubtle rounded-3xl w-full max-w-md overflow-hidden shadow-2xl">
+      <div class="p-6 border-b border-borderSubtle/60 flex justify-between items-center bg-surface/50">
+        <div>
+          <h3 class="text-base font-bold text-white">סנכרון ענן ושיתוף</h3>
+          <p class="text-xs text-slate-400 mt-0.5">סנכרון בזמן אמת בין שני המכשירים שלכם</p>
+        </div>
+        <button onclick="closeConfigModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
+      </div>
+      
+      <div class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">מזהה תיק משותף (Vault ID) *</label>
+          <input type="text" id="cfgVaultId" placeholder="למשל: bobo-savings-vault" class="w-full bg-surface border border-borderSubtle rounded-xl px-3.5 py-2 text-sm text-white font-mono focus:border-emerald-500 focus:outline-none">
+          <p class="text-[11px] text-slate-500 mt-1">שניכם מזינים את אותו הקוד כדי לראות ולעדכן את אותן הקופות בדיוק.</p>
+        </div>
+
+        <div class="pt-2 border-t border-borderSubtle/60">
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Supabase Project URL</label>
+          <input type="text" id="cfgSupabaseUrl" placeholder="https://xyz.supabase.co" class="w-full bg-surface border border-borderSubtle rounded-xl px-3 py-1.5 text-xs text-slate-300 font-mono focus:border-emerald-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Supabase Anon Key</label>
+          <input type="password" id="cfgSupabaseKey" placeholder="eyJhbGciOiJIUz..." class="w-full bg-surface border border-borderSubtle rounded-xl px-3 py-1.5 text-xs text-slate-300 font-mono focus:border-emerald-500 focus:outline-none">
+          <p class="text-[11px] text-slate-500 mt-1">בהיעדר פרטי ענן, האפליקציה תשמור את הנתונים מקומית על המכשיר.</p>
+        </div>
+
+        <div class="pt-4 flex items-center justify-end gap-2">
+          <button onclick="closeConfigModal()" class="px-3.5 py-2 text-xs text-slate-400 hover:text-white transition">סגור</button>
+          <button onclick="saveConfig()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-5 py-2 rounded-xl text-xs transition">שמור והתחבר</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Add / Edit Fund -->
+  <div id="fundModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-surfaceCard border border-borderSubtle rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl">
+      <div class="p-6 border-b border-borderSubtle/60 flex justify-between items-center bg-surface/50">
+        <h3 id="modalTitle" class="text-base font-bold text-white">הוספת קופה ל-BoboFund</h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
+      </div>
+
+      <form id="fundForm" onsubmit="saveFundForm(event)" class="p-6 space-y-4">
+        <input type="hidden" id="fieldId">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">שם הקופה / מסלול *</label>
+            <input type="text" id="fieldName" required placeholder="למשל: גמל להשקעה - S&P 500" class="w-full bg-surface border border-borderSubtle rounded-xl px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">סוג מוצר *</label>
+            <select id="fieldType" class="w-full bg-surface border border-borderSubtle rounded-xl px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none">
+              <option value="קופת גמל להשקעה">קופת גמל להשקעה</option>
+              <option value="חיסכון לכל ילד">חיסכון לכל ילד</option>
+              <option value="פוליסת חיסכון">פוליסת חיסכון</option>
+              <option value="פיקדון בנקאי">פיקדון בנקאי</option>
+              <option value="קרן השתלמות">קרן השתלמות</option>
+              <option value="תיק השקעות מסחר">תיק השקעות עצמאי</option>
+              <option value="אחר">אחר</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">גוף מנהל / בית השקעות *</label>
+            <input type="text" id="fieldManager" required placeholder="אלטשולר, מיטב, הראל, ילין..." class="w-full bg-surface border border-borderSubtle rounded-xl px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">מספר קופה / פוליסה</label>
+            <input type="text" id="fieldNumber" placeholder="987654321" class="w-full bg-surface border border-borderSubtle rounded-xl px-3 py-2 text-xs text-white font-mono focus:border-emerald-500 focus:outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">סך כל ההפקדות (קרן) ₪ *</label>
+            <input type="number" step="any" id="fieldDeposits" required placeholder="0" class="w-full bg-surface border border-borderSubtle rounded-xl px-3 py-2 text-xs text-white font-mono focus:border-emerald-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">שווי יתרה עדכני ₪ *</label>
+            <input type="number" step="any" id="fieldBalance" required placeholder="0" class="w-full bg-surface border border-borderSubtle rounded-xl px-3 py-2 text-xs text-emerald-400 font-bold font-mono focus:border-emerald-500 focus:outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3.5">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">דמ״נ מצבירה (%)</label>
+            <input type="number" step="0.01" id="fieldFeeAcc" placeholder="0.5" class="w-full bg-surface border border-borderSubtle rounded-xl px-3 py-2 text-xs text-white font-mono focus:border-emerald-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">דמ״נ מהפקדה (%)</label>
+            <input type="number" step="0.01" id="fieldFeeDep" placeholder="0" class="w-full bg-surface border border-borderSubtle rounded-xl px-3 py-2 text-xs text-white font-mono focus:border-emerald-500 focus:outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">הערות / הסדרי הפקדה</label>
+          <input type="text" id="fieldNotes" placeholder="הוראת קבע 1,000 ש״ח ב-10 לכל חודש" class="w-full bg-surface border border-borderSubtle rounded-xl px-3 py-2 text-xs text-slate-300 focus:border-emerald-500 focus:outline-none">
+        </div>
+
+        <div class="pt-4 flex items-center justify-end gap-2 border-t border-borderSubtle/60">
+          <button type="button" onclick="closeModal()" class="px-4 py-2 text-xs text-slate-400 hover:text-white transition">ביטול</button>
+          <button type="submit" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-5 py-2 rounded-xl text-xs transition">שמור קופה</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Quick Update Balance -->
+  <div id="quickModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-surfaceCard border border-borderSubtle rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl p-6">
+      <div class="flex items-center justify-between mb-2">
+        <h4 class="text-sm font-bold text-white">עדכון יתרה מהיר</h4>
+        <span class="text-[10px] uppercase font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800/40">Bobo Update</span>
+      </div>
+      <p id="quickName" class="text-xs text-slate-400 mb-5 truncate font-medium"></p>
+      
+      <form onsubmit="handleQuickUpdate(event)" class="space-y-4">
+        <input type="hidden" id="quickId">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">יתרה חדשה (₪)</label>
+          <input type="number" step="any" id="quickBalanceVal" required class="w-full bg-surface border border-borderSubtle rounded-xl px-3.5 py-2.5 text-xl font-extrabold font-mono text-emerald-400 focus:border-emerald-500 focus:outline-none">
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button type="button" onclick="closeQuickModal()" class="px-3.5 py-1.5 text-xs text-slate-400 hover:text-white">ביטול</button>
+          <button type="submit" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition">עדכן יתרה</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let funds = [];
+    let supabaseClient = null;
+
+    const DEFAULT_VAULT = 'bobo-future-fund';
+    let currentVaultId = localStorage.getItem('bobo_vault_id') || DEFAULT_VAULT;
+    let sbUrl = localStorage.getItem('bobo_sb_url') || '';
+    let sbKey = localStorage.getItem('bobo_sb_key') || '';
+
+    function initSupabase() {
+      if (sbUrl && sbKey && window.supabase) {
+        supabaseClient = window.supabase.createClient(sbUrl, sbKey);
+        document.getElementById('syncStatusLabel').textContent = `מסונכרן (${currentVaultId})`;
+        document.getElementById('vaultBadge').textContent = currentVaultId;
+      } else {
+        supabaseClient = null;
+        document.getElementById('syncStatusLabel').textContent = 'סנכרון ענן';
+        document.getElementById('vaultBadge').textContent = 'קרן מקומית';
+      }
+    }
+
+    const fmtILS = (n) => '₪' + Math.round(n || 0).toLocaleString('he-IL');
+    const fmtPCT = (n) => (n >= 0 ? '+' : '') + Number(n || 0).toFixed(2) + '%';
+    const fmtDate = (d) => {
+      if (!d) return 'טרם עודכן';
+      return new Date(d).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' });
+    };
+
+    async function loadFunds() {
+      if (supabaseClient) {
+        try {
+          const { data, error } = await supabaseClient
+            .from('funds')
+            .select('*')
+            .eq('vault_id', currentVaultId);
+
+          if (!error && data) {
+            funds = data.map(item => ({
+              id: item.id,
+              name: item.name,
+              type: item.type,
+              manager: item.manager,
+              number: item.number,
+              deposits: Number(item.deposits) || 0,
+              balance: Number(item.balance) || 0,
+              feeAccumulation: item.fee_accumulation,
+              feeDeposit: item.fee_deposit,
+              notes: item.notes,
+              updatedAt: item.updated_at
+            }));
+            render();
+            updateLastSynced();
+            return;
+          }
+        } catch (e) {
+          console.error('Supabase fetch error, fallback to local', e);
+        }
+      }
+
+      const stored = localStorage.getItem('bobo_funds_' + currentVaultId);
+      funds = stored ? JSON.parse(stored) : [];
+      render();
+    }
+
+    async function persistFund(fund) {
+      if (supabaseClient) {
+        const payload = {
+          id: fund.id,
+          vault_id: currentVaultId,
+          name: fund.name,
+          type: fund.type,
+          manager: fund.manager,
+          number: fund.number,
+          deposits: fund.deposits,
+          balance: fund.balance,
+          fee_accumulation: fund.feeAccumulation ? Number(fund.feeAccumulation) : null,
+          fee_deposit: fund.feeDeposit ? Number(fund.feeDeposit) : null,
+          notes: fund.notes,
+          updated_at: fund.updatedAt
+        };
+        await supabaseClient.from('funds').upsert(payload);
+      }
+      localStorage.setItem('bobo_funds_' + currentVaultId, JSON.stringify(funds));
+      updateLastSynced();
+      render();
+    }
+
+    async function removeFundFromDb(id) {
+      if (supabaseClient) {
+        await supabaseClient.from('funds').delete().eq('id', id);
+      }
+      funds = funds.filter(f => f.id !== id);
+      localStorage.setItem('bobo_funds_' + currentVaultId, JSON.stringify(funds));
+      render();
+    }
+
+    function updateLastSynced() {
+      const now = new Date();
+      document.getElementById('lastSyncedTime').textContent = now.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function render() {
+      const grid = document.getElementById('fundsGrid');
+      const empty = document.getElementById('emptyState');
+      document.getElementById('fundCount').textContent = funds.length;
+
+      if (funds.length === 0) {
+        grid.innerHTML = '';
+        empty.classList.remove('hidden');
+        calculateTotals(0, 0);
+        return;
+      }
+
+      empty.classList.add('hidden');
+      let totalBal = 0;
+      let totalDep = 0;
+
+      grid.innerHTML = funds.map(f => {
+        const dep = Number(f.deposits) || 0;
+        const bal = Number(f.balance) || 0;
+        const profit = bal - dep;
+        const roi = dep > 0 ? (profit / dep) * 100 : 0;
+        const isPos = profit >= 0;
+
+        totalBal += bal;
+        totalDep += dep;
+
+        return `
+          <div class="glass-panel rounded-2xl p-5 hover:border-slate-700 transition duration-200 flex flex-col justify-between group shadow-lg shadow-black/40">
+            <div>
+              <div class="flex items-start justify-between gap-3 mb-3">
+                <div>
+                  <span class="inline-block text-[10px] font-mono uppercase font-bold text-amber-300 bg-amber-950/60 border border-amber-800/40 px-2 py-0.5 rounded mb-1.5">
+                    ${f.type}
+                  </span>
+                  <h4 class="text-base font-bold text-white group-hover:text-emerald-300 transition leading-snug">${f.name}</h4>
+                  <p class="text-xs text-slate-400 font-light mt-0.5">
+                    ${f.manager} ${f.number ? `• מס' <span class="font-mono">${f.number}</span>` : ''}
+                  </p>
+                </div>
+                <div class="text-left font-mono">
+                  <span class="text-[10px] text-slate-500 uppercase tracking-wider block">יתרה</span>
+                  <span class="text-lg font-extrabold text-white tracking-tight">${fmtILS(bal)}</span>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-3 gap-2 my-4 p-3 bg-surface/80 border border-borderSubtle/60 rounded-xl text-center">
+                <div>
+                  <span class="text-[10px] text-slate-500 uppercase block">הופקד</span>
+                  <span class="text-xs font-mono font-bold text-slate-300">${fmtILS(dep)}</span>
+                </div>
+                <div>
+                  <span class="text-[10px] text-slate-500 uppercase block">רווח</span>
+                  <span class="text-xs font-mono font-bold ${isPos ? 'text-emerald-400' : 'text-rose-400'}">${fmtILS(profit)}</span>
+                </div>
+                <div>
+                  <span class="text-[10px] text-slate-500 uppercase block">תשואה</span>
+                  <span class="text-xs font-mono font-bold ${isPos ? 'text-emerald-400' : 'text-rose-400'}">${fmtPCT(roi)}</span>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between text-[11px] text-slate-400 border-t border-borderSubtle/40 pt-2.5">
+                <div class="space-x-2 space-x-reverse font-mono text-[10px]">
+                  ${f.feeAccumulation ? `<span>צבירה: <b>${f.feeAccumulation}%</b></span>` : ''}
+                  ${f.feeDeposit ? `<span>הפקדה: <b>${f.feeDeposit}%</b></span>` : ''}
+                </div>
+                <div class="text-[10px] text-slate-500">עודכן: ${fmtDate(f.updatedAt)}</div>
+              </div>
+
+              ${f.notes ? `<p class="mt-2 text-[11px] text-slate-400 italic truncate bg-surface/40 p-1.5 rounded-lg border border-borderSubtle/30">${f.notes}</p>` : ''}
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-borderSubtle/50 flex items-center justify-between">
+              <button onclick="openQuickModal('${f.id}')" class="text-xs font-semibold text-emerald-400 hover:text-emerald-300 bg-emerald-950/30 hover:bg-emerald-950/60 border border-emerald-800/40 px-3 py-1.5 rounded-xl transition flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                <span>עדכון יתרה מהיר</span>
+              </button>
+
+              <div class="flex items-center gap-1">
+                <button onclick="editFund('${f.id}')" class="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-surface transition" title="עריכה">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                </button>
+                <button onclick="deleteFund('${f.id}')" class="p-1.5 text-slate-500 hover:text-rose-400 rounded-lg hover:bg-surface transition" title="מחיקה">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      calculateTotals(totalBal, totalDep);
+    }
+
+    function calculateTotals(bal, dep) {
+      const profit = bal - dep;
+      const roi = dep > 0 ? (profit / dep) * 100 : 0;
+
+      document.getElementById('totalBalance').textContent = fmtILS(bal);
+      document.getElementById('totalDeposits').textContent = fmtILS(dep);
+
+      const profitEl = document.getElementById('totalProfit');
+      profitEl.textContent = fmtILS(profit);
+      profitEl.className = `text-2xl md:text-3xl font-extrabold font-mono tracking-tight ${profit >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
+
+      const roiEl = document.getElementById('totalRoi');
+      roiEl.textContent = fmtPCT(roi);
+      roiEl.className = `text-2xl md:text-3xl font-extrabold font-mono tracking-tight ${roi >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
+    }
+
+    function openAddModal() {
+      document.getElementById('fundForm').reset();
+      document.getElementById('fieldId').value = '';
+      document.getElementById('modalTitle').textContent = 'הוספת קופה ל-BoboFund';
+      document.getElementById('fundModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('fundModal').classList.add('hidden');
+    }
+
+    function editFund(id) {
+      const f = funds.find(x => x.id === id);
+      if (!f) return;
+
+      document.getElementById('fieldId').value = f.id;
+      document.getElementById('fieldName').value = f.name;
+      document.getElementById('fieldType').value = f.type;
+      document.getElementById('fieldManager').value = f.manager;
+      document.getElementById('fieldNumber').value = f.number || '';
+      document.getElementById('fieldDeposits').value = f.deposits;
+      document.getElementById('fieldBalance').value = f.balance;
+      document.getElementById('fieldFeeAcc').value = f.feeAccumulation || '';
+      document.getElementById('fieldFeeDep').value = f.feeDeposit || '';
+      document.getElementById('fieldNotes').value = f.notes || '';
+
+      document.getElementById('modalTitle').textContent = 'עריכת פרטי קופה';
+      document.getElementById('fundModal').classList.remove('hidden');
+    }
+
+    async function saveFundForm(e) {
+      e.preventDefault();
+      const id = document.getElementById('fieldId').value || ('fund_' + Date.now());
+      const item = {
+        id,
+        name: document.getElementById('fieldName').value,
+        type: document.getElementById('fieldType').value,
+        manager: document.getElementById('fieldManager').value,
+        number: document.getElementById('fieldNumber').value,
+        deposits: parseFloat(document.getElementById('fieldDeposits').value) || 0,
+        balance: parseFloat(document.getElementById('fieldBalance').value) || 0,
+        feeAccumulation: document.getElementById('fieldFeeAcc').value,
+        feeDeposit: document.getElementById('fieldFeeDep').value,
+        notes: document.getElementById('fieldNotes').value,
+        updatedAt: new Date().toISOString()
+      };
+
+      const idx = funds.findIndex(x => x.id === id);
+      if (idx > -1) funds[idx] = item;
+      else funds.unshift(item);
+
+      closeModal();
+      await persistFund(item);
+    }
+
+    async function deleteFund(id) {
+      if (confirm('בטוח שברצונך למחוק קופה זו?')) {
+        await removeFundFromDb(id);
+      }
+    }
+
+    function openQuickModal(id) {
+      const f = funds.find(x => x.id === id);
+      if (!f) return;
+      document.getElementById('quickId').value = f.id;
+      document.getElementById('quickName').textContent = `${f.name} • ${f.manager}`;
+      document.getElementById('quickBalanceVal').value = f.balance;
+      document.getElementById('quickModal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('quickBalanceVal').focus(), 50);
+    }
+
+    function closeQuickModal() {
+      document.getElementById('quickModal').classList.add('hidden');
+    }
+
+    async function handleQuickUpdate(e) {
+      e.preventDefault();
+      const id = document.getElementById('quickId').value;
+      const newBal = parseFloat(document.getElementById('quickBalanceVal').value);
+      const f = funds.find(x => x.id === id);
+      if (f) {
+        f.balance = newBal;
+        f.updatedAt = new Date().toISOString();
+        closeQuickModal();
+        await persistFund(f);
+      }
+    }
+
+    function openConfigModal() {
+      document.getElementById('cfgVaultId').value = currentVaultId;
+      document.getElementById('cfgSupabaseUrl').value = sbUrl;
+      document.getElementById('cfgSupabaseKey').value = sbKey;
+      document.getElementById('configModal').classList.remove('hidden');
+    }
+
+    function closeConfigModal() {
+      document.getElementById('configModal').classList.add('hidden');
+    }
+
+    function saveConfig() {
+      const newVault = document.getElementById('cfgVaultId').value.trim() || DEFAULT_VAULT;
+      const newUrl = document.getElementById('cfgSupabaseUrl').value.trim();
+      const newKey = document.getElementById('cfgSupabaseKey').value.trim();
+
+      localStorage.setItem('bobo_vault_id', newVault);
+      localStorage.setItem('bobo_sb_url', newUrl);
+      localStorage.setItem('bobo_sb_key', newKey);
+
+      currentVaultId = newVault;
+      sbUrl = newUrl;
+      sbKey = newKey;
+
+      initSupabase();
+      closeConfigModal();
+      loadFunds();
+    }
+
+    function exportJSON() {
+      const blob = new Blob([JSON.stringify(funds, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `BoboFund_${currentVaultId}_${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+    }
+
+    initSupabase();
+    loadFunds();
+  </script>
+</body>
+</html>
