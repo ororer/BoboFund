@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he" dir="rtl" class="overflow-x-hidden">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Bobo & Co. 🧸🏡 | החסכונות והקופות של כל המשפחה</title>
+  <title>Bobo & Co. 🧸 | החסכונות של המשפחה</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&family=Varela+Round&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 
   <script>
@@ -33,7 +33,7 @@
           boxShadow: {
             'bobo': '0 10px 25px -5px rgba(220, 210, 195, 0.45), 0 8px 10px -6px rgba(220, 210, 195, 0.3)',
             'bobo-sm': '0 4px 12px rgba(220, 210, 195, 0.35)',
-            'bobo-button': '0 3px 0 #059669',
+            'bobo-button': '0 2px 0 #059669',
           }
         }
       }
@@ -41,6 +41,10 @@
   </script>
 
   <style>
+    html, body {
+      max-width: 100vw;
+      overflow-x: hidden;
+    }
     body {
       background-color: #FAF7F2;
       background-image: radial-gradient(#E8E0D5 0.9px, transparent 0.9px), radial-gradient(#E8E0D5 0.9px, #FAF7F2 0.9px);
@@ -51,8 +55,7 @@
       transition: all 0.1s ease;
     }
     .squish-btn:active {
-      transform: translateY(2px);
-      box-shadow: 0 1px 0 rgba(0,0,0,0.1) !important;
+      transform: translateY(1px);
     }
     .no-scrollbar::-webkit-scrollbar {
       display: none;
@@ -63,11 +66,11 @@
     }
   </style>
 </head>
-<body class="text-slate-800 min-h-screen antialiased flex flex-col font-sans selection:bg-emerald-100 selection:text-emerald-800">
+<body class="text-slate-800 min-h-screen antialiased flex flex-col font-sans selection:bg-emerald-100 selection:text-emerald-800 w-full overflow-x-hidden">
 
   <!-- Fullscreen Login Overlay -->
   <div id="authScreen" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="bg-white border-4 border-amber-100 rounded-[32px] p-7 max-w-sm w-full shadow-2xl relative text-center">
+    <div class="bg-white border-4 border-amber-100 rounded-[32px] p-6 max-w-sm w-full shadow-2xl relative text-center">
       
       <div class="w-16 h-16 mx-auto -mt-12 mb-3 rounded-2xl bg-gradient-to-tr from-amber-300 via-amber-200 to-emerald-200 p-1 shadow-lg shadow-amber-500/20 flex items-center justify-center rotate-3">
         <div class="w-full h-full bg-white rounded-[14px] flex items-center justify-center text-3xl">
@@ -98,141 +101,131 @@
   </div>
 
   <!-- Main App Shell -->
-  <div id="appShell" class="flex-1 flex flex-col hidden">
+  <div id="appShell" class="flex-1 flex flex-col hidden w-full overflow-x-hidden">
 
-    <!-- Clean, Private Navbar -->
-    <nav class="border-b border-amber-100/80 bg-white/95 backdrop-blur-md sticky top-0 z-30 shadow-sm">
-      <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+    <!-- Responsive Navbar -->
+    <header class="border-b border-amber-100 bg-white/95 backdrop-blur-md sticky top-0 z-30 shadow-sm w-full">
+      <div class="max-w-4xl mx-auto px-3.5 h-14 flex items-center justify-between w-full">
         
-        <!-- Brand (No Email Shown) -->
-        <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 shrink-0 rounded-2xl bg-amber-100 border border-amber-200 flex items-center justify-center text-lg shadow-sm">
+        <!-- Brand -->
+        <div class="flex items-center gap-2 shrink-0">
+          <div class="w-8 h-8 rounded-xl bg-amber-100 border border-amber-200 flex items-center justify-center text-base shadow-sm">
             🏡
           </div>
-          <div class="flex items-center gap-2">
-            <span class="font-black text-lg tracking-tight text-slate-800 whitespace-nowrap">Bobo <span class="text-emerald-500 font-mono">& Co.</span></span>
-            <span class="text-[10px] font-bold bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full border border-amber-200/80 whitespace-nowrap">המשפוחה 🧸</span>
+          <div class="flex items-center gap-1.5">
+            <span class="font-black text-base text-slate-800">Bobo <span class="text-emerald-500 font-mono">& Co.</span></span>
+            <span class="text-[10px] font-bold bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full border border-amber-200/70">המשפוחה 🧸</span>
           </div>
         </div>
 
         <!-- Actions -->
-        <div class="flex items-center gap-2">
-          <button onclick="openSettingsModal()" title="הגדרות וחשבון" class="w-8 h-8 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 hover:bg-amber-50 hover:border-amber-300 text-slate-600 text-sm transition">
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button onclick="openSettingsModal()" title="הגדרות" class="w-8 h-8 rounded-xl border border-slate-200 bg-slate-50 hover:bg-amber-50 text-slate-600 flex items-center justify-center text-sm transition">
             ⚙️
           </button>
-          <button onclick="handleLogout()" title="התנתק" class="w-8 h-8 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 text-slate-500 text-xs transition">
+          <button onclick="handleLogout()" title="התנתק" class="w-8 h-8 rounded-xl border border-slate-200 bg-slate-50 hover:bg-rose-50 text-slate-500 flex items-center justify-center text-xs transition">
             🚪
           </button>
-          <button onclick="openAddModal()" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black px-3.5 py-1.5 rounded-xl text-xs flex items-center gap-1 shadow-bobo-button transition">
-            <span class="text-sm leading-none">➕</span>
+          <button onclick="openAddModal()" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-2.5 py-1.5 rounded-xl text-xs flex items-center gap-1 shadow-bobo-button transition">
+            <span>➕</span>
             <span>קופה</span>
           </button>
         </div>
 
       </div>
-    </nav>
+    </header>
 
-    <main class="max-w-6xl mx-auto px-4 pt-5 pb-24 w-full flex-1">
+    <main class="max-w-4xl mx-auto px-3.5 pt-4 pb-20 w-full flex-1 overflow-x-hidden">
 
       <!-- Hero Banner -->
-      <div class="bg-gradient-to-r from-amber-200/40 via-rose-100/30 to-emerald-100/40 border-2 border-amber-200/60 rounded-3xl p-4 sm:p-5 mb-5 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-bobo-sm">
-        <div class="flex items-center gap-3 text-center sm:text-right">
-          <div class="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-2xl shrink-0">
+      <div class="bg-gradient-to-r from-amber-200/40 via-rose-100/30 to-emerald-100/40 border border-amber-200/70 rounded-2xl p-3.5 mb-4 shadow-bobo-sm flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-xl shrink-0">
             🌱
           </div>
-          <div>
-            <h2 class="text-lg sm:text-xl font-black text-slate-800 tracking-tight" id="heroTitle">Bobo & Co.</h2>
-            <p class="text-xs text-slate-600 font-medium mt-0.5" id="heroSubtitle">החסכונות והקופות של כל המשפחה 🏡</p>
+          <div class="min-w-0">
+            <h2 class="text-sm font-black text-slate-800 leading-tight truncate">החסכונות והקופות של המשפחה</h2>
+            <p class="text-[11px] text-slate-500 font-medium truncate mt-0.5">כל החסכונות במקום אחד, מסונכרן לשניכם</p>
           </div>
         </div>
-        <div class="flex items-center gap-1.5 bg-white/90 border border-amber-200/80 px-3 py-1 rounded-full font-mono text-[11px] text-slate-600">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>ענן משפחתי מסונכרן</span>
+        <div class="shrink-0 flex items-center gap-1 bg-white/90 border border-amber-200 px-2.5 py-1 rounded-full text-[10px] text-slate-600 font-bold">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>פעיל</span>
         </div>
       </div>
 
-      <!-- Family Members Filter Bar -->
-      <div class="mb-6 flex items-center gap-2">
+      <!-- Family Members Filter Tabs -->
+      <div class="mb-4 flex items-center gap-1.5 w-full">
         <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar flex-1" id="membersFilterTabs"></div>
         <button onclick="openMemberAddPrompt()" class="squish-btn shrink-0 bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-200 px-2.5 py-1.5 rounded-xl text-xs font-black flex items-center gap-1 transition">
           <span>➕</span>
-          <span class="hidden sm:inline">בן משפחה</span>
+          <span>הוסף</span>
         </button>
       </div>
 
       <!-- KPI Summary Cards Grid -->
-      <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-8">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-6">
         
         <!-- Total Value -->
-        <div class="bg-white border-2 border-emerald-100 rounded-2xl p-3.5 shadow-bobo hover:shadow-lg transition">
+        <div class="bg-white border border-emerald-100 rounded-2xl p-3 shadow-bobo">
           <div class="flex items-center justify-between mb-1">
             <span class="text-[11px] font-black text-emerald-800">סך הכל נצבר</span>
-            <span class="text-base">💰</span>
+            <span class="text-sm">💰</span>
           </div>
-          <div id="totalBalance" class="text-lg sm:text-xl font-black font-mono text-emerald-600 tracking-tight">₪0</div>
-          <div class="mt-0.5 text-[9px] font-bold text-slate-400 truncate" id="totalBalanceSub">עדכון אחרון: --</div>
+          <div id="totalBalance" class="text-lg font-black font-mono text-emerald-600">₪0</div>
+          <div class="text-[9px] font-bold text-slate-400 truncate mt-0.5" id="totalBalanceSub">עדכון: טרם עודכן</div>
         </div>
 
         <!-- Total Principal Deposits -->
-        <div class="bg-white border-2 border-amber-100 rounded-2xl p-3.5 shadow-bobo hover:shadow-lg transition">
+        <div class="bg-white border border-amber-100 rounded-2xl p-3 shadow-bobo">
           <div class="flex items-center justify-between mb-1">
             <span class="text-[11px] font-black text-amber-800">סך הפקדות</span>
-            <span class="text-base">🏦</span>
+            <span class="text-sm">🏦</span>
           </div>
-          <div id="totalDeposits" class="text-lg sm:text-xl font-black font-mono text-slate-700 tracking-tight">₪0</div>
-          <div class="mt-0.5 text-[9px] font-bold text-slate-400">קרן שהופקדה</div>
+          <div id="totalDeposits" class="text-lg font-black font-mono text-slate-700">₪0</div>
+          <div class="text-[9px] font-bold text-slate-400 mt-0.5">קרן שהופקדה</div>
         </div>
 
         <!-- Monthly Recurring Saving -->
-        <div class="bg-white border-2 border-blue-100 rounded-2xl p-3.5 shadow-bobo hover:shadow-lg transition">
+        <div class="bg-white border border-blue-100 rounded-2xl p-3 shadow-bobo">
           <div class="flex items-center justify-between mb-1">
             <span class="text-[11px] font-black text-blue-800">הוראת קבע</span>
-            <span class="text-base">🔄</span>
+            <span class="text-sm">🔄</span>
           </div>
-          <div id="totalMonthly" class="text-lg sm:text-xl font-black font-mono text-blue-600 tracking-tight">₪0</div>
-          <div class="mt-0.5 text-[9px] font-bold text-slate-400">הפקדה קבועה/חודש</div>
+          <div id="totalMonthly" class="text-lg font-black font-mono text-blue-600">₪0</div>
+          <div class="text-[9px] font-bold text-slate-400 mt-0.5">הפקדה/חודש</div>
         </div>
 
-        <!-- Total Net Profit -->
-        <div class="bg-white border-2 border-rose-100 rounded-2xl p-3.5 shadow-bobo hover:shadow-lg transition">
+        <!-- Total Net Profit & ROI -->
+        <div class="bg-white border border-rose-100 rounded-2xl p-3 shadow-bobo">
           <div class="flex items-center justify-between mb-1">
             <span class="text-[11px] font-black text-rose-800">רווח נקי</span>
-            <span class="text-base">📈</span>
+            <span id="totalRoi" class="text-[10px] font-bold font-mono text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">+0.0%</span>
           </div>
-          <div id="totalProfit" class="text-lg sm:text-xl font-black font-mono text-emerald-600 tracking-tight">₪0</div>
-          <div class="mt-0.5 text-[9px] font-bold text-slate-400">רווח הון שקלי</div>
-        </div>
-
-        <!-- Weighted ROI -->
-        <div class="bg-white border-2 border-purple-100 rounded-2xl p-3.5 shadow-bobo hover:shadow-lg transition col-span-2 lg:col-span-1">
-          <div class="flex items-center justify-between mb-1">
-            <span class="text-[11px] font-black text-purple-800">תשואה כוללת</span>
-            <span class="text-base">🚀</span>
-          </div>
-          <div id="totalRoi" class="text-lg sm:text-xl font-black font-mono text-emerald-600 tracking-tight">0.00%</div>
-          <div class="mt-0.5 text-[9px] font-bold text-slate-400">תשואת התיק באחוזים</div>
+          <div id="totalProfit" class="text-lg font-black font-mono text-emerald-600">₪0</div>
+          <div class="text-[9px] font-bold text-slate-400 mt-0.5">רווח שקלי כולל</div>
         </div>
 
       </div>
 
-      <!-- Section Title -->
-      <div class="flex items-center justify-between mb-4 px-1">
-        <div class="flex items-center gap-2">
-          <h3 class="text-base font-black text-slate-800" id="sectionTitle">כל הקופות של המשפחה</h3>
-          <span id="fundCount" class="text-[11px] font-mono font-bold bg-amber-200 text-amber-900 px-2 py-0.5 rounded-full">0</span>
+      <!-- Section Header -->
+      <div class="flex items-center justify-between mb-3 px-1">
+        <div class="flex items-center gap-1.5">
+          <h3 class="text-sm font-black text-slate-800" id="sectionTitle">כל הקופות של המשפחה</h3>
+          <span id="fundCount" class="text-[10px] font-mono font-bold bg-amber-200 text-amber-900 px-2 py-0.2 rounded-full">0</span>
         </div>
       </div>
 
       <!-- Fund Cards Grid -->
-      <div id="fundsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      <div id="fundsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
 
       <!-- Empty State -->
-      <div id="emptyState" class="hidden text-center py-12 bg-white border-2 border-dashed border-amber-200 rounded-3xl p-6 shadow-bobo-sm">
-        <div class="w-14 h-14 mx-auto mb-2 rounded-full bg-amber-100 flex items-center justify-center text-2xl">
+      <div id="emptyState" class="hidden text-center py-10 bg-white border-2 border-dashed border-amber-200 rounded-2xl p-5 shadow-bobo-sm">
+        <div class="w-12 h-12 mx-auto mb-2 rounded-full bg-amber-100 flex items-center justify-center text-xl">
           🏡
         </div>
-        <h4 class="text-base font-black text-slate-800 mb-1" id="emptyTitle">אין עדיין קופות להצגה</h4>
-        <p class="text-xs text-slate-500 max-w-sm mx-auto mb-4 font-medium">הוסיפו קופה חדשה ב-Bobo & Co. ושייכו אותה לבן המשפחה המתאים!</p>
+        <h4 class="text-sm font-black text-slate-800 mb-1" id="emptyTitle">אין עדיין קופות להצגה</h4>
+        <p class="text-xs text-slate-500 max-w-xs mx-auto mb-3 font-medium">הוסיפו קופה ראשונה ושייכו אותה לבן המשפחה המתאים</p>
         <button onclick="openAddModal()" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black px-4 py-2 rounded-xl text-xs shadow-bobo-button transition">
           הוספת קופה ראשונה ✨
         </button>
@@ -241,35 +234,34 @@
     </main>
   </div>
 
-  <!-- Add / Edit Fund Modal -->
+  <!-- Add / Edit Modal -->
   <div id="fundModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white border-4 border-amber-100 rounded-[28px] w-full max-w-md overflow-hidden shadow-2xl p-5">
+    <div class="bg-white border-4 border-amber-100 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl p-5">
       
       <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
-        <div class="flex items-center gap-2">
-          <span class="text-xl">📝</span>
-          <h3 id="modalTitle" class="text-base font-black text-slate-800">הוספת קופה חדשה</h3>
+        <div class="flex items-center gap-1.5">
+          <span class="text-lg">📝</span>
+          <h3 id="modalTitle" class="text-sm font-black text-slate-800">הוספת קופה חדשה</h3>
         </div>
         <button onclick="closeModal()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center font-bold text-xs">✕</button>
       </div>
 
-      <form id="fundForm" onsubmit="saveFundForm(event)" class="space-y-3 text-right">
+      <form id="fundForm" onsubmit="saveFundForm(event)" class="space-y-2.5 text-right">
         <input type="hidden" id="fieldId">
 
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">עבור מי הקופה? (בן משפחה) *</label>
-          <select id="fieldOwnerSelect" class="w-full bg-amber-50/70 border-2 border-amber-200 rounded-xl px-3 py-1.5 text-xs font-bold text-amber-900 focus:outline-none">
-          </select>
+          <label class="block text-[11px] font-bold text-slate-600 mb-0.5">עבור מי הקופה? *</label>
+          <select id="fieldOwnerSelect" class="w-full bg-amber-50 border border-amber-200 rounded-xl px-2.5 py-1.5 text-xs font-bold text-amber-900 focus:outline-none"></select>
         </div>
 
-        <div class="grid grid-cols-2 gap-2.5">
+        <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">שם הקופה / מסלול *</label>
-            <input type="text" id="fieldName" required placeholder="מחקה S&P 500" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
+            <label class="block text-[11px] font-bold text-slate-600 mb-0.5">שם הקופה *</label>
+            <input type="text" id="fieldName" required placeholder="מחקה S&P 500" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">סוג הקופה *</label>
-            <select id="fieldType" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
+            <label class="block text-[11px] font-bold text-slate-600 mb-0.5">סוג הקופה *</label>
+            <select id="fieldType" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
               <option value="קופת גמל להשקעה">קופת גמל להשקעה</option>
               <option value="חיסכון לכל ילד">חיסכון לכל ילד</option>
               <option value="קרן השתלמות">קרן השתלמות</option>
@@ -281,51 +273,51 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-2.5">
+        <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">גוף מנהל *</label>
-            <input type="text" id="fieldManager" required placeholder="מיטב, הראל..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
+            <label class="block text-[11px] font-bold text-slate-600 mb-0.5">גוף מנהל *</label>
+            <input type="text" id="fieldManager" required placeholder="מיטב, הראל..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">מספר חשבון / קופה</label>
-            <input type="text" id="fieldNumber" placeholder="1234567" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 font-mono focus:border-emerald-400 focus:bg-white focus:outline-none transition">
+            <label class="block text-[11px] font-bold text-slate-600 mb-0.5">מספר קופה</label>
+            <input type="text" id="fieldNumber" placeholder="1234567" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 font-mono focus:border-emerald-400 focus:bg-white focus:outline-none transition">
           </div>
         </div>
 
-        <div class="grid grid-cols-3 gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
+        <div class="grid grid-cols-3 gap-1.5 bg-slate-50 p-2 rounded-xl border border-slate-200/80">
           <div>
-            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">סך הפקדות ₪ *</label>
+            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">הפקדות ₪ *</label>
             <input type="number" step="any" id="fieldDeposits" required placeholder="0" class="w-full bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs font-mono text-slate-800 focus:outline-none">
           </div>
           <div>
-            <label class="block text-[10px] font-bold text-emerald-800 mb-0.5">שווי יתרה ₪ *</label>
+            <label class="block text-[10px] font-bold text-emerald-800 mb-0.5">שווי ₪ *</label>
             <input type="number" step="any" id="fieldBalance" required placeholder="0" class="w-full bg-emerald-50 border border-emerald-300 rounded-lg px-2 py-1 text-xs font-mono font-bold text-emerald-700 focus:outline-none">
           </div>
           <div>
-            <label class="block text-[10px] font-bold text-blue-800 mb-0.5">הפקדה חודשית ₪</label>
+            <label class="block text-[10px] font-bold text-blue-800 mb-0.5">הו״ק ₪</label>
             <input type="number" step="any" id="fieldMonthly" placeholder="0" class="w-full bg-blue-50 border border-blue-200 rounded-lg px-2 py-1 text-xs font-mono font-bold text-blue-700 focus:outline-none">
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-2.5">
+        <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="block text-[11px] font-bold text-slate-600 mb-0.5 mr-1">דמ״נ צבירה (%)</label>
-            <input type="number" step="0.01" id="fieldFeeAcc" placeholder="0.5" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1 text-xs font-mono text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
+            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">דמ״נ צבירה (%)</label>
+            <input type="number" step="0.01" id="fieldFeeAcc" placeholder="0.5" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1 text-xs font-mono text-slate-800 focus:outline-none transition">
           </div>
           <div>
-            <label class="block text-[11px] font-bold text-slate-600 mb-0.5 mr-1">דמ״נ הפקדה (%)</label>
-            <input type="number" step="0.01" id="fieldFeeDep" placeholder="0" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1 text-xs font-mono text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
+            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">דמ״נ הפקדה (%)</label>
+            <input type="number" step="0.01" id="fieldFeeDep" placeholder="0" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1 text-xs font-mono text-slate-800 focus:outline-none transition">
           </div>
         </div>
 
         <div>
-          <label class="block text-[11px] font-bold text-slate-600 mb-0.5 mr-1">הערות / הסדרי חסכון</label>
-          <input type="text" id="fieldNotes" placeholder="הוראת קבע ב-10 לחודש" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-1.5 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
+          <label class="block text-[10px] font-bold text-slate-600 mb-0.5">הערות</label>
+          <input type="text" id="fieldNotes" placeholder="הוראת קבע ב-10 לחודש" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1 text-xs text-slate-800 focus:outline-none transition">
         </div>
 
         <div class="pt-2 flex justify-end gap-2 border-t border-slate-100">
-          <button type="button" onclick="closeModal()" class="px-3.5 py-1.5 text-xs font-bold text-slate-400 hover:text-slate-600">ביטול</button>
-          <button type="submit" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black px-4 py-1.5 rounded-xl text-xs shadow-bobo-button transition">שמור קופה ✨</button>
+          <button type="button" onclick="closeModal()" class="px-3 py-1.5 text-xs font-bold text-slate-400 hover:text-slate-600">ביטול</button>
+          <button type="submit" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black px-4 py-1.5 rounded-xl text-xs shadow-bobo-button transition">שמור ✨</button>
         </div>
       </form>
     </div>
@@ -333,7 +325,7 @@
 
   <!-- Quick Balance Update Modal -->
   <div id="quickModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white border-4 border-amber-100 rounded-[28px] w-full max-w-xs p-5 shadow-2xl text-center">
+    <div class="bg-white border-4 border-amber-100 rounded-3xl w-full max-w-xs p-5 shadow-2xl text-center">
       <div class="w-10 h-10 mx-auto mb-2 rounded-full bg-emerald-100 flex items-center justify-center text-xl">
         ⚡
       </div>
@@ -353,51 +345,50 @@
 
   <!-- Settings Modal -->
   <div id="settingsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white border-4 border-amber-100 rounded-[28px] w-full max-w-md overflow-hidden shadow-2xl p-5">
+    <div class="bg-white border-4 border-amber-100 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl p-5">
       
-      <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100">
-        <div class="flex items-center gap-2">
-          <span class="text-xl">⚙️</span>
-          <h3 class="text-base font-black text-slate-800">הגדרות Bobo & Co.</h3>
+      <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
+        <div class="flex items-center gap-1.5">
+          <span class="text-lg">⚙️</span>
+          <h3 class="text-sm font-black text-slate-800">הגדרות Bobo & Co.</h3>
         </div>
         <button onclick="closeSettingsModal()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center font-bold text-xs">✕</button>
       </div>
 
-      <div class="space-y-4 max-h-[65vh] overflow-y-auto pr-1 no-scrollbar text-right">
+      <div class="space-y-3 max-h-[65vh] overflow-y-auto pr-1 no-scrollbar text-right">
         
-        <div class="bg-amber-50/50 border border-amber-200 rounded-xl p-3.5">
+        <div class="bg-amber-50/50 border border-amber-200 rounded-xl p-3">
           <div class="flex items-center justify-between mb-2">
             <h4 class="text-xs font-black text-slate-800 flex items-center gap-1">
               <span>👨‍👩‍👧‍👦</span>
               <span>בני המשפחה</span>
             </h4>
-            <button onclick="openMemberAddPrompt()" class="squish-btn bg-amber-200 hover:bg-amber-300 text-amber-900 font-bold px-2 py-0.5 rounded-lg text-[11px]">
+            <button onclick="openMemberAddPrompt()" class="squish-btn bg-amber-200 hover:bg-amber-300 text-amber-900 font-bold px-2 py-0.5 rounded-lg text-[10px]">
               + הוסף
             </button>
           </div>
           <div id="settingsMembersList" class="space-y-1.5"></div>
         </div>
 
-        <div class="bg-emerald-50/50 border border-emerald-200 rounded-xl p-3.5 flex items-center justify-between">
+        <div class="bg-emerald-50/50 border border-emerald-200 rounded-xl p-3 flex items-center justify-between">
           <div>
             <h4 class="text-xs font-black text-slate-800 flex items-center gap-1">
               <span>📊</span>
-              <span>ייצוא נתונים (CSV)</span>
+              <span>ייצוא ל-Excel (CSV)</span>
             </h4>
-            <p class="text-[10px] text-slate-500">הורדת גיבוי מלא של כל הקופות</p>
+            <p class="text-[10px] text-slate-500">הורדת גיבוי מלא של הקופות</p>
           </div>
           <button onclick="exportToCSV()" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black px-3 py-1 rounded-lg text-xs shadow-bobo-button shrink-0">
             הורד ⬇️
           </button>
         </div>
 
-        <!-- Account Info Stays Private Inside Settings -->
-        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5">
-          <h4 class="text-xs font-black text-slate-800 mb-1.5 flex items-center gap-1">
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
+          <h4 class="text-xs font-black text-slate-800 mb-1 flex items-center gap-1">
             <span>🔐</span>
             <span>חשבון מחובר</span>
           </h4>
-          <p id="settingsUserEmail" class="text-xs font-mono text-slate-600 bg-white p-2 rounded-lg border border-slate-200 mb-2"></p>
+          <p id="settingsUserEmail" class="text-[11px] font-mono text-slate-600 bg-white p-1.5 rounded-lg border border-slate-200 mb-2 truncate"></p>
           <button onclick="handleLogout()" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-bold py-1.5 rounded-lg text-xs transition">
             התנתק מהמערכת 🚪
           </button>
@@ -405,8 +396,8 @@
 
       </div>
 
-      <div class="pt-3 mt-2 border-t border-slate-100 text-center">
-        <button onclick="closeSettingsModal()" class="px-5 py-1.5 bg-slate-800 text-white font-black text-xs rounded-xl">סגור</button>
+      <div class="pt-2 mt-2 border-t border-slate-100 text-center">
+        <button onclick="closeSettingsModal()" class="px-5 py-1 bg-slate-800 text-white font-black text-xs rounded-xl">סגור</button>
       </div>
 
     </div>
@@ -555,7 +546,7 @@
       const tabBtn = (id, label, icon) => {
         const isActive = currentFilter === id;
         return `
-          <button onclick="setFilter('${id}')" class="squish-btn shrink-0 px-3 py-1.5 rounded-xl text-xs font-black transition flex items-center gap-1 border ${
+          <button onclick="setFilter('${id}')" class="squish-btn shrink-0 px-2.5 py-1 rounded-xl text-xs font-bold transition flex items-center gap-1 border ${
             isActive 
               ? 'bg-slate-800 border-slate-800 text-white shadow-sm' 
               : 'bg-white border-amber-100 text-slate-600 hover:border-amber-300'
@@ -624,70 +615,70 @@
         }
 
         return `
-          <div class="bg-white border-2 border-cardBorder rounded-2xl p-4 shadow-bobo hover:border-amber-200 transition flex flex-col justify-between">
+          <div class="bg-white border border-cardBorder rounded-2xl p-3.5 shadow-bobo transition flex flex-col justify-between">
             <div>
               <div class="flex items-start justify-between gap-2 mb-2">
-                <div class="flex items-start gap-2">
-                  <span class="text-xl p-1.5 bg-amber-50 border border-amber-100 rounded-xl">${getTypeIcon(f.type)}</span>
-                  <div>
+                <div class="flex items-start gap-2 min-w-0">
+                  <span class="text-xl p-1 bg-amber-50 border border-amber-100 rounded-xl shrink-0">${getTypeIcon(f.type)}</span>
+                  <div class="min-w-0">
                     <div class="flex items-center gap-1 mb-0.5">
-                      <span class="text-[9px] font-black px-1.5 py-0.5 rounded-full border ${getMemberBadgeColor(f.owner)} flex items-center gap-0.5">
+                      <span class="text-[9px] font-black px-1.5 py-0.2 rounded-full border ${getMemberBadgeColor(f.owner)} flex items-center gap-0.5">
                         <span>${getMemberIcon(f.owner)}</span>
                         <span>${f.owner}</span>
                       </span>
-                      <span class="text-[9px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-full">
+                      <span class="text-[9px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.2 rounded-full">
                         ${f.type}
                       </span>
                     </div>
-                    <h4 class="text-sm font-black text-slate-800 leading-tight">${f.name}</h4>
-                    <p class="text-[11px] text-slate-400 font-medium">${f.manager} ${f.number ? `• מס' ${f.number}` : ''}</p>
+                    <h4 class="text-sm font-black text-slate-800 leading-tight truncate">${f.name}</h4>
+                    <p class="text-[10px] text-slate-400 font-medium truncate">${f.manager} ${f.number ? `• ${f.number}` : ''}</p>
                   </div>
                 </div>
 
-                <div class="text-left font-mono">
+                <div class="text-left font-mono shrink-0">
                   <span class="text-[9px] text-slate-400 font-bold block">יתרה</span>
                   <span class="text-base font-black text-emerald-600 leading-none">${fmtILS(bal)}</span>
-                  <span class="text-[9px] text-emerald-700/90 font-bold block mt-1 bg-emerald-50 px-1 py-0.5 rounded border border-emerald-100">
+                  <span class="text-[8px] text-emerald-700/80 font-bold block mt-1 bg-emerald-50 px-1 py-0.2 rounded border border-emerald-100">
                     ${fmtDate(f.updatedAt)}
                   </span>
                 </div>
               </div>
 
-              <div class="grid grid-cols-3 gap-1.5 my-2.5 p-2 bg-slate-50/90 border border-slate-100 rounded-xl text-center">
+              <div class="grid grid-cols-3 gap-1 my-2 p-1.5 bg-slate-50 border border-slate-100 rounded-xl text-center">
                 <div>
-                  <span class="text-[9px] text-slate-400 font-bold block">הפקדות</span>
-                  <span class="text-xs font-mono font-bold text-slate-700">${fmtILS(dep)}</span>
+                  <span class="text-[8px] text-slate-400 font-bold block">הפקדות</span>
+                  <span class="text-[11px] font-mono font-bold text-slate-700">${fmtILS(dep)}</span>
                 </div>
                 <div>
-                  <span class="text-[9px] text-slate-400 font-bold block">רווח</span>
-                  <span class="text-xs font-mono font-bold ${isPos ? 'text-emerald-600' : 'text-rose-500'}">${fmtILS(profit)}</span>
+                  <span class="text-[8px] text-slate-400 font-bold block">רווח</span>
+                  <span class="text-[11px] font-mono font-bold ${isPos ? 'text-emerald-600' : 'text-rose-500'}">${fmtILS(profit)}</span>
                 </div>
                 <div>
-                  <span class="text-[9px] text-slate-400 font-bold block">תשואה</span>
-                  <span class="text-xs font-mono font-bold ${isPos ? 'text-emerald-600' : 'text-rose-500'}">${fmtPCT(roi)}</span>
+                  <span class="text-[8px] text-slate-400 font-bold block">תשואה</span>
+                  <span class="text-[11px] font-mono font-bold ${isPos ? 'text-emerald-600' : 'text-rose-500'}">${fmtPCT(roi)}</span>
                 </div>
               </div>
 
               ${monthly > 0 ? `
-                <div class="mb-2 bg-blue-50 border border-blue-100 text-blue-900 px-2.5 py-1 rounded-lg flex items-center justify-between text-[11px] font-bold">
-                  <span>🔄 הו״ק חודשית:</span>
-                  <span class="font-mono font-black">${fmtILS(monthly)}</span>
+                <div class="mb-1.5 bg-blue-50 border border-blue-100 text-blue-900 px-2 py-0.5 rounded-lg flex items-center justify-between text-[10px] font-bold">
+                  <span>🔄 הו״ק:</span>
+                  <span class="font-mono font-black">${fmtILS(monthly)}/חודש</span>
                 </div>
               ` : ''}
 
-              <div class="flex items-center justify-between text-[10px] text-slate-400 font-medium">
+              <div class="flex items-center justify-between text-[9px] text-slate-400 font-medium">
                 <div>${f.feeAccumulation ? `דמ״נ: <b>${f.feeAccumulation}%</b>` : ''}</div>
                 <div>עודכן: ${fmtDate(f.updatedAt)}</div>
               </div>
 
-              ${f.notes ? `<p class="mt-1.5 text-[10px] text-slate-500 bg-amber-50/60 p-1.5 rounded-lg border border-amber-100 font-medium truncate">💬 ${f.notes}</p>` : ''}
+              ${f.notes ? `<p class="mt-1 text-[9px] text-slate-500 bg-amber-50/60 p-1 rounded border border-amber-100 font-medium truncate">💬 ${f.notes}</p>` : ''}
             </div>
 
-            <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between">
-              <button onclick="openQuickModal('${f.id}')" class="squish-btn text-[11px] font-black text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2.5 py-1 rounded-lg transition flex items-center gap-1">
+            <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between">
+              <button onclick="openQuickModal('${f.id}')" class="squish-btn text-[10px] font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2 py-0.5 rounded-lg transition flex items-center gap-0.5">
                 <span>⚡ עדכון יתרה</span>
               </button>
-              <div class="flex gap-2 text-[11px] font-bold">
+              <div class="flex gap-2 text-[10px] font-bold">
                 <button onclick="editFund('${f.id}')" class="text-slate-400 hover:text-slate-700">ערוך</button>
                 <button onclick="deleteFund('${f.id}')" class="text-rose-400 hover:text-rose-600">מחק</button>
               </div>
@@ -703,17 +694,17 @@
       const profit = bal - dep;
       const roi = dep > 0 ? (profit / dep) * 100 : 0;
       document.getElementById('totalBalance').textContent = fmtILS(bal);
-      document.getElementById('totalBalanceSub').textContent = `עדכון אחרון: ${fmtDate(latestDate)}`;
+      document.getElementById('totalBalanceSub').textContent = `עדכון: ${fmtDate(latestDate)}`;
       document.getElementById('totalDeposits').textContent = fmtILS(dep);
       document.getElementById('totalMonthly').textContent = fmtILS(monthly);
       
       const profitEl = document.getElementById('totalProfit');
       profitEl.textContent = fmtILS(profit);
-      profitEl.className = `text-lg sm:text-xl font-black font-mono tracking-tight ${profit >= 0 ? 'text-emerald-600' : 'text-rose-500'}`;
+      profitEl.className = `text-lg font-black font-mono ${profit >= 0 ? 'text-emerald-600' : 'text-rose-500'}`;
 
       const roiEl = document.getElementById('totalRoi');
       roiEl.textContent = fmtPCT(roi);
-      roiEl.className = `text-lg sm:text-xl font-black font-mono tracking-tight ${roi >= 0 ? 'text-emerald-600' : 'text-rose-500'}`;
+      roiEl.className = `text-[10px] font-bold font-mono px-1.5 py-0.5 rounded ${roi >= 0 ? 'text-emerald-700 bg-emerald-50' : 'text-rose-700 bg-rose-50'}`;
     }
 
     function populateOwnerSelect(selectedOwner) {
@@ -832,13 +823,13 @@
       listEl.innerHTML = familyMembers.map((m, idx) => `
         <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
           <div class="flex items-center gap-1.5">
-            <span class="text-lg">${m.icon}</span>
+            <span class="text-base">${m.icon}</span>
             <span class="font-black text-xs text-slate-800">${m.name}</span>
           </div>
           <div class="flex items-center gap-1">
-            <button onclick="editMemberPrompt(${idx})" class="text-[11px] text-slate-400 hover:text-slate-700 font-bold px-1.5 py-0.5">ערוך</button>
+            <button onclick="editMemberPrompt(${idx})" class="text-[10px] text-slate-400 hover:text-slate-700 font-bold px-1.5 py-0.5">ערוך</button>
             ${familyMembers.length > 1 ? `
-              <button onclick="deleteMemberPrompt(${idx})" class="text-[11px] text-rose-500 hover:text-rose-700 font-bold px-1.5 py-0.5">מחק</button>
+              <button onclick="deleteMemberPrompt(${idx})" class="text-[10px] text-rose-500 hover:text-rose-700 font-bold px-1.5 py-0.5">מחק</button>
             ` : ''}
           </div>
         </div>
