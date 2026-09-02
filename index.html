@@ -8,7 +8,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&family=Varela+Round&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 
   <script>
@@ -65,7 +65,7 @@
 </head>
 <body class="text-slate-800 min-h-screen antialiased flex flex-col font-sans selection:bg-emerald-100 selection:text-emerald-800">
 
-  <!-- Login Modal Overlay -->
+  <!-- Fullscreen Login Overlay -->
   <div id="authScreen" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4">
     <div class="bg-white border-4 border-amber-100 rounded-[32px] p-8 max-w-sm w-full shadow-2xl relative text-center">
       
@@ -100,6 +100,7 @@
   <!-- Main App Shell -->
   <div id="appShell" class="flex-1 flex flex-col hidden">
 
+    <!-- Navbar -->
     <nav class="border-b border-amber-100/80 bg-white/90 backdrop-blur-md sticky top-0 z-30 shadow-sm">
       <div class="max-w-6xl mx-auto px-5 h-18 py-3 flex items-center justify-between">
         
@@ -119,6 +120,9 @@
 
         <!-- Actions -->
         <div class="flex items-center gap-2.5">
+          <button onclick="openSettingsModal()" title="הגדרות" class="w-9 h-9 flex items-center justify-center rounded-2xl border-2 border-slate-200 bg-slate-50 hover:bg-amber-50 hover:border-amber-300 text-slate-600 text-base transition">
+            ⚙️
+          </button>
           <button onclick="handleLogout()" title="התנתק" class="w-9 h-9 flex items-center justify-center rounded-2xl border-2 border-slate-200 bg-slate-50 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 text-slate-500 text-sm transition">
             🚪
           </button>
@@ -150,51 +154,71 @@
         </div>
       </div>
 
-      <!-- Family Members Filter Tabs -->
-      <div class="mb-8">
-        <div class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar" id="membersFilterTabs"></div>
+      <!-- Family Members Filter Bar -->
+      <div class="mb-8 flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar flex-1" id="membersFilterTabs"></div>
+        <button onclick="openMemberAddPrompt()" class="squish-btn shrink-0 bg-amber-100 hover:bg-amber-200 text-amber-900 border-2 border-amber-200 px-3 py-2 rounded-2xl text-xs font-black flex items-center gap-1 transition">
+          <span>➕</span>
+          <span>בן משפחה</span>
+        </button>
       </div>
 
-      <!-- KPI Summary Cards -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+      <!-- KPI Summary Cards Grid -->
+      <div class="grid grid-cols-2 lg:grid-cols-5 gap-3.5 mb-10">
         
-        <div class="bg-white border-2 border-emerald-100 rounded-[28px] p-5 shadow-bobo hover:shadow-lg transition">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-black text-emerald-800">סך הכל נצבר</span>
-            <span class="text-xl">💰</span>
+        <!-- Total Value -->
+        <div class="bg-white border-2 border-emerald-100 rounded-[26px] p-4.5 shadow-bobo hover:shadow-lg transition">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-black text-emerald-800">סך הכל נצבר</span>
+            <span class="text-lg">💰</span>
           </div>
-          <div id="totalBalance" class="text-2xl md:text-3xl font-black font-mono text-emerald-600 tracking-tight">₪0</div>
-          <div class="mt-2 text-[11px] font-bold text-slate-400">שווי שוק נוכחי</div>
+          <div id="totalBalance" class="text-xl md:text-2xl font-black font-mono text-emerald-600 tracking-tight">₪0</div>
+          <div class="mt-1 text-[10px] font-bold text-slate-400" id="totalBalanceSub">עדכון אחרון: --</div>
         </div>
 
-        <div class="bg-white border-2 border-amber-100 rounded-[28px] p-5 shadow-bobo hover:shadow-lg transition">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-black text-amber-800">סך הפקדות (קרן)</span>
-            <span class="text-xl">🏦</span>
+        <!-- Total Principal Deposits -->
+        <div class="bg-white border-2 border-amber-100 rounded-[26px] p-4.5 shadow-bobo hover:shadow-lg transition">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-black text-amber-800">סך הפקדות (קרן)</span>
+            <span class="text-lg">🏦</span>
           </div>
-          <div id="totalDeposits" class="text-2xl md:text-3xl font-black font-mono text-slate-700 tracking-tight">₪0</div>
-          <div class="mt-2 text-[11px] font-bold text-slate-400">הכסף שהופקד בפועל</div>
+          <div id="totalDeposits" class="text-xl md:text-2xl font-black font-mono text-slate-700 tracking-tight">₪0</div>
+          <div class="mt-1 text-[10px] font-bold text-slate-400">הכסף שהופקד בפועל</div>
         </div>
 
-        <div class="bg-white border-2 border-rose-100 rounded-[28px] p-5 shadow-bobo hover:shadow-lg transition">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-black text-rose-800">רווח נקי שנצבר</span>
-            <span class="text-xl">📈</span>
+        <!-- Monthly Recurring Saving (הוראות קבע) -->
+        <div class="bg-white border-2 border-blue-100 rounded-[26px] p-4.5 shadow-bobo hover:shadow-lg transition">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-black text-blue-800">חיסכון חודשי (הו״ק)</span>
+            <span class="text-lg">🔄</span>
           </div>
-          <div id="totalProfit" class="text-2xl md:text-3xl font-black font-mono text-emerald-600 tracking-tight">₪0</div>
-          <div class="mt-2 text-[11px] font-bold text-slate-400">רווח הון שקלי</div>
+          <div id="totalMonthly" class="text-xl md:text-2xl font-black font-mono text-blue-600 tracking-tight">₪0</div>
+          <div class="mt-1 text-[10px] font-bold text-slate-400">הפקדה קבועה/חודש</div>
         </div>
 
-        <div class="bg-white border-2 border-purple-100 rounded-[28px] p-5 shadow-bobo hover:shadow-lg transition">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-black text-purple-800">תשואה משוקללת</span>
-            <span class="text-xl">🚀</span>
+        <!-- Total Net Profit -->
+        <div class="bg-white border-2 border-rose-100 rounded-[26px] p-4.5 shadow-bobo hover:shadow-lg transition">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-black text-rose-800">רווח נקי שנצבר</span>
+            <span class="text-lg">📈</span>
           </div>
-          <div id="totalRoi" class="text-2xl md:text-3xl font-black font-mono text-emerald-600 tracking-tight">0.00%</div>
-          <div class="mt-2 text-[11px] font-bold text-slate-400">תשואת התיק באחוזים</div>
+          <div id="totalProfit" class="text-xl md:text-2xl font-black font-mono text-emerald-600 tracking-tight">₪0</div>
+          <div class="mt-1 text-[10px] font-bold text-slate-400">רווח הון שקלי</div>
         </div>
+
+        <!-- Weighted ROI -->
+        <div class="bg-white border-2 border-purple-100 rounded-[26px] p-4.5 shadow-bobo hover:shadow-lg transition col-span-2 lg:col-span-1">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-black text-purple-800">תשואה משוקללת</span>
+            <span class="text-lg">🚀</span>
+          </div>
+          <div id="totalRoi" class="text-xl md:text-2xl font-black font-mono text-emerald-600 tracking-tight">0.00%</div>
+          <div class="mt-1 text-[10px] font-bold text-slate-400">תשואת התיק באחוזים</div>
+        </div>
+
       </div>
 
+      <!-- Section Title -->
       <div class="flex items-center justify-between mb-5 px-1">
         <div class="flex items-center gap-2">
           <h3 class="text-lg font-black text-slate-800" id="sectionTitle">כל הקופות של המשפחה</h3>
@@ -202,8 +226,10 @@
         </div>
       </div>
 
+      <!-- Fund Cards Grid -->
       <div id="fundsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
 
+      <!-- Empty State -->
       <div id="emptyState" class="hidden text-center py-16 bg-white border-3 border-dashed border-amber-200 rounded-[32px] p-8 shadow-bobo-sm">
         <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-amber-100 flex items-center justify-center text-3xl">
           🏡
@@ -218,7 +244,7 @@
     </main>
   </div>
 
-  <!-- Add / Edit Modal -->
+  <!-- Add / Edit Fund Modal -->
   <div id="fundModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white border-4 border-amber-100 rounded-[32px] w-full max-w-md overflow-hidden shadow-2xl p-6">
       
@@ -233,19 +259,12 @@
       <form id="fundForm" onsubmit="saveFundForm(event)" class="space-y-3 text-right">
         <input type="hidden" id="fieldId">
 
-        <!-- Member Selector -->
+        <!-- Family Member Selection -->
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">עבור מי הקופה? (בן משפחה) *</label>
-          <div class="flex gap-2">
-            <select id="fieldOwnerSelect" onchange="handleOwnerSelectChange(this)" class="w-1/2 bg-amber-50/70 border-2 border-amber-200 rounded-2xl px-3 py-2 text-xs font-bold text-amber-900 focus:outline-none">
-              <option value="בובו">בובו 🧸</option>
-              <option value="אבא">אבא 👨</option>
-              <option value="אמא">אמא 👩</option>
-              <option value="משותף">משותף 🏡</option>
-              <option value="__custom__">שם אחר...</option>
-            </select>
-            <input type="text" id="fieldOwnerCustom" placeholder="הקלד שם..." class="w-1/2 bg-slate-50 border-2 border-slate-200 rounded-2xl px-3 py-2 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none hidden">
-          </div>
+          <select id="fieldOwnerSelect" class="w-full bg-amber-50/70 border-2 border-amber-200 rounded-2xl px-3.5 py-2 text-xs font-bold text-amber-900 focus:outline-none">
+            <!-- Dynamic Members Injected -->
+          </select>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
@@ -278,14 +297,19 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
+        <!-- Financial Balances & Monthly Recurring -->
+        <div class="grid grid-cols-3 gap-2.5 bg-slate-50 p-3 rounded-2xl border border-slate-200/80">
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">סך הפקדות (קרן) ₪ *</label>
-            <input type="number" step="any" id="fieldDeposits" required placeholder="0" class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-3.5 py-2 text-xs font-mono text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
+            <label class="block text-[11px] font-bold text-slate-600 mb-1">סך הפקדות ₪ *</label>
+            <input type="number" step="any" id="fieldDeposits" required placeholder="0" class="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-1.5 text-xs font-mono text-slate-800 focus:outline-none">
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">שווי יתרה עדכני ₪ *</label>
-            <input type="number" step="any" id="fieldBalance" required placeholder="0" class="w-full bg-emerald-50 border-2 border-emerald-300 rounded-2xl px-3.5 py-2 text-xs font-mono font-bold text-emerald-700 focus:border-emerald-500 focus:bg-white focus:outline-none transition">
+            <label class="block text-[11px] font-bold text-emerald-800 mb-1">שווי יתרה ₪ *</label>
+            <input type="number" step="any" id="fieldBalance" required placeholder="0" class="w-full bg-emerald-50 border border-emerald-300 rounded-xl px-2.5 py-1.5 text-xs font-mono font-bold text-emerald-700 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-blue-800 mb-1">הפקדה חודשית ₪</label>
+            <input type="number" step="any" id="fieldMonthly" placeholder="0" class="w-full bg-blue-50 border border-blue-200 rounded-xl px-2.5 py-1.5 text-xs font-mono font-bold text-blue-700 focus:outline-none">
           </div>
         </div>
 
@@ -302,7 +326,7 @@
 
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">הערות / הסדרי חסכון</label>
-          <input type="text" id="fieldNotes" placeholder="הוראת קבע חודשית" class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-3.5 py-2 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
+          <input type="text" id="fieldNotes" placeholder="הוראת קבע ב-10 לחודש" class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-3.5 py-2 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
         </div>
 
         <div class="pt-3 flex justify-end gap-2 border-t border-slate-100">
@@ -313,7 +337,7 @@
     </div>
   </div>
 
-  <!-- Quick Balance Modal -->
+  <!-- Quick Balance Update Modal -->
   <div id="quickModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white border-4 border-amber-100 rounded-[32px] w-full max-w-sm p-6 shadow-2xl text-center">
       <div class="w-12 h-12 mx-auto mb-2 rounded-full bg-emerald-100 flex items-center justify-center text-2xl">
@@ -335,6 +359,69 @@
     </div>
   </div>
 
+  <!-- Comprehensive Settings Modal -->
+  <div id="settingsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white border-4 border-amber-100 rounded-[32px] w-full max-w-lg overflow-hidden shadow-2xl p-6">
+      
+      <div class="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">⚙️</span>
+          <h3 class="text-lg font-black text-slate-800">הגדרות Bobo & Co.</h3>
+        </div>
+        <button onclick="closeSettingsModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center font-bold">✕</button>
+      </div>
+
+      <div class="space-y-6 max-h-[70vh] overflow-y-auto pr-1 no-scrollbar text-right">
+        
+        <!-- 1. Manage Family Members -->
+        <div class="bg-amber-50/50 border-2 border-amber-100 rounded-2xl p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="text-sm font-black text-slate-800 flex items-center gap-1.5">
+              <span>👨‍👩‍👧‍👦</span>
+              <span>ניהול בני משפחה</span>
+            </h4>
+            <button onclick="openMemberAddPrompt()" class="squish-btn bg-amber-200 hover:bg-amber-300 text-amber-900 font-bold px-3 py-1 rounded-xl text-xs">
+              + הוסף בן משפחה
+            </button>
+          </div>
+          <div id="settingsMembersList" class="space-y-2"></div>
+        </div>
+
+        <!-- 2. Export Data (CSV) -->
+        <div class="bg-emerald-50/50 border-2 border-emerald-100 rounded-2xl p-4 flex items-center justify-between">
+          <div>
+            <h4 class="text-sm font-black text-slate-800 flex items-center gap-1.5">
+              <span>📊</span>
+              <span>ייצוא נתונים ל-Excel / CSV</span>
+            </h4>
+            <p class="text-xs text-slate-500 mt-0.5">הורדת גיבוי מלא של כל הקופות והחסכונות המשפחתיים</p>
+          </div>
+          <button onclick="exportToCSV()" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black px-4 py-2 rounded-xl text-xs shadow-bobo-button shrink-0">
+            הורד קובץ ⬇️
+          </button>
+        </div>
+
+        <!-- 3. Connected Account -->
+        <div class="bg-slate-50 border-2 border-slate-200/80 rounded-2xl p-4">
+          <h4 class="text-sm font-black text-slate-800 mb-2 flex items-center gap-1.5">
+            <span>🔐</span>
+            <span>חשבון מחובר</span>
+          </h4>
+          <p id="settingsUserEmail" class="text-xs font-mono text-slate-600 bg-white p-2.5 rounded-xl border border-slate-200 mb-3"></p>
+          <button onclick="handleLogout()" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-bold py-2 rounded-xl text-xs transition">
+            התנתק מהמערכת 🚪
+          </button>
+        </div>
+
+      </div>
+
+      <div class="pt-4 mt-2 border-t border-slate-100 text-center">
+        <button onclick="closeSettingsModal()" class="px-6 py-2 bg-slate-800 text-white font-black text-xs rounded-xl">סגור</button>
+      </div>
+
+    </div>
+  </div>
+
   <script>
     const SB_URL = 'https://geamksanxntfeyzlqdrs.supabase.co';
     const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlYW1rc2FueG50ZmV5emxxZHJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzMjg1OTksImV4cCI6MjEwMzkwNDU5OX0.o5XMCnvXaBmwZ8GqoQ03-_KVwQZfFeniLnhMo6RFvoQ';
@@ -345,9 +432,29 @@
     let funds = [];
     let currentFilter = 'ALL';
 
+    const DEFAULT_MEMBERS = [
+      { name: 'בובו', icon: '🧸' },
+      { name: 'אבא', icon: '👨' },
+      { name: 'אמא', icon: '👩' },
+      { name: 'משותף', icon: '🏡' }
+    ];
+
+    let familyMembers = JSON.parse(localStorage.getItem('bobo_family_members')) || DEFAULT_MEMBERS;
+
+    function saveFamilyMembers() {
+      localStorage.setItem('bobo_family_members', JSON.stringify(familyMembers));
+    }
+
     const fmtILS = (n) => '₪' + Math.round(n || 0).toLocaleString('he-IL');
     const fmtPCT = (n) => (n >= 0 ? '+' : '') + Number(n || 0).toFixed(2) + '%';
-    const fmtDate = (d) => d ? new Date(d).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' }) : 'טרם עודכן';
+    
+    // Date formatting helper
+    const fmtDate = (d) => {
+      if (!d) return 'טרם עודכן';
+      const dt = new Date(d);
+      if (isNaN(dt.getTime())) return 'טרם עודכן';
+      return dt.toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' });
+    };
 
     const getTypeIcon = (type) => {
       switch(type) {
@@ -358,6 +465,11 @@
         case 'קרן השתלמות': return '💎';
         default: return '⭐';
       }
+    };
+
+    const getMemberIcon = (name) => {
+      const found = familyMembers.find(m => m.name === name);
+      return found ? found.icon : '⭐';
     };
 
     const getMemberBadgeColor = (name) => {
@@ -406,6 +518,7 @@
       document.getElementById('authScreen').classList.add('hidden');
       document.getElementById('appShell').classList.remove('hidden');
       document.getElementById('userBadge').textContent = `מחובר: ${email}`;
+      document.getElementById('settingsUserEmail').textContent = email;
       loadFunds();
     }
 
@@ -430,18 +543,26 @@
           number: item.number,
           deposits: Number(item.deposits) || 0,
           balance: Number(item.balance) || 0,
+          monthlyDeposit: Number(item.monthly_deposit) || 0,
           feeAccumulation: item.fee_accumulation,
           feeDeposit: item.fee_deposit,
           notes: item.notes,
           updatedAt: item.updated_at
         }));
+
+        funds.forEach(f => {
+          if (f.owner && !familyMembers.some(m => m.name === f.owner)) {
+            familyMembers.push({ name: f.owner, icon: '⭐' });
+          }
+        });
+        saveFamilyMembers();
+
         render();
       }
     }
 
     function renderFilterTabs() {
       const container = document.getElementById('membersFilterTabs');
-      const allMembers = Array.from(new Set(['בובו', 'אבא', 'אמא', 'משותף', ...funds.map(f => f.owner)])).filter(Boolean);
 
       const tabBtn = (id, label, icon) => {
         const isActive = currentFilter === id;
@@ -458,13 +579,8 @@
       };
 
       let html = tabBtn('ALL', 'כל המשפחה', '🏡');
-      allMembers.forEach(m => {
-        let icon = '⭐';
-        if (m === 'בובו') icon = '🧸';
-        else if (m === 'אבא') icon = '👨';
-        else if (m === 'אמא') icon = '👩';
-        else if (m === 'משותף') icon = '🤝';
-        html += tabBtn(m, m, icon);
+      familyMembers.forEach(m => {
+        html += tabBtn(m.name, m.name, m.icon);
       });
 
       container.innerHTML = html;
@@ -494,22 +610,30 @@
         document.getElementById('emptyTitle').textContent = currentFilter === 'ALL' 
           ? 'אין עדיין קופות להצגה' 
           : `אין עדיין קופות שמוגדרות עבור ${currentFilter}`;
-        calculateTotals(0, 0);
+        calculateTotals(0, 0, 0, null);
         return;
       }
 
       empty.classList.add('hidden');
-      let totalBal = 0, totalDep = 0;
+      let totalBal = 0, totalDep = 0, totalMonthly = 0;
+      let latestDate = null;
 
       grid.innerHTML = filteredFunds.map(f => {
         const dep = Number(f.deposits) || 0;
         const bal = Number(f.balance) || 0;
+        const monthly = Number(f.monthlyDeposit) || 0;
         const profit = bal - dep;
         const roi = dep > 0 ? (profit / dep) * 100 : 0;
         const isPos = profit >= 0;
 
         totalBal += bal;
         totalDep += dep;
+        totalMonthly += monthly;
+
+        if (f.updatedAt) {
+          const d = new Date(f.updatedAt);
+          if (!latestDate || d > latestDate) latestDate = d;
+        }
 
         return `
           <div class="bg-white border-2 border-cardBorder rounded-[28px] p-5 shadow-bobo hover:border-amber-200 transition flex flex-col justify-between">
@@ -519,8 +643,9 @@
                   <span class="text-2xl p-2 bg-amber-50 border border-amber-100 rounded-2xl">${getTypeIcon(f.type)}</span>
                   <div>
                     <div class="flex items-center gap-1.5 mb-1">
-                      <span class="text-[10px] font-black px-2 py-0.5 rounded-full border ${getMemberBadgeColor(f.owner)}">
-                        ${f.owner}
+                      <span class="text-[10px] font-black px-2 py-0.5 rounded-full border ${getMemberBadgeColor(f.owner)} flex items-center gap-1">
+                        <span>${getMemberIcon(f.owner)}</span>
+                        <span>${f.owner}</span>
                       </span>
                       <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
                         ${f.type}
@@ -530,12 +655,18 @@
                     <p class="text-xs text-slate-400 font-medium">${f.manager} ${f.number ? `• מס' ${f.number}` : ''}</p>
                   </div>
                 </div>
+
+                <!-- Prominent Balance & As-Of Date -->
                 <div class="text-left font-mono">
                   <span class="text-[10px] text-slate-400 font-bold block">יתרה</span>
                   <span class="text-lg font-black text-emerald-600">${fmtILS(bal)}</span>
+                  <span class="text-[10px] text-emerald-700/80 font-bold block mt-0.5 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100">
+                    נכון ל-${fmtDate(f.updatedAt)}
+                  </span>
                 </div>
               </div>
 
+              <!-- Mini Stats Box -->
               <div class="grid grid-cols-3 gap-2 my-3 p-3 bg-slate-50/80 border border-slate-100 rounded-2xl text-center">
                 <div>
                   <span class="text-[10px] text-slate-400 font-bold block">הפקדות</span>
@@ -550,6 +681,14 @@
                   <span class="text-xs font-mono font-bold ${isPos ? 'text-emerald-600' : 'text-rose-500'}">${fmtPCT(roi)}</span>
                 </div>
               </div>
+
+              <!-- Recurring Monthly Badge -->
+              ${monthly > 0 ? `
+                <div class="mb-2 bg-blue-50 border border-blue-100 text-blue-900 px-3 py-1.5 rounded-xl flex items-center justify-between text-xs font-bold">
+                  <span class="flex items-center gap-1">🔄 הוראת קבע חודשית:</span>
+                  <span class="font-mono font-black">${fmtILS(monthly)}/חודש</span>
+                </div>
+              ` : ''}
 
               <div class="flex items-center justify-between text-[11px] text-slate-400 font-medium pt-1">
                 <div>${f.feeAccumulation ? `דמ״נ: <b>${f.feeAccumulation}%</b>` : ''}</div>
@@ -572,43 +711,41 @@
         `;
       }).join('');
 
-      calculateTotals(totalBal, totalDep);
+      calculateTotals(totalBal, totalDep, totalMonthly, latestDate);
     }
 
-    function calculateTotals(bal, dep) {
+    function calculateTotals(bal, dep, monthly, latestDate) {
       const profit = bal - dep;
       const roi = dep > 0 ? (profit / dep) * 100 : 0;
       document.getElementById('totalBalance').textContent = fmtILS(bal);
+      document.getElementById('totalBalanceSub').textContent = `עדכון אחרון: ${fmtDate(latestDate)}`;
       document.getElementById('totalDeposits').textContent = fmtILS(dep);
+      document.getElementById('totalMonthly').textContent = fmtILS(monthly);
       
       const profitEl = document.getElementById('totalProfit');
       profitEl.textContent = fmtILS(profit);
-      profitEl.className = `text-2xl md:text-3xl font-black font-mono tracking-tight ${profit >= 0 ? 'text-emerald-600' : 'text-rose-500'}`;
+      profitEl.className = `text-xl md:text-2xl font-black font-mono tracking-tight ${profit >= 0 ? 'text-emerald-600' : 'text-rose-500'}`;
 
       const roiEl = document.getElementById('totalRoi');
       roiEl.textContent = fmtPCT(roi);
-      roiEl.className = `text-2xl md:text-3xl font-black font-mono tracking-tight ${roi >= 0 ? 'text-emerald-600' : 'text-rose-500'}`;
+      roiEl.className = `text-xl md:text-2xl font-black font-mono tracking-tight ${roi >= 0 ? 'text-emerald-600' : 'text-rose-500'}`;
     }
 
-    function handleOwnerSelectChange(select) {
-      const customInput = document.getElementById('fieldOwnerCustom');
-      if (select.value === '__custom__') {
-        customInput.classList.remove('hidden');
-        customInput.required = true;
-        customInput.focus();
-      } else {
-        customInput.classList.add('hidden');
-        customInput.required = false;
-      }
+    function populateOwnerSelect(selectedOwner) {
+      const sel = document.getElementById('fieldOwnerSelect');
+      sel.innerHTML = familyMembers.map(m => `
+        <option value="${m.name}" ${m.name === selectedOwner ? 'selected' : ''}>
+          ${m.name} ${m.icon}
+        </option>
+      `).join('');
     }
 
     function openAddModal() {
       document.getElementById('fundForm').reset();
       document.getElementById('fieldId').value = '';
       
-      const sel = document.getElementById('fieldOwnerSelect');
-      sel.value = (currentFilter !== 'ALL') ? currentFilter : 'בובו';
-      handleOwnerSelectChange(sel);
+      const defaultOwner = (currentFilter !== 'ALL') ? currentFilter : 'בובו';
+      populateOwnerSelect(defaultOwner);
 
       document.getElementById('modalTitle').textContent = 'הוספת קופה חדשה ✨';
       document.getElementById('fundModal').classList.remove('hidden');
@@ -623,16 +760,7 @@
       if (!f) return;
       document.getElementById('fieldId').value = f.id;
       
-      const sel = document.getElementById('fieldOwnerSelect');
-      const customInput = document.getElementById('fieldOwnerCustom');
-      if (['בובו', 'אבא', 'אמא', 'משותף'].includes(f.owner)) {
-        sel.value = f.owner;
-        customInput.classList.add('hidden');
-      } else {
-        sel.value = '__custom__';
-        customInput.value = f.owner;
-        customInput.classList.remove('hidden');
-      }
+      populateOwnerSelect(f.owner);
 
       document.getElementById('fieldName').value = f.name;
       document.getElementById('fieldType').value = f.type;
@@ -640,6 +768,7 @@
       document.getElementById('fieldNumber').value = f.number || '';
       document.getElementById('fieldDeposits').value = f.deposits;
       document.getElementById('fieldBalance').value = f.balance;
+      document.getElementById('fieldMonthly').value = f.monthlyDeposit || '';
       document.getElementById('fieldFeeAcc').value = f.feeAccumulation || '';
       document.getElementById('fieldFeeDep').value = f.feeDeposit || '';
       document.getElementById('fieldNotes').value = f.notes || '';
@@ -650,22 +779,19 @@
     async function saveFundForm(e) {
       e.preventDefault();
       const id = document.getElementById('fieldId').value || ('fund_' + Date.now());
-      
-      const selOwner = document.getElementById('fieldOwnerSelect').value;
-      const finalOwner = (selOwner === '__custom__') 
-        ? document.getElementById('fieldOwnerCustom').value.trim() 
-        : selOwner;
+      const selectedOwner = document.getElementById('fieldOwnerSelect').value;
 
       const payload = {
         id,
         vault_id: SHARED_VAULT_ID,
-        owner: finalOwner || 'בובו',
+        owner: selectedOwner || 'בובו',
         name: document.getElementById('fieldName').value,
         type: document.getElementById('fieldType').value,
         manager: document.getElementById('fieldManager').value,
         number: document.getElementById('fieldNumber').value,
         deposits: parseFloat(document.getElementById('fieldDeposits').value) || 0,
         balance: parseFloat(document.getElementById('fieldBalance').value) || 0,
+        monthly_deposit: parseFloat(document.getElementById('fieldMonthly').value) || 0,
         fee_accumulation: document.getElementById('fieldFeeAcc').value ? Number(document.getElementById('fieldFeeAcc').value) : null,
         fee_deposit: document.getElementById('fieldFeeDep').value ? Number(document.getElementById('fieldFeeDep').value) : null,
         notes: document.getElementById('fieldNotes').value,
@@ -705,6 +831,137 @@
       closeQuickModal();
       await sbClient.from('funds').update({ balance: newBal, updated_at: new Date().toISOString() }).eq('id', id);
       loadFunds();
+    }
+
+    function openSettingsModal() {
+      renderSettingsMembers();
+      document.getElementById('settingsModal').classList.remove('hidden');
+    }
+
+    function closeSettingsModal() {
+      document.getElementById('settingsModal').classList.add('hidden');
+    }
+
+    function renderSettingsMembers() {
+      const listEl = document.getElementById('settingsMembersList');
+      listEl.innerHTML = familyMembers.map((m, idx) => `
+        <div class="flex items-center justify-between bg-white p-2.5 rounded-xl border border-slate-200">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">${m.icon}</span>
+            <span class="font-black text-xs text-slate-800">${m.name}</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <button onclick="editMemberPrompt(${idx})" class="text-xs text-slate-400 hover:text-slate-700 font-bold px-2 py-1">ערוך</button>
+            ${familyMembers.length > 1 ? `
+              <button onclick="deleteMemberPrompt(${idx})" class="text-xs text-rose-500 hover:text-rose-700 font-bold px-2 py-1">מחק</button>
+            ` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openMemberAddPrompt() {
+      const name = prompt('הכנס שם בן משפחה חדש (למשל: יובל, סבא וכו\'):');
+      if (!name || !name.trim()) return;
+
+      const icon = prompt('הכנס אימוג\'י עבור בן המשפחה:', '⭐') || '⭐';
+      
+      familyMembers.push({ name: name.trim(), icon });
+      saveFamilyMembers();
+      render();
+      if (!document.getElementById('settingsModal').classList.contains('hidden')) {
+        renderSettingsMembers();
+      }
+    }
+
+    function editMemberPrompt(idx) {
+      const current = familyMembers[idx];
+      const newName = prompt('ערוך שם בן משפחה:', current.name);
+      if (!newName || !newName.trim()) return;
+
+      const newIcon = prompt('ערוך אימוג\'י:', current.icon) || current.icon;
+
+      const oldName = current.name;
+      current.name = newName.trim();
+      current.icon = newIcon;
+      saveFamilyMembers();
+
+      if (oldName !== current.name) {
+        funds.forEach(f => {
+          if (f.owner === oldName) {
+            f.owner = current.name;
+            sbClient.from('funds').update({ owner: current.name }).eq('id', f.id);
+          }
+        });
+      }
+
+      render();
+      renderSettingsMembers();
+    }
+
+    async function deleteMemberPrompt(idx) {
+      const target = familyMembers[idx];
+      const assignedFunds = funds.filter(f => f.owner === target.name);
+
+      if (assignedFunds.length > 0) {
+        const reassign = confirm(`ל-${target.name} יש ${assignedFunds.length} קופות. האם להעביר אותן ל"משותף" לפני המחיקה? (ביטול יבטל את המחיקה)`);
+        if (!reassign) return;
+
+        for (let f of assignedFunds) {
+          f.owner = 'משותף';
+          await sbClient.from('funds').update({ owner: 'משותף' }).eq('id', f.id);
+        }
+      }
+
+      familyMembers.splice(idx, 1);
+      saveFamilyMembers();
+      if (currentFilter === target.name) currentFilter = 'ALL';
+      render();
+      renderSettingsMembers();
+    }
+
+    function exportToCSV() {
+      if (funds.length === 0) {
+        alert('אין נתונים לייצוא');
+        return;
+      }
+
+      const headers = ['בן משפחה', 'שם הקופה', 'סוג קופה', 'גוף מנהל', 'מספר קופה', 'הפקדות (קרן)', 'שווי יתרה', 'הפקדה חודשית', 'רווח נקי', 'תשואה %', 'דמי ניהול צבירה %', 'דמי ניהול הפקדה %', 'הערות', 'תאריך עדכון'];
+      
+      const rows = funds.map(f => {
+        const dep = f.deposits || 0;
+        const bal = f.balance || 0;
+        const profit = bal - dep;
+        const roi = dep > 0 ? ((profit / dep) * 100).toFixed(2) + '%' : '0.00%';
+        
+        return [
+          `"${f.owner || ''}"`,
+          `"${f.name || ''}"`,
+          `"${f.type || ''}"`,
+          `"${f.manager || ''}"`,
+          `"${f.number || ''}"`,
+          dep,
+          bal,
+          f.monthlyDeposit || 0,
+          profit,
+          `"${roi}"`,
+          f.feeAccumulation || 0,
+          f.feeDeposit || 0,
+          `"${(f.notes || '').replace(/"/g, '""')}"`,
+          `"${fmtDate(f.updatedAt)}"`
+        ].join(',');
+      });
+
+      const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `Bobo_And_Co_Export_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
 
     checkAuth();
