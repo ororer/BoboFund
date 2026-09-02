@@ -99,7 +99,7 @@
   <!-- Main App Shell -->
   <div id="appShell" class="flex-1 flex flex-col hidden w-full overflow-x-hidden">
 
-    <!-- Responsive Navbar -->
+    <!-- Header -->
     <header class="border-b border-amber-100/80 bg-white/90 backdrop-blur-md sticky top-0 z-30 w-full">
       <div class="max-w-xl mx-auto px-4 h-14 flex items-center justify-between w-full">
         <div class="flex items-center gap-2">
@@ -126,7 +126,7 @@
 
     <main class="max-w-xl mx-auto px-4 pt-4 pb-20 w-full flex-1">
 
-      <!-- Uncluttered Single Hero Card -->
+      <!-- Single KPI Hero Card -->
       <div class="bg-white border-2 border-amber-100/90 rounded-[28px] p-5 mb-4 shadow-bobo text-center relative overflow-hidden">
         <div class="text-[11px] font-bold text-slate-400 mb-1 flex items-center justify-center gap-1.5">
           <span>שווי התיק המשפחתי</span>
@@ -139,7 +139,6 @@
           <span id="heroRoi" class="font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">+0.00%</span>
         </div>
 
-        <!-- Gentle Sub-info bar -->
         <div class="mt-4 pt-3 border-t border-slate-100 grid grid-cols-2 text-right text-[11px]">
           <div>
             <span class="text-slate-400 block font-medium">קרן שהופקדה:</span>
@@ -152,11 +151,9 @@
         </div>
       </div>
 
-      <!-- Segmented Floating Pill Bar (iOS Style) -->
+      <!-- Segmented Floating Pill Bar -->
       <div class="mb-5 flex items-center justify-center w-full">
-        <div class="p-1 bg-slate-200/60 rounded-full flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full shadow-inner" id="membersCapsule">
-          <!-- Populated by renderMembersCapsule() -->
-        </div>
+        <div class="p-1 bg-slate-200/60 rounded-full flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full shadow-inner" id="membersCapsule"></div>
       </div>
 
       <!-- Section Title & Counter -->
@@ -165,7 +162,7 @@
         <span id="listCountBadge" class="text-[11px] font-mono font-bold text-slate-400">0 קופות</span>
       </div>
 
-      <!-- Simplified, Elegant Fund Cards List -->
+      <!-- Simplified Fund Cards List -->
       <div id="fundsList" class="space-y-2.5"></div>
 
       <!-- Empty State -->
@@ -183,7 +180,7 @@
     </main>
   </div>
 
-  <!-- Deep Dive Interactive Detail Modal (Bottom Sheet / Modal) -->
+  <!-- Deep Dive Interactive Detail Modal -->
   <div id="detailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
     <div class="bg-white border-t-4 sm:border-4 border-amber-100 rounded-t-[32px] sm:rounded-[32px] w-full max-w-md p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto no-scrollbar">
       
@@ -216,6 +213,27 @@
         </div>
       </div>
 
+      <!-- GemelNet Return Box (If track_id exists) -->
+      <div id="detailGemelnetBox" class="hidden bg-emerald-50/60 border border-emerald-200 rounded-2xl p-3 mb-3 text-right">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs font-black text-emerald-900 flex items-center gap-1">
+            <span>🏛️</span>
+            <span>נתוני גמל-נט (משרד האוצר)</span>
+          </span>
+          <span id="detailGemelnetPeriod" class="text-[10px] font-mono text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full font-bold"></span>
+        </div>
+        <div class="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-emerald-100 text-xs">
+          <div>
+            <span class="text-slate-500 block text-[10px]">תשואת מסלול ברוטו:</span>
+            <span id="detailGemelnetGross" class="font-mono font-black text-emerald-700">--</span>
+          </div>
+          <div>
+            <span class="text-slate-500 block text-[10px]">תשואה נטו (משוערת):</span>
+            <span id="detailGemelnetNet" class="font-mono font-black text-emerald-800">--</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Profit & Tax Deep Dive Box -->
       <div class="bg-amber-50/50 border border-amber-100 rounded-2xl p-3.5 mb-3 space-y-2 text-right">
         <div class="flex items-center justify-between text-xs">
@@ -234,21 +252,25 @@
 
       <!-- Additional Specs -->
       <div class="space-y-1.5 text-xs text-slate-500 mb-5 bg-slate-50 p-3 rounded-2xl border border-slate-100">
-        <div class="flex justify-between" id="detailMonthlyRow">
+        <div class="flex justify-between" id="detailTrackIdRow">
+          <span>קוד מסלול באוצר (מ״ה):</span>
+          <span id="detailTrackId" class="font-mono font-bold text-slate-700">--</span>
+        </div>
+        <div class="flex justify-between">
           <span>הוראת קבע חודשית:</span>
           <span id="detailMonthly" class="font-mono font-bold text-blue-600">₪0/חודש</span>
         </div>
-        <div class="flex justify-between" id="detailFeesRow">
+        <div class="flex justify-between">
           <span>דמי ניהול (צבירה / הפקדה):</span>
           <span id="detailFees" class="font-mono font-bold text-slate-700">--</span>
         </div>
-        <div class="flex justify-between" id="detailNotesRow">
+        <div class="flex justify-between">
           <span>הערות:</span>
           <span id="detailNotes" class="font-bold text-slate-700 truncate max-w-[200px]">--</span>
         </div>
       </div>
 
-      <!-- Action Buttons inside Deep Dive -->
+      <!-- Action Buttons -->
       <div class="grid grid-cols-2 gap-2 mb-2">
         <button id="btnActionQuick" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 transition">
           <span>⚡ עדכון יתרה</span>
@@ -310,9 +332,14 @@
             <input type="text" id="fieldManager" required placeholder="מיטב, הראל..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
           </div>
           <div>
-            <label class="block text-[11px] font-bold text-slate-600 mb-0.5">מספר קופה</label>
-            <input type="text" id="fieldNumber" placeholder="1234567" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 font-mono focus:border-emerald-400 focus:bg-white focus:outline-none transition">
+            <label class="block text-[11px] font-bold text-slate-600 mb-0.5">קוד מסלול באוצר (מ״ה)</label>
+            <input type="text" id="fieldTrackId" placeholder="למשל: 11823" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 font-mono focus:border-emerald-400 focus:bg-white focus:outline-none transition">
           </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-600 mb-0.5">מספר חשבון / קופה אצל המנהל</label>
+          <input type="text" id="fieldNumber" placeholder="1234567" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 font-mono focus:border-emerald-400 focus:bg-white focus:outline-none transition">
         </div>
 
         <div class="grid grid-cols-3 gap-1.5 bg-slate-50 p-2 rounded-xl border border-slate-200/80">
@@ -592,6 +619,7 @@
           name: item.name,
           type: item.type,
           manager: item.manager,
+          trackId: item.track_id || '',
           number: item.number,
           deposits: Number(item.deposits) || 0,
           balance: Number(item.balance) || 0,
@@ -599,6 +627,8 @@
           taxRate: item.tax_rate !== undefined && item.tax_rate !== null ? Number(item.tax_rate) : 25,
           feeAccumulation: item.fee_accumulation,
           feeDeposit: item.fee_deposit,
+          gemelnetReturn: item.gemelnet_return_monthly !== null ? Number(item.gemelnet_return_monthly) : null,
+          gemelnetPeriod: item.gemelnet_period || '',
           notes: item.notes,
           updatedAt: item.updated_at
         }));
@@ -618,7 +648,6 @@
       }
     }
 
-    // Segmented Floating Pill Bar
     function renderMembersCapsule() {
       const container = document.getElementById('membersCapsule');
 
@@ -697,6 +726,7 @@
                     <span>${f.owner}</span>
                   </span>
                   <span class="text-[10px] text-slate-400 font-medium truncate">${f.manager}</span>
+                  ${f.trackId ? `<span class="text-[9px] font-mono text-emerald-700 bg-emerald-50 px-1 py-0.2 rounded">מ״ה: ${f.trackId}</span>` : ''}
                 </div>
                 <h4 class="text-sm font-black text-slate-800 leading-tight truncate">${f.name}</h4>
               </div>
@@ -735,7 +765,6 @@
       roiEl.className = `font-mono font-bold px-2 py-0.5 rounded-full border ${profit >= 0 ? 'text-emerald-700 bg-emerald-50 border-emerald-100' : 'text-rose-700 bg-rose-50 border-rose-100'}`;
     }
 
-    // Deep Dive Modal Logic
     function openDetailModal(id) {
       const f = funds.find(x => x.id === id);
       if (!f) return;
@@ -750,7 +779,7 @@
 
       document.getElementById('detailIcon').textContent = getTypeIcon(f.type);
       document.getElementById('detailTitle').textContent = f.name;
-      document.getElementById('detailManager').textContent = `${f.manager} ${f.number ? `• מס' ${f.number}` : ''}`;
+      document.getElementById('detailManager').textContent = `${f.manager} ${f.number ? `• חשבון ${f.number}` : ''}`;
       
       const badge = document.getElementById('detailOwnerBadge');
       badge.textContent = `${getMemberIcon(f.owner)} ${f.owner}`;
@@ -766,6 +795,24 @@
       document.getElementById('detailTaxAmount').textContent = `-${fmtILS(taxAmount)}`;
       document.getElementById('detailNetBalance').textContent = fmtILS(netBalance);
 
+      // Track ID
+      document.getElementById('detailTrackId').textContent = f.trackId || 'לא הוגדר';
+
+      // GemelNet Return Section
+      const gemelBox = document.getElementById('detailGemelnetBox');
+      if (f.gemelnetReturn !== null) {
+        gemelBox.classList.remove('hidden');
+        document.getElementById('detailGemelnetPeriod').textContent = f.gemelnetPeriod || 'חודש אחרון';
+        document.getElementById('detailGemelnetGross').textContent = fmtPCT(f.gemelnetReturn);
+
+        // Net return calculation: gemelnet_return - (fee_accumulation / 12)
+        const feeAccMonthly = (Number(f.feeAccumulation) || 0) / 12;
+        const netReturnEstimated = f.gemelnetReturn - feeAccMonthly;
+        document.getElementById('detailGemelnetNet').textContent = `${fmtPCT(netReturnEstimated)} (בניכוי ${feeAccMonthly.toFixed(2)}% דמ״נ)`;
+      } else {
+        gemelBox.classList.add('hidden');
+      }
+
       document.getElementById('detailMonthly').textContent = f.monthlyDeposit ? `${fmtILS(f.monthlyDeposit)}/חודש` : 'אין הוראת קבע';
       
       const fees = [];
@@ -775,7 +822,6 @@
 
       document.getElementById('detailNotes').textContent = f.notes || 'אין הערות נוספות';
 
-      // Setup action button handlers
       document.getElementById('btnActionQuick').onclick = () => { closeDetailModal(); openQuickModal(f.id); };
       document.getElementById('btnActionDeposit').onclick = () => { closeDetailModal(); openDepositModal(f.id); };
       document.getElementById('btnActionEdit').onclick = () => { closeDetailModal(); editFund(f.id); };
@@ -824,6 +870,7 @@
       document.getElementById('fieldName').value = f.name;
       document.getElementById('fieldType').value = f.type;
       document.getElementById('fieldManager').value = f.manager;
+      document.getElementById('fieldTrackId').value = f.trackId || '';
       document.getElementById('fieldNumber').value = f.number || '';
       document.getElementById('fieldDeposits').value = f.deposits;
       document.getElementById('fieldBalance').value = f.balance;
@@ -848,6 +895,7 @@
         name: document.getElementById('fieldName').value,
         type: document.getElementById('fieldType').value,
         manager: document.getElementById('fieldManager').value,
+        track_id: document.getElementById('fieldTrackId').value.trim() || null,
         number: document.getElementById('fieldNumber').value,
         deposits: parseFloat(document.getElementById('fieldDeposits').value) || 0,
         balance: parseFloat(document.getElementById('fieldBalance').value) || 0,
@@ -1026,7 +1074,7 @@
         return;
       }
 
-      const headers = ['בן משפחה', 'שם הקופה', 'סוג קופה', 'גוף מנהל', 'מספר קופה', 'הפקדות (קרן)', 'שווי יתרה', 'הפקדה חודשית', 'מס רווחי הון %', 'מס צפוי', 'שווי נטו', 'רווח נקי בכיס', 'תשואה %', 'הערות', 'תאריך עדכון'];
+      const headers = ['בן משפחה', 'שם הקופה', 'סוג קופה', 'גוף מנהל', 'מ״ה (מסלול)', 'מספר קופה', 'הפקדות (קרן)', 'שווי יתרה', 'הפקדה חודשית', 'תשואת גמל-נט חודשית %', 'מס רווחי הון %', 'מס צפוי', 'שווי נטו', 'רווח נקי בכיס', 'תשואה %', 'הערות', 'תאריך עדכון'];
       
       const rows = funds.map(f => {
         const dep = f.deposits || 0;
@@ -1043,10 +1091,12 @@
           `"${f.name || ''}"`,
           `"${f.type || ''}"`,
           `"${f.manager || ''}"`,
+          `"${f.trackId || ''}"`,
           `"${f.number || ''}"`,
           dep,
           bal,
           f.monthlyDeposit || 0,
+          f.gemelnetReturn !== null ? `${f.gemelnetReturn}%` : '',
           taxPct,
           taxAmount,
           netBalance,
