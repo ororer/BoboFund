@@ -1,0 +1,23 @@
+name: Monthly GemelNet Sync
+
+on:
+  schedule:
+    # Runs on the 21st of every month at 06:00 UTC
+    - cron: '0 6 21 * *'
+  workflow_dispatch: # Allows manual trigger from GitHub anytime
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: pip install requests
+      - name: Run GemelNet Sync
+        env:
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: python sync_gemelnet.py
