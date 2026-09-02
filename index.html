@@ -34,7 +34,6 @@
             'bobo': '0 10px 25px -5px rgba(220, 210, 195, 0.45), 0 8px 10px -6px rgba(220, 210, 195, 0.3)',
             'bobo-sm': '0 4px 12px rgba(220, 210, 195, 0.35)',
             'bobo-button': '0 4px 0 #059669',
-            'bobo-coral': '0 4px 0 #D97706',
           }
         }
       }
@@ -70,12 +69,12 @@
       </div>
 
       <h2 class="text-2xl font-black text-slate-800 tracking-tight">האוצר של בובו</h2>
-      <p class="text-xs text-slate-500 mt-1 mb-6 font-medium">כניסה מאובטחת לתיק החסכונות של בובו הקטנה</p>
+      <p class="text-xs text-slate-500 mt-1 mb-6 font-medium">כניסה מאובטחת לתיק החסכונות של בובו</p>
 
       <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-3.5 text-right">
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">מייל מורשה</label>
-          <input type="email" id="loginEmail" required placeholder="mom_or_dad@example.com" class="w-full bg-slate-50 border-2 border-slate-200/80 rounded-2xl px-4 py-2.5 text-sm text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
+          <input type="email" id="loginEmail" required placeholder="name@example.com" class="w-full bg-slate-50 border-2 border-slate-200/80 rounded-2xl px-4 py-2.5 text-sm text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">סיסמה</label>
@@ -94,11 +93,9 @@
   <!-- Main App Shell -->
   <div id="appShell" class="flex-1 flex flex-col hidden">
 
-    <!-- Top Friendly Bar -->
     <nav class="border-b border-amber-100/80 bg-white/90 backdrop-blur-md sticky top-0 z-30 shadow-sm">
       <div class="max-w-6xl mx-auto px-5 h-18 py-3 flex items-center justify-between">
         
-        <!-- Brand -->
         <div class="flex items-center gap-3">
           <div class="w-11 h-11 rounded-2xl bg-amber-100 border-2 border-amber-200 flex items-center justify-center text-2xl shadow-sm">
             🧸
@@ -112,7 +109,6 @@
           </div>
         </div>
 
-        <!-- Actions -->
         <div class="flex items-center gap-2.5">
           <button onclick="handleLogout()" title="התנתק" class="w-9 h-9 flex items-center justify-center rounded-2xl border-2 border-slate-200 bg-slate-50 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 text-slate-500 text-sm transition">
             🚪
@@ -128,7 +124,6 @@
 
     <main class="max-w-6xl mx-auto px-5 pt-8 pb-24 w-full flex-1">
 
-      <!-- Friendly Banner -->
       <div class="bg-gradient-to-r from-amber-200/50 via-rose-100/40 to-emerald-100/50 border-2 border-amber-200/60 rounded-[28px] p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-4 shadow-bobo-sm">
         <div class="flex items-center gap-4 text-center md:text-right">
           <div class="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-3xl shrink-0">
@@ -148,7 +143,6 @@
       <!-- KPI Summary Cards -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         
-        <!-- Total -->
         <div class="bg-white border-2 border-emerald-100 rounded-[28px] p-5 shadow-bobo hover:shadow-lg transition">
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-black text-emerald-800">סך הכל נצבר לבובו</span>
@@ -158,7 +152,6 @@
           <div class="mt-2 text-[11px] font-bold text-slate-400">שווי נוכחי של כל הקופות</div>
         </div>
 
-        <!-- Deposits -->
         <div class="bg-white border-2 border-amber-100 rounded-[28px] p-5 shadow-bobo hover:shadow-lg transition">
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-black text-amber-800">סך הכל הפקדנו (קרן)</span>
@@ -168,7 +161,6 @@
           <div class="mt-2 text-[11px] font-bold text-slate-400">הכסף שהכנסנו לקופות</div>
         </div>
 
-        <!-- Profit -->
         <div class="bg-white border-2 border-rose-100 rounded-[28px] p-5 shadow-bobo hover:shadow-lg transition">
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-black text-rose-800">כמה הכסף הרוויח?</span>
@@ -178,7 +170,6 @@
           <div class="mt-2 text-[11px] font-bold text-slate-400">רווח נקי שנצבר במתנה</div>
         </div>
 
-        <!-- ROI -->
         <div class="bg-white border-2 border-purple-100 rounded-[28px] p-5 shadow-bobo hover:shadow-lg transition">
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-black text-purple-800">תשואת התיק הכוללת</span>
@@ -189,7 +180,6 @@
         </div>
       </div>
 
-      <!-- Section Title -->
       <div class="flex items-center justify-between mb-5 px-1">
         <div class="flex items-center gap-2">
           <h3 class="text-lg font-black text-slate-800">הקופות הפעילות של בובו</h3>
@@ -197,10 +187,8 @@
         </div>
       </div>
 
-      <!-- Funds Grid -->
       <div id="fundsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
 
-      <!-- Empty State -->
       <div id="emptyState" class="hidden text-center py-16 bg-white border-3 border-dashed border-amber-200 rounded-[32px] p-8 shadow-bobo-sm">
         <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-amber-100 flex items-center justify-center text-3xl">
           🍼
@@ -319,10 +307,10 @@
 
   <script>
     const SB_URL = 'https://geamksanxntfeyzlqdrs.supabase.co';
+    const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlYW1rc2FueG50ZmV5emxxZHJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzMjg1OTksImV4cCI6MjEwMzkwNDU5OX0.o5XMCnvXaBmwZ8GqoQ03-_KVwQZfFeniLnhMo6RFvoQ';
     const SHARED_VAULT_ID = 'bobo-fund';
 
-    // חיבור ל-Supabase
-    const supabase = window.supabase.createClient(SB_URL, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlYW1rc2FueG50ZmV5emxxZHJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1OTQ2MzQsImV4cCI6MjA4ODE3MDYzNH0.n_b867cM4n9Jm_gDkvLd_Kx30n9p2Y1qB6nQ2VpWf9M');
+    const supabase = window.supabase.createClient(SB_URL, SB_ANON);
 
     let funds = [];
 
@@ -330,7 +318,6 @@
     const fmtPCT = (n) => (n >= 0 ? '+' : '') + Number(n || 0).toFixed(2) + '%';
     const fmtDate = (d) => d ? new Date(d).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' }) : 'טרם עודכן';
 
-    // אייקונים חמודים לפי סוג קופה
     const getTypeIcon = (type) => {
       switch(type) {
         case 'חיסכון לכל ילד': return '🍼';
@@ -354,7 +341,7 @@
 
     async function handleLogin(e) {
       e.preventDefault();
-      const email = document.getElementById('loginEmail').value;
+      const email = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value;
       const errorEl = document.getElementById('loginError');
       const btn = document.getElementById('loginBtn');
@@ -369,7 +356,8 @@
       btn.disabled = false;
 
       if (error) {
-        errorEl.textContent = 'אופס! המייל או הסיסמה לא נכונים 🥺';
+        console.error('Login error details:', error);
+        errorEl.textContent = `שגיאה: ${error.message}`;
         errorEl.classList.remove('hidden');
       } else {
         showApp(data.user.email);
@@ -455,7 +443,6 @@
                 </div>
               </div>
 
-              <!-- Mini Stats Box -->
               <div class="grid grid-cols-3 gap-2 my-3 p-3 bg-slate-50/80 border border-slate-100 rounded-2xl text-center">
                 <div>
                   <span class="text-[10px] text-slate-400 font-bold block">הפקדות</span>
@@ -479,7 +466,6 @@
               ${f.notes ? `<p class="mt-2 text-[11px] text-slate-500 bg-amber-50/60 p-2 rounded-xl border border-amber-100 font-medium truncate">💬 ${f.notes}</p>` : ''}
             </div>
 
-            <!-- Card Actions -->
             <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
               <button onclick="openQuickModal('${f.id}')" class="squish-btn text-xs font-black text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3.5 py-1.5 rounded-xl transition flex items-center gap-1">
                 <span>⚡ עדכון יתרה</span>
