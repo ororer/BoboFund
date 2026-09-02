@@ -24,17 +24,13 @@
             softMint: '#10B981',
             mintLight: '#ECFDF5',
             candyPeach: '#FFEDD5',
-            candyPurple: '#F3E8FF',
-            candyBlue: '#E0F2FE',
             boboAmber: '#F59E0B',
-            boboDark: '#1E293B',
             cardBorder: '#F1ECE4'
           },
           boxShadow: {
             'bobo': '0 10px 25px -5px rgba(220, 210, 195, 0.45), 0 8px 10px -6px rgba(220, 210, 195, 0.3)',
             'bobo-sm': '0 4px 12px rgba(220, 210, 195, 0.35)',
-            'bobo-button': '0 2px 0 #059669',
-            'capsule-active': '0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04)',
+            'capsule-active': '0 3px 10px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04)',
           }
         }
       }
@@ -56,7 +52,7 @@
       transition: all 0.1s ease;
     }
     .squish-btn:active {
-      transform: translateY(1px);
+      transform: scale(0.97);
     }
     .no-scrollbar::-webkit-scrollbar {
       display: none;
@@ -93,7 +89,7 @@
 
         <div id="loginError" class="hidden text-xs font-bold text-rose-600 bg-rose-50 border-2 border-rose-200 rounded-2xl p-2 text-center"></div>
 
-        <button type="submit" id="loginBtn" class="w-full squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black py-2.5 rounded-2xl text-xs shadow-bobo-button transition mt-2">
+        <button type="submit" id="loginBtn" class="w-full squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black py-2.5 rounded-2xl text-xs transition mt-2">
           פתח את הכספת המשפחתית ✨
         </button>
       </form>
@@ -103,131 +99,83 @@
   <!-- Main App Shell -->
   <div id="appShell" class="flex-1 flex flex-col hidden w-full overflow-x-hidden">
 
-    <!-- Clean, Responsive Navbar -->
-    <header class="border-b border-amber-100 bg-white/95 backdrop-blur-md sticky top-0 z-30 shadow-sm w-full">
-      <div class="max-w-4xl mx-auto px-3.5 h-14 flex items-center justify-between w-full">
-        
-        <!-- Brand -->
-        <div class="flex items-center gap-2 shrink-0">
+    <!-- Responsive Navbar -->
+    <header class="border-b border-amber-100/80 bg-white/90 backdrop-blur-md sticky top-0 z-30 w-full">
+      <div class="max-w-xl mx-auto px-4 h-14 flex items-center justify-between w-full">
+        <div class="flex items-center gap-2">
           <div class="w-8 h-8 rounded-xl bg-amber-100 border border-amber-200 flex items-center justify-center text-base shadow-sm">
             🏡
           </div>
-          <div class="flex items-center gap-1.5">
-            <span class="font-black text-base text-slate-800">Bobo <span class="text-emerald-500 font-mono">& Co.</span></span>
-            <span class="text-[10px] font-bold bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full border border-amber-200/70">המשפוחה 🧸</span>
-          </div>
+          <span class="font-black text-base text-slate-800 tracking-tight">Bobo <span class="text-emerald-500 font-mono">& Co.</span></span>
         </div>
 
-        <!-- Actions -->
-        <div class="flex items-center gap-1.5 shrink-0">
-          <button onclick="openSettingsModal()" title="הגדרות" class="w-8 h-8 rounded-xl border border-slate-200 bg-slate-50 hover:bg-amber-50 text-slate-600 flex items-center justify-center text-sm transition">
+        <div class="flex items-center gap-1.5">
+          <button onclick="openSettingsModal()" title="הגדרות" class="w-8 h-8 rounded-xl border border-slate-200/80 bg-slate-50 text-slate-600 flex items-center justify-center text-sm transition">
             ⚙️
           </button>
-          <button onclick="handleLogout()" title="התנתק" class="w-8 h-8 rounded-xl border border-slate-200 bg-slate-50 hover:bg-rose-50 text-slate-500 flex items-center justify-center text-xs transition">
+          <button onclick="handleLogout()" title="התנתק" class="w-8 h-8 rounded-xl border border-slate-200/80 bg-slate-50 text-slate-500 flex items-center justify-center text-xs transition">
             🚪
           </button>
-          <button onclick="openAddModal()" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-2.5 py-1.5 rounded-xl text-xs flex items-center gap-1 shadow-bobo-button transition">
+          <button onclick="openAddModal()" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 transition shadow-sm">
             <span>➕</span>
             <span>קופה</span>
           </button>
         </div>
-
       </div>
     </header>
 
-    <main class="max-w-4xl mx-auto px-3.5 pt-4 pb-20 w-full flex-1 overflow-x-hidden">
+    <main class="max-w-xl mx-auto px-4 pt-4 pb-20 w-full flex-1">
 
-      <!-- Hero Banner -->
-      <div class="bg-gradient-to-r from-amber-200/40 via-rose-100/30 to-emerald-100/40 border border-amber-200/70 rounded-2xl p-3.5 mb-4 shadow-bobo-sm flex items-center justify-between gap-2">
-        <div class="flex items-center gap-2.5 min-w-0">
-          <div class="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-xl shrink-0">
-            🌱
-          </div>
-          <div class="min-w-0">
-            <h2 class="text-sm font-black text-slate-800 leading-tight truncate">החסכונות והקופות של המשפחה</h2>
-            <p class="text-[11px] text-slate-500 font-medium truncate mt-0.5">סנכרון ענן מלא לכל בני הבית</p>
-          </div>
-        </div>
-        <div class="shrink-0 flex items-center gap-1 bg-white/90 border border-amber-200 px-2.5 py-1 rounded-full text-[10px] text-slate-600 font-bold">
+      <!-- Uncluttered Single Hero Card -->
+      <div class="bg-white border-2 border-amber-100/90 rounded-[28px] p-5 mb-4 shadow-bobo text-center relative overflow-hidden">
+        <div class="text-[11px] font-bold text-slate-400 mb-1 flex items-center justify-center gap-1.5">
+          <span>שווי התיק המשפחתי</span>
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>מעודכן</span>
         </div>
-      </div>
-
-      <!-- Segmented Floating Capsule Tabs (iOS / Apple Wallet Style) -->
-      <div class="mb-4 flex items-center gap-1.5 w-full">
-        <div class="p-1 bg-slate-200/60 border border-slate-200/80 rounded-2xl flex items-center gap-1 overflow-x-auto no-scrollbar flex-1" id="membersFilterTabs">
-          <!-- Injected via renderFilterTabs() -->
-        </div>
-        <button onclick="openMemberAddPrompt()" title="הוסף בן משפחה" class="squish-btn shrink-0 w-8 h-8 rounded-2xl bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-200 flex items-center justify-center text-xs font-black transition">
-          ➕
-        </button>
-      </div>
-
-      <!-- KPI Summary Cards Grid -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-6">
+        <div id="heroBalance" class="text-3xl sm:text-4xl font-black font-mono text-slate-800 tracking-tight">₪0</div>
         
-        <!-- Total Value & Net Estimated Value -->
-        <div class="bg-white border border-emerald-100 rounded-2xl p-3 shadow-bobo">
-          <div class="flex items-center justify-between mb-1">
-            <span class="text-[11px] font-black text-emerald-800">סך הכל נצבר</span>
-            <span class="text-sm">💰</span>
-          </div>
-          <div id="totalBalance" class="text-lg font-black font-mono text-emerald-600 leading-tight">₪0</div>
-          <div class="text-[9px] font-bold text-slate-400 mt-1 truncate" id="totalNetBalance">נטו בכיס: ₪0</div>
+        <div class="mt-2 flex items-center justify-center gap-2 text-xs">
+          <span id="heroProfit" class="font-mono font-black text-emerald-600">+₪0</span>
+          <span id="heroRoi" class="font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">+0.00%</span>
         </div>
 
-        <!-- Total Principal Deposits -->
-        <div class="bg-white border border-amber-100 rounded-2xl p-3 shadow-bobo">
-          <div class="flex items-center justify-between mb-1">
-            <span class="text-[11px] font-black text-amber-800">סך הפקדות</span>
-            <span class="text-sm">🏦</span>
+        <!-- Gentle Sub-info bar -->
+        <div class="mt-4 pt-3 border-t border-slate-100 grid grid-cols-2 text-right text-[11px]">
+          <div>
+            <span class="text-slate-400 block font-medium">קרן שהופקדה:</span>
+            <span id="heroDeposits" class="font-mono font-bold text-slate-700">₪0</span>
           </div>
-          <div id="totalDeposits" class="text-lg font-black font-mono text-slate-700 leading-tight">₪0</div>
-          <div class="text-[9px] font-bold text-slate-400 mt-1">קרן שהופקדה מהכיס</div>
-        </div>
-
-        <!-- Monthly Recurring Saving -->
-        <div class="bg-white border border-blue-100 rounded-2xl p-3 shadow-bobo">
-          <div class="flex items-center justify-between mb-1">
-            <span class="text-[11px] font-black text-blue-800">הוראת קבע</span>
-            <span class="text-sm">🔄</span>
+          <div class="text-left">
+            <span class="text-slate-400 block font-medium">הוראת קבע/חודש:</span>
+            <span id="heroMonthly" class="font-mono font-bold text-blue-600">₪0</span>
           </div>
-          <div id="totalMonthly" class="text-lg font-black font-mono text-blue-600 leading-tight">₪0</div>
-          <div class="text-[9px] font-bold text-slate-400 mt-1">הפקדה קבועה/חודש</div>
         </div>
-
-        <!-- Total Net Profit & Tax -->
-        <div class="bg-white border border-rose-100 rounded-2xl p-3 shadow-bobo">
-          <div class="flex items-center justify-between mb-1">
-            <span class="text-[11px] font-black text-rose-800">רווח נקי בכיס</span>
-            <span id="totalRoi" class="text-[9px] font-bold font-mono text-emerald-600 bg-emerald-50 px-1 py-0.2 rounded">+0.0%</span>
-          </div>
-          <div id="totalProfit" class="text-lg font-black font-mono text-emerald-600 leading-tight">₪0</div>
-          <div class="text-[9px] font-bold text-slate-400 mt-1 truncate" id="totalTaxEst">מס צפוי: ₪0</div>
-        </div>
-
       </div>
 
-      <!-- Section Header -->
+      <!-- Segmented Floating Pill Bar (iOS Style) -->
+      <div class="mb-5 flex items-center justify-center w-full">
+        <div class="p-1 bg-slate-200/60 rounded-full flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full shadow-inner" id="membersCapsule">
+          <!-- Populated by renderMembersCapsule() -->
+        </div>
+      </div>
+
+      <!-- Section Title & Counter -->
       <div class="flex items-center justify-between mb-3 px-1">
-        <div class="flex items-center gap-1.5">
-          <h3 class="text-sm font-black text-slate-800" id="sectionTitle">כל הקופות של המשפחה</h3>
-          <span id="fundCount" class="text-[10px] font-mono font-bold bg-amber-200 text-amber-900 px-2 py-0.2 rounded-full">0</span>
-        </div>
+        <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider" id="listHeaderTitle">הקופות ברשימה</h3>
+        <span id="listCountBadge" class="text-[11px] font-mono font-bold text-slate-400">0 קופות</span>
       </div>
 
-      <!-- Fund Cards Grid -->
-      <div id="fundsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+      <!-- Simplified, Elegant Fund Cards List -->
+      <div id="fundsList" class="space-y-2.5"></div>
 
       <!-- Empty State -->
-      <div id="emptyState" class="hidden text-center py-10 bg-white border-2 border-dashed border-amber-200 rounded-2xl p-5 shadow-bobo-sm">
+      <div id="emptyState" class="hidden text-center py-12 bg-white border-2 border-dashed border-amber-200 rounded-3xl p-6">
         <div class="w-12 h-12 mx-auto mb-2 rounded-full bg-amber-100 flex items-center justify-center text-xl">
           🏡
         </div>
-        <h4 class="text-sm font-black text-slate-800 mb-1" id="emptyTitle">אין עדיין קופות להצגה</h4>
-        <p class="text-xs text-slate-500 max-w-xs mx-auto mb-3 font-medium">הוסיפו קופה ראשונה ושייכו אותה לבן המשפחה המתאים</p>
-        <button onclick="openAddModal()" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black px-4 py-2 rounded-xl text-xs shadow-bobo-button transition">
+        <h4 class="text-sm font-black text-slate-800 mb-1">אין עדיין קופות להצגה</h4>
+        <p class="text-xs text-slate-500 mb-4 font-medium">הוסיפו קופה ראשונה לכספת המשפחתית</p>
+        <button onclick="openAddModal()" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-4 py-2 rounded-xl text-xs transition">
           הוספת קופה ראשונה ✨
         </button>
       </div>
@@ -235,10 +183,91 @@
     </main>
   </div>
 
+  <!-- Deep Dive Interactive Detail Modal (Bottom Sheet / Modal) -->
+  <div id="detailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+    <div class="bg-white border-t-4 sm:border-4 border-amber-100 rounded-t-[32px] sm:rounded-[32px] w-full max-w-md p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto no-scrollbar">
+      
+      <div class="flex justify-between items-start mb-4 pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-3">
+          <span id="detailIcon" class="text-3xl p-2 bg-amber-50 rounded-2xl border border-amber-100">⭐</span>
+          <div>
+            <div class="flex items-center gap-1.5 mb-1">
+              <span id="detailOwnerBadge" class="text-[10px] font-black px-2 py-0.5 rounded-full border"></span>
+              <span id="detailTypeBadge" class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full"></span>
+            </div>
+            <h3 id="detailTitle" class="text-lg font-black text-slate-800"></h3>
+            <p id="detailManager" class="text-xs text-slate-400 font-medium"></p>
+          </div>
+        </div>
+        <button onclick="closeDetailModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center font-bold text-sm">✕</button>
+      </div>
+
+      <!-- Balances Breakdown Grid -->
+      <div class="grid grid-cols-2 gap-2.5 mb-3">
+        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100 text-right">
+          <span class="text-[10px] font-bold text-slate-400 block">יתרה כוללת (שווי)</span>
+          <span id="detailBalance" class="text-xl font-black font-mono text-emerald-600">₪0</span>
+          <span id="detailUpdated" class="text-[9px] text-slate-400 block mt-0.5"></span>
+        </div>
+        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100 text-right">
+          <span class="text-[10px] font-bold text-slate-400 block">סך הפקדות (קרן)</span>
+          <span id="detailDeposits" class="text-xl font-black font-mono text-slate-700">₪0</span>
+          <span class="text-[9px] text-slate-400 block mt-0.5">מה שהופקד בפועל</span>
+        </div>
+      </div>
+
+      <!-- Profit & Tax Deep Dive Box -->
+      <div class="bg-amber-50/50 border border-amber-100 rounded-2xl p-3.5 mb-3 space-y-2 text-right">
+        <div class="flex items-center justify-between text-xs">
+          <span class="text-slate-600 font-bold">רווח הון ברוטו:</span>
+          <span id="detailGrossProfit" class="font-mono font-black text-emerald-600">₪0</span>
+        </div>
+        <div class="flex items-center justify-between text-xs">
+          <span id="detailTaxLabel" class="text-slate-600 font-bold">חבות מס משוערת:</span>
+          <span id="detailTaxAmount" class="font-mono font-bold text-rose-600">-₪0</span>
+        </div>
+        <div class="pt-2 border-t border-amber-200/60 flex items-center justify-between text-xs font-black">
+          <span class="text-emerald-900">נטו לפדיון בכיס:</span>
+          <span id="detailNetBalance" class="font-mono text-emerald-700 text-sm">₪0</span>
+        </div>
+      </div>
+
+      <!-- Additional Specs -->
+      <div class="space-y-1.5 text-xs text-slate-500 mb-5 bg-slate-50 p-3 rounded-2xl border border-slate-100">
+        <div class="flex justify-between" id="detailMonthlyRow">
+          <span>הוראת קבע חודשית:</span>
+          <span id="detailMonthly" class="font-mono font-bold text-blue-600">₪0/חודש</span>
+        </div>
+        <div class="flex justify-between" id="detailFeesRow">
+          <span>דמי ניהול (צבירה / הפקדה):</span>
+          <span id="detailFees" class="font-mono font-bold text-slate-700">--</span>
+        </div>
+        <div class="flex justify-between" id="detailNotesRow">
+          <span>הערות:</span>
+          <span id="detailNotes" class="font-bold text-slate-700 truncate max-w-[200px]">--</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons inside Deep Dive -->
+      <div class="grid grid-cols-2 gap-2 mb-2">
+        <button id="btnActionQuick" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 transition">
+          <span>⚡ עדכון יתרה</span>
+        </button>
+        <button id="btnActionDeposit" class="squish-btn bg-blue-600 hover:bg-blue-700 text-white font-black py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 transition">
+          <span>➕ הפקדה</span>
+        </button>
+      </div>
+      <div class="flex justify-between items-center pt-2 px-1 text-xs">
+        <button id="btnActionEdit" class="text-slate-400 hover:text-slate-700 font-bold">✏️ ערוך קופה</button>
+        <button id="btnActionDelete" class="text-rose-400 hover:text-rose-600 font-bold">🗑️ מחק קופה</button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Add / Edit Modal -->
   <div id="fundModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white border-4 border-amber-100 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl p-5">
-      
       <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
         <div class="flex items-center gap-1.5">
           <span class="text-lg">📝</span>
@@ -264,8 +293,9 @@
             <label class="block text-[11px] font-bold text-slate-600 mb-0.5">סוג הקופה *</label>
             <select id="fieldType" onchange="handleTypeChange(this.value)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
               <option value="קופת גמל להשקעה">קופת גמל להשקעה</option>
-              <option value="חיסכון לכל ילד">חיסכון לכל ילד</option>
+              <option value="קופת גמל">קופת גמל (רגילה)</option>
               <option value="קרן השתלמות">קרן השתלמות</option>
+              <option value="חיסכון לכל ילד">חיסכון לכל ילד</option>
               <option value="פוליסת חיסכון">פוליסת חיסכון</option>
               <option value="פיקדון בנקאי">פיקדון בנקאי</option>
               <option value="תיק השקעות עצמאי">תיק השקעות עצמאי</option>
@@ -287,7 +317,7 @@
 
         <div class="grid grid-cols-3 gap-1.5 bg-slate-50 p-2 rounded-xl border border-slate-200/80">
           <div>
-            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">הפקדות (קרן) ₪ *</label>
+            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">הפקדות ₪ *</label>
             <input type="number" step="any" id="fieldDeposits" required placeholder="0" class="w-full bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs font-mono text-slate-800 focus:outline-none">
           </div>
           <div>
@@ -322,7 +352,7 @@
 
         <div class="pt-2 flex justify-end gap-2 border-t border-slate-100">
           <button type="button" onclick="closeModal()" class="px-3 py-1.5 text-xs font-bold text-slate-400 hover:text-slate-600">ביטול</button>
-          <button type="submit" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black px-4 py-1.5 rounded-xl text-xs shadow-bobo-button transition">שמור ✨</button>
+          <button type="submit" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black px-4 py-1.5 rounded-xl text-xs transition">שמור ✨</button>
         </div>
       </form>
     </div>
@@ -342,7 +372,7 @@
         <input type="number" step="any" id="quickBalanceVal" required class="w-full bg-emerald-50 border-2 border-emerald-300 rounded-xl px-3 py-2 text-xl font-mono font-black text-emerald-600 text-center focus:outline-none focus:border-emerald-500 transition">
         <div class="flex justify-center gap-2 pt-1">
           <button type="button" onclick="closeQuickModal()" class="px-3 py-1.5 text-xs font-bold text-slate-400 hover:text-slate-600">ביטול</button>
-          <button type="submit" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black px-4 py-1.5 rounded-xl text-xs shadow-bobo-button transition">עדכן יתרה ✨</button>
+          <button type="submit" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black px-4 py-1.5 rounded-xl text-xs transition">עדכן יתרה ✨</button>
         </div>
       </form>
     </div>
@@ -361,7 +391,7 @@
         <input type="hidden" id="depositFundId">
         <div>
           <label class="block text-[10px] font-bold text-slate-600 mb-1 mr-1">סכום ההפקדה ₪</label>
-          <input type="number" step="any" id="depositAmount" required placeholder="למשל: 5000" class="w-full bg-blue-50 border-2 border-blue-300 rounded-xl px-3 py-2 text-lg font-mono font-black text-blue-700 text-center focus:outline-none focus:border-blue-500 transition">
+          <input type="number" step="any" id="depositAmount" required placeholder="5000" class="w-full bg-blue-50 border-2 border-blue-300 rounded-xl px-3 py-2 text-lg font-mono font-black text-blue-700 text-center focus:outline-none focus:border-blue-500 transition">
         </div>
 
         <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200 text-[11px]">
@@ -371,7 +401,7 @@
 
         <div class="flex justify-center gap-2 pt-1">
           <button type="button" onclick="closeDepositModal()" class="px-3 py-1.5 text-xs font-bold text-slate-400 hover:text-slate-600">ביטול</button>
-          <button type="submit" class="squish-btn bg-blue-600 hover:bg-blue-700 text-white font-black px-4 py-1.5 rounded-xl text-xs shadow-bobo-button transition">בצע הפקדה ✨</button>
+          <button type="submit" class="squish-btn bg-blue-600 hover:bg-blue-700 text-white font-black px-4 py-1.5 rounded-xl text-xs transition">בצע הפקדה ✨</button>
         </div>
       </form>
     </div>
@@ -380,7 +410,6 @@
   <!-- Settings Modal -->
   <div id="settingsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white border-4 border-amber-100 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl p-5">
-      
       <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
         <div class="flex items-center gap-1.5">
           <span class="text-lg">⚙️</span>
@@ -390,7 +419,6 @@
       </div>
 
       <div class="space-y-3 max-h-[65vh] overflow-y-auto pr-1 no-scrollbar text-right">
-        
         <div class="bg-amber-50/50 border border-amber-200 rounded-xl p-3">
           <div class="flex items-center justify-between mb-2">
             <h4 class="text-xs font-black text-slate-800 flex items-center gap-1">
@@ -412,7 +440,7 @@
             </h4>
             <p class="text-[10px] text-slate-500">הורדת גיבוי מלא של הקופות</p>
           </div>
-          <button onclick="exportToCSV()" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black px-3 py-1 rounded-lg text-xs shadow-bobo-button shrink-0">
+          <button onclick="exportToCSV()" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black px-3 py-1 rounded-lg text-xs shrink-0">
             הורד ⬇️
           </button>
         </div>
@@ -427,13 +455,11 @@
             התנתק מהמערכת 🚪
           </button>
         </div>
-
       </div>
 
       <div class="pt-2 mt-2 border-t border-slate-100 text-center">
         <button onclick="closeSettingsModal()" class="px-5 py-1 bg-slate-800 text-white font-black text-xs rounded-xl">סגור</button>
       </div>
-
     </div>
   </div>
 
@@ -446,6 +472,7 @@
 
     let funds = [];
     let currentFilter = 'ALL';
+    let activeDetailId = null;
 
     const DEFAULT_MEMBERS = [
       { name: 'בובו', icon: '🧸' },
@@ -474,6 +501,7 @@
       switch(type) {
         case 'חיסכון לכל ילד': return '🍼';
         case 'קופת גמל להשקעה': return '🌱';
+        case 'קופת גמל': return '📜';
         case 'פוליסת חיסכון': return '🛡️';
         case 'פיקדון בנקאי': return '🏦';
         case 'קרן השתלמות': return '💎';
@@ -496,7 +524,7 @@
 
     function handleTypeChange(val) {
       const taxInput = document.getElementById('fieldTaxRate');
-      if (val === 'קרן השתלמות' || val === 'חיסכון לכל ילד') {
+      if (val === 'קרן השתלמות' || val === 'חיסכון לכל ילד' || val === 'קופת גמל') {
         taxInput.value = '0';
       } else if (val === 'פיקדון בנקאי') {
         taxInput.value = '15';
@@ -583,22 +611,26 @@
         saveFamilyMembers();
 
         render();
+
+        if (activeDetailId) {
+          openDetailModal(activeDetailId);
+        }
       }
     }
 
-    // Segmented Floating Capsule Tabs
-    function renderFilterTabs() {
-      const container = document.getElementById('membersFilterTabs');
+    // Segmented Floating Pill Bar
+    function renderMembersCapsule() {
+      const container = document.getElementById('membersCapsule');
 
       const tabBtn = (id, label, icon, count) => {
         const isActive = currentFilter === id;
         return `
-          <button onclick="setFilter('${id}')" class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+          <button onclick="setFilter('${id}')" class="squish-btn shrink-0 px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
             isActive 
-              ? 'bg-white text-slate-900 shadow-capsule-active font-black' 
-              : 'text-slate-600 hover:text-slate-900'
+              ? 'bg-white text-slate-900 shadow-capsule-active font-black scale-100' 
+              : 'text-slate-500 hover:text-slate-800'
           }">
-            <span>${icon}</span>
+            <span class="text-sm">${icon}</span>
             <span>${label}</span>
             <span class="text-[10px] opacity-60 font-mono">(${count})</span>
           </button>
@@ -620,32 +652,29 @@
     }
 
     function render() {
-      renderFilterTabs();
+      renderMembersCapsule();
 
-      const grid = document.getElementById('fundsGrid');
-      const empty = document.getElementById('emptyState');
+      const listEl = document.getElementById('fundsList');
+      const emptyEl = document.getElementById('emptyState');
       
       const filteredFunds = currentFilter === 'ALL' 
         ? funds 
         : funds.filter(f => f.owner === currentFilter);
 
-      document.getElementById('fundCount').textContent = filteredFunds.length;
-      document.getElementById('sectionTitle').textContent = currentFilter === 'ALL' ? 'כל הקופות של המשפחה' : `הקופות של ${currentFilter}`;
+      document.getElementById('listCountBadge').textContent = `${filteredFunds.length} קופות`;
+      document.getElementById('listHeaderTitle').textContent = currentFilter === 'ALL' ? 'כל הקופות של המשפחה' : `הקופות של ${currentFilter}`;
 
       if (filteredFunds.length === 0) {
-        grid.innerHTML = '';
-        empty.classList.remove('hidden');
-        document.getElementById('emptyTitle').textContent = currentFilter === 'ALL' 
-          ? 'אין עדיין קופות להצגה' 
-          : `אין עדיין קופות שמוגדרות עבור ${currentFilter}`;
-        calculateTotals(0, 0, 0, 0, 0);
+        listEl.innerHTML = '';
+        emptyEl.classList.remove('hidden');
+        updateHeroKPIs(0, 0, 0);
         return;
       }
 
-      empty.classList.add('hidden');
-      let totalBal = 0, totalDep = 0, totalMonthly = 0, totalTax = 0;
+      emptyEl.classList.add('hidden');
+      let totalBal = 0, totalDep = 0, totalMonthly = 0;
 
-      grid.innerHTML = filteredFunds.map(f => {
+      listEl.innerHTML = filteredFunds.map(f => {
         const dep = Number(f.deposits) || 0;
         const bal = Number(f.balance) || 0;
         const monthly = Number(f.monthlyDeposit) || 0;
@@ -653,131 +682,111 @@
         const roi = dep > 0 ? (grossProfit / dep) * 100 : 0;
         const isPos = grossProfit >= 0;
 
-        // Tax calculations
-        const taxPct = Number(f.taxRate) || 0;
-        const taxAmount = (grossProfit > 0 && taxPct > 0) ? (grossProfit * (taxPct / 100)) : 0;
-        const netProfit = grossProfit - taxAmount;
-        const netBalance = bal - taxAmount;
-
         totalBal += bal;
         totalDep += dep;
         totalMonthly += monthly;
-        totalTax += taxAmount;
 
         return `
-          <div class="bg-white border border-cardBorder rounded-2xl p-3.5 shadow-bobo transition flex flex-col justify-between">
-            <div>
-              <div class="flex items-start justify-between gap-2 mb-2">
-                <div class="flex items-start gap-2 min-w-0">
-                  <span class="text-xl p-1 bg-amber-50 border border-amber-100 rounded-xl shrink-0">${getTypeIcon(f.type)}</span>
-                  <div class="min-w-0">
-                    <div class="flex items-center gap-1 mb-0.5">
-                      <span class="text-[9px] font-black px-1.5 py-0.2 rounded-full border ${getMemberBadgeColor(f.owner)} flex items-center gap-0.5">
-                        <span>${getMemberIcon(f.owner)}</span>
-                        <span>${f.owner}</span>
-                      </span>
-                      <span class="text-[9px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.2 rounded-full">
-                        ${f.type}
-                      </span>
-                    </div>
-                    <h4 class="text-sm font-black text-slate-800 leading-tight truncate">${f.name}</h4>
-                    <p class="text-[10px] text-slate-400 font-medium truncate">${f.manager} ${f.number ? `• ${f.number}` : ''}</p>
-                  </div>
-                </div>
-
-                <div class="text-left font-mono shrink-0">
-                  <span class="text-[9px] text-slate-400 font-bold block">יתרה</span>
-                  <span class="text-base font-black text-emerald-600 leading-none">${fmtILS(bal)}</span>
-                  <span class="text-[8px] text-emerald-700/80 font-bold block mt-1 bg-emerald-50 px-1 py-0.2 rounded border border-emerald-100">
-                    ${fmtDate(f.updatedAt)}
+          <div onclick="openDetailModal('${f.id}')" class="squish-btn bg-white border border-cardBorder hover:border-amber-200 rounded-2xl p-3.5 shadow-sm transition flex items-center justify-between cursor-pointer">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="text-2xl p-2 bg-amber-50/70 border border-amber-100 rounded-xl shrink-0">${getTypeIcon(f.type)}</span>
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5 mb-0.5">
+                  <span class="text-[9px] font-black px-1.5 py-0.2 rounded-full border ${getMemberBadgeColor(f.owner)} flex items-center gap-0.5">
+                    <span>${getMemberIcon(f.owner)}</span>
+                    <span>${f.owner}</span>
                   </span>
+                  <span class="text-[10px] text-slate-400 font-medium truncate">${f.manager}</span>
                 </div>
+                <h4 class="text-sm font-black text-slate-800 leading-tight truncate">${f.name}</h4>
               </div>
-
-              <!-- Main Financial Breakdown: Principal, Gross, Net -->
-              <div class="grid grid-cols-3 gap-1 my-2 p-1.5 bg-slate-50 border border-slate-100 rounded-xl text-center">
-                <div>
-                  <span class="text-[8px] text-slate-400 font-bold block">קרן (הפקדות)</span>
-                  <span class="text-[11px] font-mono font-bold text-slate-700">${fmtILS(dep)}</span>
-                </div>
-                <div>
-                  <span class="text-[8px] text-slate-400 font-bold block">רווח ברוטו</span>
-                  <span class="text-[11px] font-mono font-bold ${isPos ? 'text-emerald-600' : 'text-rose-500'}">${fmtILS(grossProfit)}</span>
-                </div>
-                <div>
-                  <span class="text-[8px] text-slate-400 font-bold block">תשואה</span>
-                  <span class="text-[11px] font-mono font-bold ${isPos ? 'text-emerald-600' : 'text-rose-500'}">${fmtPCT(roi)}</span>
-                </div>
-              </div>
-
-              <!-- Capital Gains Tax Breakdown -->
-              <div class="mb-2 p-2 bg-amber-50/50 border border-amber-100/80 rounded-xl flex items-center justify-between text-[10px]">
-                <div class="flex items-center gap-1 font-bold text-slate-600">
-                  <span>⚖️ מס רווחי הון (${taxPct}%):</span>
-                  <span class="font-mono text-rose-600">-${fmtILS(taxAmount)}</span>
-                </div>
-                <div class="font-bold text-emerald-800">
-                  נטו בכיס: <span class="font-mono font-black text-emerald-700">${fmtILS(netBalance)}</span>
-                </div>
-              </div>
-
-              ${monthly > 0 ? `
-                <div class="mb-1.5 bg-blue-50 border border-blue-100 text-blue-900 px-2 py-0.5 rounded-lg flex items-center justify-between text-[10px] font-bold">
-                  <span>🔄 הו״ק חודשית:</span>
-                  <span class="font-mono font-black">${fmtILS(monthly)}/חודש</span>
-                </div>
-              ` : ''}
-
-              <div class="flex items-center justify-between text-[9px] text-slate-400 font-medium">
-                <div>${f.feeAccumulation ? `דמ״נ: <b>${f.feeAccumulation}%</b>` : ''}</div>
-                <div>עודכן: ${fmtDate(f.updatedAt)}</div>
-              </div>
-
-              ${f.notes ? `<p class="mt-1 text-[9px] text-slate-500 bg-amber-50/60 p-1 rounded border border-amber-100 font-medium truncate">💬 ${f.notes}</p>` : ''}
             </div>
 
-            <!-- Action Buttons: Quick Update & One-Time Deposit -->
-            <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between">
-              <div class="flex items-center gap-1.5">
-                <button onclick="openQuickModal('${f.id}')" class="squish-btn text-[10px] font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2 py-0.5 rounded-lg transition flex items-center gap-0.5">
-                  <span>⚡ יתרה</span>
-                </button>
-                <button onclick="openDepositModal('${f.id}')" class="squish-btn text-[10px] font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2 py-0.5 rounded-lg transition flex items-center gap-0.5">
-                  <span>➕ הפקדה</span>
-                </button>
+            <div class="flex items-center gap-2.5 shrink-0 font-mono">
+              <div class="text-left">
+                <div class="text-sm font-black text-slate-800">${fmtILS(bal)}</div>
+                <div class="text-[10px] font-bold ${isPos ? 'text-emerald-600' : 'text-rose-500'}">
+                  ${fmtPCT(roi)}
+                </div>
               </div>
-              <div class="flex gap-2 text-[10px] font-bold">
-                <button onclick="editFund('${f.id}')" class="text-slate-400 hover:text-slate-700">ערוך</button>
-                <button onclick="deleteFund('${f.id}')" class="text-rose-400 hover:text-rose-600">מחק</button>
-              </div>
+              <span class="text-slate-300 text-xs">‹</span>
             </div>
           </div>
         `;
       }).join('');
 
-      calculateTotals(totalBal, totalDep, totalMonthly, totalTax);
+      updateHeroKPIs(totalBal, totalDep, totalMonthly);
     }
 
-    function calculateTotals(bal, dep, monthly, tax) {
-      const grossProfit = bal - dep;
-      const netProfit = grossProfit - tax;
-      const netBalance = bal - tax;
-      const roi = dep > 0 ? (grossProfit / dep) * 100 : 0;
+    function updateHeroKPIs(bal, dep, monthly) {
+      const profit = bal - dep;
+      const roi = dep > 0 ? (profit / dep) * 100 : 0;
 
-      document.getElementById('totalBalance').textContent = fmtILS(bal);
-      document.getElementById('totalNetBalance').textContent = `נטו בכיס: ${fmtILS(netBalance)}`;
-      document.getElementById('totalDeposits').textContent = fmtILS(dep);
-      document.getElementById('totalMonthly').textContent = fmtILS(monthly);
-      
-      const profitEl = document.getElementById('totalProfit');
-      profitEl.textContent = fmtILS(netProfit);
-      profitEl.className = `text-lg font-black font-mono ${netProfit >= 0 ? 'text-emerald-600' : 'text-rose-500'}`;
+      document.getElementById('heroBalance').textContent = fmtILS(bal);
+      document.getElementById('heroDeposits').textContent = fmtILS(dep);
+      document.getElementById('heroMonthly').textContent = fmtILS(monthly);
 
-      document.getElementById('totalTaxEst').textContent = `מס משוער: -${fmtILS(tax)}`;
+      const profitEl = document.getElementById('heroProfit');
+      profitEl.textContent = `${profit >= 0 ? '+' : ''}${fmtILS(profit)}`;
+      profitEl.className = `font-mono font-black ${profit >= 0 ? 'text-emerald-600' : 'text-rose-500'}`;
 
-      const roiEl = document.getElementById('totalRoi');
+      const roiEl = document.getElementById('heroRoi');
       roiEl.textContent = fmtPCT(roi);
-      roiEl.className = `text-[9px] font-bold font-mono px-1 py-0.2 rounded ${roi >= 0 ? 'text-emerald-700 bg-emerald-50' : 'text-rose-700 bg-rose-50'}`;
+      roiEl.className = `font-mono font-bold px-2 py-0.5 rounded-full border ${profit >= 0 ? 'text-emerald-700 bg-emerald-50 border-emerald-100' : 'text-rose-700 bg-rose-50 border-rose-100'}`;
+    }
+
+    // Deep Dive Modal Logic
+    function openDetailModal(id) {
+      const f = funds.find(x => x.id === id);
+      if (!f) return;
+      activeDetailId = id;
+
+      const dep = Number(f.deposits) || 0;
+      const bal = Number(f.balance) || 0;
+      const grossProfit = bal - dep;
+      const taxPct = Number(f.taxRate) || 0;
+      const taxAmount = (grossProfit > 0 && taxPct > 0) ? (grossProfit * (taxPct / 100)) : 0;
+      const netBalance = bal - taxAmount;
+
+      document.getElementById('detailIcon').textContent = getTypeIcon(f.type);
+      document.getElementById('detailTitle').textContent = f.name;
+      document.getElementById('detailManager').textContent = `${f.manager} ${f.number ? `• מס' ${f.number}` : ''}`;
+      
+      const badge = document.getElementById('detailOwnerBadge');
+      badge.textContent = `${getMemberIcon(f.owner)} ${f.owner}`;
+      badge.className = `text-[10px] font-black px-2 py-0.5 rounded-full border ${getMemberBadgeColor(f.owner)}`;
+
+      document.getElementById('detailTypeBadge').textContent = f.type;
+      document.getElementById('detailBalance').textContent = fmtILS(bal);
+      document.getElementById('detailUpdated').textContent = `עודכן: ${fmtDate(f.updatedAt)}`;
+      document.getElementById('detailDeposits').textContent = fmtILS(dep);
+
+      document.getElementById('detailGrossProfit').textContent = `${grossProfit >= 0 ? '+' : ''}${fmtILS(grossProfit)}`;
+      document.getElementById('detailTaxLabel').textContent = `חבות מס (${taxPct}%):`;
+      document.getElementById('detailTaxAmount').textContent = `-${fmtILS(taxAmount)}`;
+      document.getElementById('detailNetBalance').textContent = fmtILS(netBalance);
+
+      document.getElementById('detailMonthly').textContent = f.monthlyDeposit ? `${fmtILS(f.monthlyDeposit)}/חודש` : 'אין הוראת קבע';
+      
+      const fees = [];
+      if (f.feeAccumulation) fees.push(`צבירה: ${f.feeAccumulation}%`);
+      if (f.feeDeposit) fees.push(`הפקדה: ${f.feeDeposit}%`);
+      document.getElementById('detailFees').textContent = fees.length ? fees.join(' • ') : 'לא צוין';
+
+      document.getElementById('detailNotes').textContent = f.notes || 'אין הערות נוספות';
+
+      // Setup action button handlers
+      document.getElementById('btnActionQuick').onclick = () => { closeDetailModal(); openQuickModal(f.id); };
+      document.getElementById('btnActionDeposit').onclick = () => { closeDetailModal(); openDepositModal(f.id); };
+      document.getElementById('btnActionEdit').onclick = () => { closeDetailModal(); editFund(f.id); };
+      document.getElementById('btnActionDelete').onclick = () => { closeDetailModal(); deleteFund(f.id); };
+
+      document.getElementById('detailModal').classList.remove('hidden');
+    }
+
+    function closeDetailModal() {
+      activeDetailId = null;
+      document.getElementById('detailModal').classList.add('hidden');
     }
 
     function populateOwnerSelect(selectedOwner) {
@@ -885,7 +894,6 @@
       loadFunds();
     }
 
-    // One-Time Deposit Functionality
     function openDepositModal(id) {
       const f = funds.find(x => x.id === id);
       if (!f) return;
@@ -925,7 +933,6 @@
       loadFunds();
     }
 
-    // Settings Modal
     function openSettingsModal() {
       renderSettingsMembers();
       document.getElementById('settingsModal').classList.remove('hidden');
