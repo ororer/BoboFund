@@ -34,6 +34,7 @@
             'bobo': '0 10px 25px -5px rgba(220, 210, 195, 0.45), 0 8px 10px -6px rgba(220, 210, 195, 0.3)',
             'bobo-sm': '0 4px 12px rgba(220, 210, 195, 0.35)',
             'bobo-button': '0 2px 0 #059669',
+            'capsule-active': '0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04)',
           }
         }
       }
@@ -71,7 +72,6 @@
   <!-- Fullscreen Login Overlay -->
   <div id="authScreen" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4">
     <div class="bg-white border-4 border-amber-100 rounded-[32px] p-6 max-w-sm w-full shadow-2xl relative text-center">
-      
       <div class="w-16 h-16 mx-auto -mt-12 mb-3 rounded-2xl bg-gradient-to-tr from-amber-300 via-amber-200 to-emerald-200 p-1 shadow-lg shadow-amber-500/20 flex items-center justify-center rotate-3">
         <div class="w-full h-full bg-white rounded-[14px] flex items-center justify-center text-3xl">
           🏡
@@ -103,7 +103,7 @@
   <!-- Main App Shell -->
   <div id="appShell" class="flex-1 flex flex-col hidden w-full overflow-x-hidden">
 
-    <!-- Responsive Navbar -->
+    <!-- Clean, Responsive Navbar -->
     <header class="border-b border-amber-100 bg-white/95 backdrop-blur-md sticky top-0 z-30 shadow-sm w-full">
       <div class="max-w-4xl mx-auto px-3.5 h-14 flex items-center justify-between w-full">
         
@@ -145,35 +145,36 @@
           </div>
           <div class="min-w-0">
             <h2 class="text-sm font-black text-slate-800 leading-tight truncate">החסכונות והקופות של המשפחה</h2>
-            <p class="text-[11px] text-slate-500 font-medium truncate mt-0.5">כל החסכונות במקום אחד, מסונכרן לשניכם</p>
+            <p class="text-[11px] text-slate-500 font-medium truncate mt-0.5">סנכרון ענן מלא לכל בני הבית</p>
           </div>
         </div>
         <div class="shrink-0 flex items-center gap-1 bg-white/90 border border-amber-200 px-2.5 py-1 rounded-full text-[10px] text-slate-600 font-bold">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>פעיל</span>
+          <span>מעודכן</span>
         </div>
       </div>
 
-      <!-- Family Members Filter Tabs -->
+      <!-- Segmented Floating Capsule Tabs (iOS / Apple Wallet Style) -->
       <div class="mb-4 flex items-center gap-1.5 w-full">
-        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar flex-1" id="membersFilterTabs"></div>
-        <button onclick="openMemberAddPrompt()" class="squish-btn shrink-0 bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-200 px-2.5 py-1.5 rounded-xl text-xs font-black flex items-center gap-1 transition">
-          <span>➕</span>
-          <span>הוסף</span>
+        <div class="p-1 bg-slate-200/60 border border-slate-200/80 rounded-2xl flex items-center gap-1 overflow-x-auto no-scrollbar flex-1" id="membersFilterTabs">
+          <!-- Injected via renderFilterTabs() -->
+        </div>
+        <button onclick="openMemberAddPrompt()" title="הוסף בן משפחה" class="squish-btn shrink-0 w-8 h-8 rounded-2xl bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-200 flex items-center justify-center text-xs font-black transition">
+          ➕
         </button>
       </div>
 
       <!-- KPI Summary Cards Grid -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-6">
         
-        <!-- Total Value -->
+        <!-- Total Value & Net Estimated Value -->
         <div class="bg-white border border-emerald-100 rounded-2xl p-3 shadow-bobo">
           <div class="flex items-center justify-between mb-1">
             <span class="text-[11px] font-black text-emerald-800">סך הכל נצבר</span>
             <span class="text-sm">💰</span>
           </div>
-          <div id="totalBalance" class="text-lg font-black font-mono text-emerald-600">₪0</div>
-          <div class="text-[9px] font-bold text-slate-400 truncate mt-0.5" id="totalBalanceSub">עדכון: טרם עודכן</div>
+          <div id="totalBalance" class="text-lg font-black font-mono text-emerald-600 leading-tight">₪0</div>
+          <div class="text-[9px] font-bold text-slate-400 mt-1 truncate" id="totalNetBalance">נטו בכיס: ₪0</div>
         </div>
 
         <!-- Total Principal Deposits -->
@@ -182,8 +183,8 @@
             <span class="text-[11px] font-black text-amber-800">סך הפקדות</span>
             <span class="text-sm">🏦</span>
           </div>
-          <div id="totalDeposits" class="text-lg font-black font-mono text-slate-700">₪0</div>
-          <div class="text-[9px] font-bold text-slate-400 mt-0.5">קרן שהופקדה</div>
+          <div id="totalDeposits" class="text-lg font-black font-mono text-slate-700 leading-tight">₪0</div>
+          <div class="text-[9px] font-bold text-slate-400 mt-1">קרן שהופקדה מהכיס</div>
         </div>
 
         <!-- Monthly Recurring Saving -->
@@ -192,18 +193,18 @@
             <span class="text-[11px] font-black text-blue-800">הוראת קבע</span>
             <span class="text-sm">🔄</span>
           </div>
-          <div id="totalMonthly" class="text-lg font-black font-mono text-blue-600">₪0</div>
-          <div class="text-[9px] font-bold text-slate-400 mt-0.5">הפקדה/חודש</div>
+          <div id="totalMonthly" class="text-lg font-black font-mono text-blue-600 leading-tight">₪0</div>
+          <div class="text-[9px] font-bold text-slate-400 mt-1">הפקדה קבועה/חודש</div>
         </div>
 
-        <!-- Total Net Profit & ROI -->
+        <!-- Total Net Profit & Tax -->
         <div class="bg-white border border-rose-100 rounded-2xl p-3 shadow-bobo">
           <div class="flex items-center justify-between mb-1">
-            <span class="text-[11px] font-black text-rose-800">רווח נקי</span>
-            <span id="totalRoi" class="text-[10px] font-bold font-mono text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">+0.0%</span>
+            <span class="text-[11px] font-black text-rose-800">רווח נקי בכיס</span>
+            <span id="totalRoi" class="text-[9px] font-bold font-mono text-emerald-600 bg-emerald-50 px-1 py-0.2 rounded">+0.0%</span>
           </div>
-          <div id="totalProfit" class="text-lg font-black font-mono text-emerald-600">₪0</div>
-          <div class="text-[9px] font-bold text-slate-400 mt-0.5">רווח שקלי כולל</div>
+          <div id="totalProfit" class="text-lg font-black font-mono text-emerald-600 leading-tight">₪0</div>
+          <div class="text-[9px] font-bold text-slate-400 mt-1 truncate" id="totalTaxEst">מס צפוי: ₪0</div>
         </div>
 
       </div>
@@ -261,7 +262,7 @@
           </div>
           <div>
             <label class="block text-[11px] font-bold text-slate-600 mb-0.5">סוג הקופה *</label>
-            <select id="fieldType" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
+            <select id="fieldType" onchange="handleTypeChange(this.value)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
               <option value="קופת גמל להשקעה">קופת גמל להשקעה</option>
               <option value="חיסכון לכל ילד">חיסכון לכל ילד</option>
               <option value="קרן השתלמות">קרן השתלמות</option>
@@ -286,33 +287,37 @@
 
         <div class="grid grid-cols-3 gap-1.5 bg-slate-50 p-2 rounded-xl border border-slate-200/80">
           <div>
-            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">הפקדות ₪ *</label>
+            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">הפקדות (קרן) ₪ *</label>
             <input type="number" step="any" id="fieldDeposits" required placeholder="0" class="w-full bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs font-mono text-slate-800 focus:outline-none">
           </div>
           <div>
-            <label class="block text-[10px] font-bold text-emerald-800 mb-0.5">שווי ₪ *</label>
+            <label class="block text-[10px] font-bold text-emerald-800 mb-0.5">שווי יתרה ₪ *</label>
             <input type="number" step="any" id="fieldBalance" required placeholder="0" class="w-full bg-emerald-50 border border-emerald-300 rounded-lg px-2 py-1 text-xs font-mono font-bold text-emerald-700 focus:outline-none">
           </div>
           <div>
-            <label class="block text-[10px] font-bold text-blue-800 mb-0.5">הו״ק ₪</label>
+            <label class="block text-[10px] font-bold text-blue-800 mb-0.5">הו״ק חודשית ₪</label>
             <input type="number" step="any" id="fieldMonthly" placeholder="0" class="w-full bg-blue-50 border border-blue-200 rounded-lg px-2 py-1 text-xs font-mono font-bold text-blue-700 focus:outline-none">
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-3 gap-2">
           <div>
-            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">דמ״נ צבירה (%)</label>
-            <input type="number" step="0.01" id="fieldFeeAcc" placeholder="0.5" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1 text-xs font-mono text-slate-800 focus:outline-none transition">
+            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">מס רווח הון %</label>
+            <input type="number" step="1" id="fieldTaxRate" value="25" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-1 text-xs font-mono text-slate-800 focus:outline-none">
           </div>
           <div>
-            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">דמ״נ הפקדה (%)</label>
-            <input type="number" step="0.01" id="fieldFeeDep" placeholder="0" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1 text-xs font-mono text-slate-800 focus:outline-none transition">
+            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">דמ״נ צבירה %</label>
+            <input type="number" step="0.01" id="fieldFeeAcc" placeholder="0.5" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-1 text-xs font-mono text-slate-800 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">דמ״נ הפקדה %</label>
+            <input type="number" step="0.01" id="fieldFeeDep" placeholder="0" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-1 text-xs font-mono text-slate-800 focus:outline-none">
           </div>
         </div>
 
         <div>
           <label class="block text-[10px] font-bold text-slate-600 mb-0.5">הערות</label>
-          <input type="text" id="fieldNotes" placeholder="הוראת קבע ב-10 לחודש" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1 text-xs text-slate-800 focus:outline-none transition">
+          <input type="text" id="fieldNotes" placeholder="הוראת קבע ב-10 לחודש" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none">
         </div>
 
         <div class="pt-2 flex justify-end gap-2 border-t border-slate-100">
@@ -338,6 +343,35 @@
         <div class="flex justify-center gap-2 pt-1">
           <button type="button" onclick="closeQuickModal()" class="px-3 py-1.5 text-xs font-bold text-slate-400 hover:text-slate-600">ביטול</button>
           <button type="submit" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black px-4 py-1.5 rounded-xl text-xs shadow-bobo-button transition">עדכן יתרה ✨</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- One-Time Deposit Modal -->
+  <div id="depositModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white border-4 border-amber-100 rounded-3xl w-full max-w-xs p-5 shadow-2xl text-center">
+      <div class="w-10 h-10 mx-auto mb-2 rounded-full bg-blue-100 flex items-center justify-center text-xl">
+        ➕
+      </div>
+      <h4 class="text-sm font-black text-slate-800">הפקדה חד-פעמית</h4>
+      <p id="depositFundName" class="text-[11px] text-slate-400 mb-3 truncate font-medium"></p>
+      
+      <form onsubmit="handleOneTimeDeposit(event)" class="space-y-3 text-right">
+        <input type="hidden" id="depositFundId">
+        <div>
+          <label class="block text-[10px] font-bold text-slate-600 mb-1 mr-1">סכום ההפקדה ₪</label>
+          <input type="number" step="any" id="depositAmount" required placeholder="למשל: 5000" class="w-full bg-blue-50 border-2 border-blue-300 rounded-xl px-3 py-2 text-lg font-mono font-black text-blue-700 text-center focus:outline-none focus:border-blue-500 transition">
+        </div>
+
+        <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200 text-[11px]">
+          <input type="checkbox" id="depositAddToBalance" checked class="w-4 h-4 rounded text-emerald-600 accent-emerald-600">
+          <label for="depositAddToBalance" class="text-slate-700 font-medium">הגדל גם את שווי היתרה באותו סכום</label>
+        </div>
+
+        <div class="flex justify-center gap-2 pt-1">
+          <button type="button" onclick="closeDepositModal()" class="px-3 py-1.5 text-xs font-bold text-slate-400 hover:text-slate-600">ביטול</button>
+          <button type="submit" class="squish-btn bg-blue-600 hover:bg-blue-700 text-white font-black px-4 py-1.5 rounded-xl text-xs shadow-bobo-button transition">בצע הפקדה ✨</button>
         </div>
       </form>
     </div>
@@ -460,6 +494,17 @@
       return 'bg-purple-100 text-purple-900 border-purple-200';
     };
 
+    function handleTypeChange(val) {
+      const taxInput = document.getElementById('fieldTaxRate');
+      if (val === 'קרן השתלמות' || val === 'חיסכון לכל ילד') {
+        taxInput.value = '0';
+      } else if (val === 'פיקדון בנקאי') {
+        taxInput.value = '15';
+      } else {
+        taxInput.value = '25';
+      }
+    }
+
     async function checkAuth() {
       const { data: { session } } = await sbClient.auth.getSession();
       if (session) {
@@ -523,6 +568,7 @@
           deposits: Number(item.deposits) || 0,
           balance: Number(item.balance) || 0,
           monthlyDeposit: Number(item.monthly_deposit) || 0,
+          taxRate: item.tax_rate !== undefined && item.tax_rate !== null ? Number(item.tax_rate) : 25,
           feeAccumulation: item.fee_accumulation,
           feeDeposit: item.fee_deposit,
           notes: item.notes,
@@ -540,26 +586,29 @@
       }
     }
 
+    // Segmented Floating Capsule Tabs
     function renderFilterTabs() {
       const container = document.getElementById('membersFilterTabs');
 
-      const tabBtn = (id, label, icon) => {
+      const tabBtn = (id, label, icon, count) => {
         const isActive = currentFilter === id;
         return `
-          <button onclick="setFilter('${id}')" class="squish-btn shrink-0 px-2.5 py-1 rounded-xl text-xs font-bold transition flex items-center gap-1 border ${
+          <button onclick="setFilter('${id}')" class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
             isActive 
-              ? 'bg-slate-800 border-slate-800 text-white shadow-sm' 
-              : 'bg-white border-amber-100 text-slate-600 hover:border-amber-300'
+              ? 'bg-white text-slate-900 shadow-capsule-active font-black' 
+              : 'text-slate-600 hover:text-slate-900'
           }">
             <span>${icon}</span>
             <span>${label}</span>
+            <span class="text-[10px] opacity-60 font-mono">(${count})</span>
           </button>
         `;
       };
 
-      let html = tabBtn('ALL', 'כל המשפחה', '🏡');
+      let html = tabBtn('ALL', 'כל המשפחה', '🏡', funds.length);
       familyMembers.forEach(m => {
-        html += tabBtn(m.name, m.name, m.icon);
+        const cnt = funds.filter(f => f.owner === m.name).length;
+        html += tabBtn(m.name, m.name, m.icon, cnt);
       });
 
       container.innerHTML = html;
@@ -589,30 +638,31 @@
         document.getElementById('emptyTitle').textContent = currentFilter === 'ALL' 
           ? 'אין עדיין קופות להצגה' 
           : `אין עדיין קופות שמוגדרות עבור ${currentFilter}`;
-        calculateTotals(0, 0, 0, null);
+        calculateTotals(0, 0, 0, 0, 0);
         return;
       }
 
       empty.classList.add('hidden');
-      let totalBal = 0, totalDep = 0, totalMonthly = 0;
-      let latestDate = null;
+      let totalBal = 0, totalDep = 0, totalMonthly = 0, totalTax = 0;
 
       grid.innerHTML = filteredFunds.map(f => {
         const dep = Number(f.deposits) || 0;
         const bal = Number(f.balance) || 0;
         const monthly = Number(f.monthlyDeposit) || 0;
-        const profit = bal - dep;
-        const roi = dep > 0 ? (profit / dep) * 100 : 0;
-        const isPos = profit >= 0;
+        const grossProfit = bal - dep;
+        const roi = dep > 0 ? (grossProfit / dep) * 100 : 0;
+        const isPos = grossProfit >= 0;
+
+        // Tax calculations
+        const taxPct = Number(f.taxRate) || 0;
+        const taxAmount = (grossProfit > 0 && taxPct > 0) ? (grossProfit * (taxPct / 100)) : 0;
+        const netProfit = grossProfit - taxAmount;
+        const netBalance = bal - taxAmount;
 
         totalBal += bal;
         totalDep += dep;
         totalMonthly += monthly;
-
-        if (f.updatedAt) {
-          const d = new Date(f.updatedAt);
-          if (!latestDate || d > latestDate) latestDate = d;
-        }
+        totalTax += taxAmount;
 
         return `
           <div class="bg-white border border-cardBorder rounded-2xl p-3.5 shadow-bobo transition flex flex-col justify-between">
@@ -644,14 +694,15 @@
                 </div>
               </div>
 
+              <!-- Main Financial Breakdown: Principal, Gross, Net -->
               <div class="grid grid-cols-3 gap-1 my-2 p-1.5 bg-slate-50 border border-slate-100 rounded-xl text-center">
                 <div>
-                  <span class="text-[8px] text-slate-400 font-bold block">הפקדות</span>
+                  <span class="text-[8px] text-slate-400 font-bold block">קרן (הפקדות)</span>
                   <span class="text-[11px] font-mono font-bold text-slate-700">${fmtILS(dep)}</span>
                 </div>
                 <div>
-                  <span class="text-[8px] text-slate-400 font-bold block">רווח</span>
-                  <span class="text-[11px] font-mono font-bold ${isPos ? 'text-emerald-600' : 'text-rose-500'}">${fmtILS(profit)}</span>
+                  <span class="text-[8px] text-slate-400 font-bold block">רווח ברוטו</span>
+                  <span class="text-[11px] font-mono font-bold ${isPos ? 'text-emerald-600' : 'text-rose-500'}">${fmtILS(grossProfit)}</span>
                 </div>
                 <div>
                   <span class="text-[8px] text-slate-400 font-bold block">תשואה</span>
@@ -659,9 +710,20 @@
                 </div>
               </div>
 
+              <!-- Capital Gains Tax Breakdown -->
+              <div class="mb-2 p-2 bg-amber-50/50 border border-amber-100/80 rounded-xl flex items-center justify-between text-[10px]">
+                <div class="flex items-center gap-1 font-bold text-slate-600">
+                  <span>⚖️ מס רווחי הון (${taxPct}%):</span>
+                  <span class="font-mono text-rose-600">-${fmtILS(taxAmount)}</span>
+                </div>
+                <div class="font-bold text-emerald-800">
+                  נטו בכיס: <span class="font-mono font-black text-emerald-700">${fmtILS(netBalance)}</span>
+                </div>
+              </div>
+
               ${monthly > 0 ? `
                 <div class="mb-1.5 bg-blue-50 border border-blue-100 text-blue-900 px-2 py-0.5 rounded-lg flex items-center justify-between text-[10px] font-bold">
-                  <span>🔄 הו״ק:</span>
+                  <span>🔄 הו״ק חודשית:</span>
                   <span class="font-mono font-black">${fmtILS(monthly)}/חודש</span>
                 </div>
               ` : ''}
@@ -674,10 +736,16 @@
               ${f.notes ? `<p class="mt-1 text-[9px] text-slate-500 bg-amber-50/60 p-1 rounded border border-amber-100 font-medium truncate">💬 ${f.notes}</p>` : ''}
             </div>
 
+            <!-- Action Buttons: Quick Update & One-Time Deposit -->
             <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between">
-              <button onclick="openQuickModal('${f.id}')" class="squish-btn text-[10px] font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2 py-0.5 rounded-lg transition flex items-center gap-0.5">
-                <span>⚡ עדכון יתרה</span>
-              </button>
+              <div class="flex items-center gap-1.5">
+                <button onclick="openQuickModal('${f.id}')" class="squish-btn text-[10px] font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2 py-0.5 rounded-lg transition flex items-center gap-0.5">
+                  <span>⚡ יתרה</span>
+                </button>
+                <button onclick="openDepositModal('${f.id}')" class="squish-btn text-[10px] font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2 py-0.5 rounded-lg transition flex items-center gap-0.5">
+                  <span>➕ הפקדה</span>
+                </button>
+              </div>
               <div class="flex gap-2 text-[10px] font-bold">
                 <button onclick="editFund('${f.id}')" class="text-slate-400 hover:text-slate-700">ערוך</button>
                 <button onclick="deleteFund('${f.id}')" class="text-rose-400 hover:text-rose-600">מחק</button>
@@ -687,24 +755,29 @@
         `;
       }).join('');
 
-      calculateTotals(totalBal, totalDep, totalMonthly, latestDate);
+      calculateTotals(totalBal, totalDep, totalMonthly, totalTax);
     }
 
-    function calculateTotals(bal, dep, monthly, latestDate) {
-      const profit = bal - dep;
-      const roi = dep > 0 ? (profit / dep) * 100 : 0;
+    function calculateTotals(bal, dep, monthly, tax) {
+      const grossProfit = bal - dep;
+      const netProfit = grossProfit - tax;
+      const netBalance = bal - tax;
+      const roi = dep > 0 ? (grossProfit / dep) * 100 : 0;
+
       document.getElementById('totalBalance').textContent = fmtILS(bal);
-      document.getElementById('totalBalanceSub').textContent = `עדכון: ${fmtDate(latestDate)}`;
+      document.getElementById('totalNetBalance').textContent = `נטו בכיס: ${fmtILS(netBalance)}`;
       document.getElementById('totalDeposits').textContent = fmtILS(dep);
       document.getElementById('totalMonthly').textContent = fmtILS(monthly);
       
       const profitEl = document.getElementById('totalProfit');
-      profitEl.textContent = fmtILS(profit);
-      profitEl.className = `text-lg font-black font-mono ${profit >= 0 ? 'text-emerald-600' : 'text-rose-500'}`;
+      profitEl.textContent = fmtILS(netProfit);
+      profitEl.className = `text-lg font-black font-mono ${netProfit >= 0 ? 'text-emerald-600' : 'text-rose-500'}`;
+
+      document.getElementById('totalTaxEst').textContent = `מס משוער: -${fmtILS(tax)}`;
 
       const roiEl = document.getElementById('totalRoi');
       roiEl.textContent = fmtPCT(roi);
-      roiEl.className = `text-[10px] font-bold font-mono px-1.5 py-0.5 rounded ${roi >= 0 ? 'text-emerald-700 bg-emerald-50' : 'text-rose-700 bg-rose-50'}`;
+      roiEl.className = `text-[9px] font-bold font-mono px-1 py-0.2 rounded ${roi >= 0 ? 'text-emerald-700 bg-emerald-50' : 'text-rose-700 bg-rose-50'}`;
     }
 
     function populateOwnerSelect(selectedOwner) {
@@ -722,6 +795,7 @@
       
       const defaultOwner = (currentFilter !== 'ALL') ? currentFilter : 'בובו';
       populateOwnerSelect(defaultOwner);
+      handleTypeChange('קופת גמל להשקעה');
 
       document.getElementById('modalTitle').textContent = 'הוספת קופה חדשה ✨';
       document.getElementById('fundModal').classList.remove('hidden');
@@ -745,6 +819,7 @@
       document.getElementById('fieldDeposits').value = f.deposits;
       document.getElementById('fieldBalance').value = f.balance;
       document.getElementById('fieldMonthly').value = f.monthlyDeposit || '';
+      document.getElementById('fieldTaxRate').value = f.taxRate !== undefined ? f.taxRate : 25;
       document.getElementById('fieldFeeAcc').value = f.feeAccumulation || '';
       document.getElementById('fieldFeeDep').value = f.feeDeposit || '';
       document.getElementById('fieldNotes').value = f.notes || '';
@@ -768,6 +843,7 @@
         deposits: parseFloat(document.getElementById('fieldDeposits').value) || 0,
         balance: parseFloat(document.getElementById('fieldBalance').value) || 0,
         monthly_deposit: parseFloat(document.getElementById('fieldMonthly').value) || 0,
+        tax_rate: parseFloat(document.getElementById('fieldTaxRate').value) || 0,
         fee_accumulation: document.getElementById('fieldFeeAcc').value ? Number(document.getElementById('fieldFeeAcc').value) : null,
         fee_deposit: document.getElementById('fieldFeeDep').value ? Number(document.getElementById('fieldFeeDep').value) : null,
         notes: document.getElementById('fieldNotes').value,
@@ -809,6 +885,47 @@
       loadFunds();
     }
 
+    // One-Time Deposit Functionality
+    function openDepositModal(id) {
+      const f = funds.find(x => x.id === id);
+      if (!f) return;
+      document.getElementById('depositFundId').value = f.id;
+      document.getElementById('depositFundName').textContent = `${f.name} • ${f.owner}`;
+      document.getElementById('depositAmount').value = '';
+      document.getElementById('depositAddToBalance').checked = true;
+      document.getElementById('depositModal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('depositAmount').focus(), 50);
+    }
+
+    function closeDepositModal() {
+      document.getElementById('depositModal').classList.add('hidden');
+    }
+
+    async function handleOneTimeDeposit(e) {
+      e.preventDefault();
+      const id = document.getElementById('depositFundId').value;
+      const amount = parseFloat(document.getElementById('depositAmount').value);
+      const updateBalance = document.getElementById('depositAddToBalance').checked;
+
+      if (!amount || amount <= 0) return;
+
+      const f = funds.find(x => x.id === id);
+      if (!f) return;
+
+      const newDeposits = (f.deposits || 0) + amount;
+      const newBalance = updateBalance ? ((f.balance || 0) + amount) : (f.balance || 0);
+
+      closeDepositModal();
+      await sbClient.from('funds').update({
+        deposits: newDeposits,
+        balance: newBalance,
+        updated_at: new Date().toISOString()
+      }).eq('id', id);
+
+      loadFunds();
+    }
+
+    // Settings Modal
     function openSettingsModal() {
       renderSettingsMembers();
       document.getElementById('settingsModal').classList.remove('hidden');
@@ -902,13 +1019,17 @@
         return;
       }
 
-      const headers = ['בן משפחה', 'שם הקופה', 'סוג קופה', 'גוף מנהל', 'מספר קופה', 'הפקדות (קרן)', 'שווי יתרה', 'הפקדה חודשית', 'רווח נקי', 'תשואה %', 'דמי ניהול צבירה %', 'דמי ניהול הפקדה %', 'הערות', 'תאריך עדכון'];
+      const headers = ['בן משפחה', 'שם הקופה', 'סוג קופה', 'גוף מנהל', 'מספר קופה', 'הפקדות (קרן)', 'שווי יתרה', 'הפקדה חודשית', 'מס רווחי הון %', 'מס צפוי', 'שווי נטו', 'רווח נקי בכיס', 'תשואה %', 'הערות', 'תאריך עדכון'];
       
       const rows = funds.map(f => {
         const dep = f.deposits || 0;
         const bal = f.balance || 0;
-        const profit = bal - dep;
-        const roi = dep > 0 ? ((profit / dep) * 100).toFixed(2) + '%' : '0.00%';
+        const grossProfit = bal - dep;
+        const taxPct = f.taxRate || 0;
+        const taxAmount = (grossProfit > 0 && taxPct > 0) ? (grossProfit * (taxPct / 100)) : 0;
+        const netProfit = grossProfit - taxAmount;
+        const netBalance = bal - taxAmount;
+        const roi = dep > 0 ? ((grossProfit / dep) * 100).toFixed(2) + '%' : '0.00%';
         
         return [
           `"${f.owner || ''}"`,
@@ -919,10 +1040,11 @@
           dep,
           bal,
           f.monthlyDeposit || 0,
-          profit,
+          taxPct,
+          taxAmount,
+          netBalance,
+          netProfit,
           `"${roi}"`,
-          f.feeAccumulation || 0,
-          f.feeDeposit || 0,
           `"${(f.notes || '').replace(/"/g, '""')}"`,
           `"${fmtDate(f.updatedAt)}"`
         ].join(',');
