@@ -100,35 +100,32 @@
   <!-- Main App Shell -->
   <div id="appShell" class="flex-1 flex flex-col hidden">
 
-    <!-- Responsive Navbar -->
+    <!-- Clean, Private Navbar -->
     <nav class="border-b border-amber-100/80 bg-white/95 backdrop-blur-md sticky top-0 z-30 shadow-sm">
-      <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-2">
+      <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         
-        <!-- Brand -->
-        <div class="flex items-center gap-2 min-w-0">
+        <!-- Brand (No Email Shown) -->
+        <div class="flex items-center gap-2.5">
           <div class="w-9 h-9 shrink-0 rounded-2xl bg-amber-100 border border-amber-200 flex items-center justify-center text-lg shadow-sm">
             🏡
           </div>
-          <div class="min-w-0">
-            <div class="flex items-center gap-1.5 leading-none">
-              <span class="font-black text-base md:text-lg tracking-tight text-slate-800 whitespace-nowrap">Bobo <span class="text-emerald-500 font-mono">& Co.</span></span>
-              <span class="text-[10px] font-bold bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full border border-amber-200/80 whitespace-nowrap hidden sm:inline-block">המשפוחה 🧸</span>
-            </div>
-            <span id="userBadge" class="text-[10px] text-slate-400 block font-medium truncate max-w-[120px] sm:max-w-[180px] mt-0.5"></span>
+          <div class="flex items-center gap-2">
+            <span class="font-black text-lg tracking-tight text-slate-800 whitespace-nowrap">Bobo <span class="text-emerald-500 font-mono">& Co.</span></span>
+            <span class="text-[10px] font-bold bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full border border-amber-200/80 whitespace-nowrap">המשפוחה 🧸</span>
           </div>
         </div>
 
         <!-- Actions -->
-        <div class="flex items-center gap-1.5 shrink-0">
-          <button onclick="openSettingsModal()" title="הגדרות" class="w-8 h-8 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 hover:bg-amber-50 hover:border-amber-300 text-slate-600 text-sm transition">
+        <div class="flex items-center gap-2">
+          <button onclick="openSettingsModal()" title="הגדרות וחשבון" class="w-8 h-8 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 hover:bg-amber-50 hover:border-amber-300 text-slate-600 text-sm transition">
             ⚙️
           </button>
           <button onclick="handleLogout()" title="התנתק" class="w-8 h-8 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 text-slate-500 text-xs transition">
             🚪
           </button>
-          <button onclick="openAddModal()" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 shadow-bobo-button transition">
+          <button onclick="openAddModal()" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black px-3.5 py-1.5 rounded-xl text-xs flex items-center gap-1 shadow-bobo-button transition">
             <span class="text-sm leading-none">➕</span>
-            <span class="whitespace-nowrap">קופה</span>
+            <span>קופה</span>
           </button>
         </div>
 
@@ -144,10 +141,7 @@
             🌱
           </div>
           <div>
-            <div class="flex items-center justify-center sm:justify-start gap-2">
-              <h2 class="text-lg sm:text-xl font-black text-slate-800 tracking-tight" id="heroTitle">Bobo & Co.</h2>
-              <span class="text-[10px] font-black bg-white/90 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-full sm:hidden">המשפוחה 🧸</span>
-            </div>
+            <h2 class="text-lg sm:text-xl font-black text-slate-800 tracking-tight" id="heroTitle">Bobo & Co.</h2>
             <p class="text-xs text-slate-600 font-medium mt-0.5" id="heroSubtitle">החסכונות והקופות של כל המשפחה 🏡</p>
           </div>
         </div>
@@ -326,7 +320,7 @@
 
         <div>
           <label class="block text-[11px] font-bold text-slate-600 mb-0.5 mr-1">הערות / הסדרי חסכון</label>
-          <input type="text" id="fieldNotes" placeholder="הוראת קבע ב-10 לחודש" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
+          <input type="text" id="fieldNotes" placeholder="הוראת קבע ב-10 לחודש" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-1.5 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
         </div>
 
         <div class="pt-2 flex justify-end gap-2 border-t border-slate-100">
@@ -397,6 +391,7 @@
           </button>
         </div>
 
+        <!-- Account Info Stays Private Inside Settings -->
         <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5">
           <h4 class="text-xs font-black text-slate-800 mb-1.5 flex items-center gap-1">
             <span>🔐</span>
@@ -511,7 +506,6 @@
     function showApp(email) {
       document.getElementById('authScreen').classList.add('hidden');
       document.getElementById('appShell').classList.remove('hidden');
-      document.getElementById('userBadge').textContent = email;
       document.getElementById('settingsUserEmail').textContent = email;
       loadFunds();
     }
