@@ -22,9 +22,9 @@ if not funds or not isinstance(funds, list):
 
 print(f"Found {len(funds)} funds with track_id.")
 
-# 2. Query data.gov.il GemelNet API
+# 2. Query data.gov.il GemelNet API (Active 2024+ datastore resource)
 GEMELNET_API = "https://data.gov.il/api/3/action/datastore_search"
-RESOURCE_ID = "0863004d-e9ef-4c9a-b44c-2eb646f906e5"
+RESOURCE_ID = "a30dcbea-a1d2-482c-ae29-8f781f5025fb"
 
 for fund in funds:
     track_id = str(fund.get('track_id', '')).strip()
@@ -34,14 +34,20 @@ for fund in funds:
     params = {
         "resource_id": RESOURCE_ID,
         "q": track_id,
-        "limit": 10
+        "limit": 20
     }
 
     try:
         api_res = requests.get(GEMELNET_API, params=params, timeout=15).json()
         records = api_res.get("result", {}).get("records", [])
 
-        matching = [r for r in records if str(r.get("FUND_ID", "")).strip() == track_id or str(r.get("SHM_KUPA", "")).strip() == track_id]
+        matching = [
+            r for r in records 
+            if str(r.get("FUND_ID", "")).strip() == track_id 
+            or str(r.get("SHM_KUPA", "")).strip() == track_id 
+            or str(r.get("KUPA_ID", "")).strip() == track_id
+        ]
+        
         if matching:
             latest = matching[0]
             monthly_return = float(latest.get("TSUA_HODSHIT", 0))
