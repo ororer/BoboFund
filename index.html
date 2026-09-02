@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>BoboFund 🧸 | מעקב קופות וחסכונות משפחתי</title>
+  <title>Bobo & Co. 🧸🏡 | החסכונות והקופות של כל המשפחה</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -54,7 +54,6 @@
       transform: translateY(2px);
       box-shadow: 0 1px 0 rgba(0,0,0,0.1) !important;
     }
-    /* Hide scrollbars for filter tabs */
     .no-scrollbar::-webkit-scrollbar {
       display: none;
     }
@@ -72,12 +71,12 @@
       
       <div class="w-20 h-20 mx-auto -mt-14 mb-4 rounded-3xl bg-gradient-to-tr from-amber-300 via-amber-200 to-emerald-200 p-1 shadow-lg shadow-amber-500/20 flex items-center justify-center rotate-3 hover:rotate-0 transition-transform">
         <div class="w-full h-full bg-white rounded-[22px] flex items-center justify-center text-3xl">
-          🧸
+          🏡
         </div>
       </div>
 
-      <h2 class="text-2xl font-black text-slate-800 tracking-tight">האוצר המשפחתי</h2>
-      <p class="text-xs text-slate-500 mt-1 mb-6 font-medium">כניסה מאובטחת לתיק החסכונות של המשפחה</p>
+      <h2 class="text-2xl font-black text-slate-800 tracking-tight">Bobo & Co.</h2>
+      <p class="text-xs text-slate-500 mt-1 mb-6 font-medium">החסכונות והקופות של כל המשפחה 🧸</p>
 
       <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-3.5 text-right">
         <div>
@@ -92,7 +91,7 @@
         <div id="loginError" class="hidden text-xs font-bold text-rose-600 bg-rose-50 border-2 border-rose-200 rounded-2xl p-2.5 text-center"></div>
 
         <button type="submit" id="loginBtn" class="w-full squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black py-3 rounded-2xl text-sm shadow-bobo-button transition mt-3">
-          פתח את הכספת ✨
+          פתח את הכספת המשפחתית ✨
         </button>
       </form>
     </div>
@@ -104,19 +103,21 @@
     <nav class="border-b border-amber-100/80 bg-white/90 backdrop-blur-md sticky top-0 z-30 shadow-sm">
       <div class="max-w-6xl mx-auto px-5 h-18 py-3 flex items-center justify-between">
         
+        <!-- Brand -->
         <div class="flex items-center gap-3">
           <div class="w-11 h-11 rounded-2xl bg-amber-100 border-2 border-amber-200 flex items-center justify-center text-2xl shadow-sm">
-            🧸
+            🏡
           </div>
           <div>
             <div class="flex items-center gap-2">
-              <span class="font-black text-xl tracking-tight text-slate-800">Bobo<span class="text-emerald-500 font-mono">Fund</span></span>
-              <span class="text-[11px] font-bold bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full border border-amber-200/80">חיסכון משפחתי 🏡</span>
+              <span class="font-black text-xl tracking-tight text-slate-800">Bobo <span class="text-emerald-500 font-mono">& Co.</span></span>
+              <span class="text-[11px] font-bold bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full border border-amber-200/80">Family Vault 🧸</span>
             </div>
-            <span id="userBadge" class="text-[11px] text-slate-400 block font-medium truncate max-w-[140px]"></span>
+            <span id="userBadge" class="text-[11px] text-slate-400 block font-medium truncate max-w-[150px]"></span>
           </div>
         </div>
 
+        <!-- Actions -->
         <div class="flex items-center gap-2.5">
           <button onclick="handleLogout()" title="התנתק" class="w-9 h-9 flex items-center justify-center rounded-2xl border-2 border-slate-200 bg-slate-50 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 text-slate-500 text-sm transition">
             🚪
@@ -132,28 +133,26 @@
 
     <main class="max-w-6xl mx-auto px-5 pt-8 pb-24 w-full flex-1">
 
-      <!-- Friendly Banner -->
+      <!-- Hero Banner -->
       <div class="bg-gradient-to-r from-amber-200/50 via-rose-100/40 to-emerald-100/50 border-2 border-amber-200/60 rounded-[28px] p-6 mb-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-bobo-sm">
         <div class="flex items-center gap-4 text-center md:text-right">
           <div class="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-3xl shrink-0">
             🌱
           </div>
           <div>
-            <h2 class="text-xl md:text-2xl font-black text-slate-800 tracking-tight" id="heroTitle">מרכז השליטה הפיננסי של המשפחה</h2>
-            <p class="text-xs md:text-sm text-slate-600 font-medium mt-0.5" id="heroSubtitle">מעקב מרוכז אחר קופות, פיקדונות וחסכונות לכל בני הבית</p>
+            <h2 class="text-xl md:text-2xl font-black text-slate-800 tracking-tight" id="heroTitle">Bobo & Co.</h2>
+            <p class="text-xs md:text-sm text-slate-600 font-medium mt-0.5" id="heroSubtitle">החסכונות והקופות של כל המשפחה 🏡</p>
           </div>
         </div>
         <div class="flex items-center gap-2 bg-white/80 border border-amber-200/80 px-3.5 py-1.5 rounded-full font-mono text-xs text-slate-600">
           <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>ענן מסונכרן</span>
+          <span>ענן משפחתי מסונכרן</span>
         </div>
       </div>
 
       <!-- Family Members Filter Tabs -->
       <div class="mb-8">
-        <div class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar" id="membersFilterTabs">
-          <!-- Dynamic Filter Buttons Injected Here -->
-        </div>
+        <div class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar" id="membersFilterTabs"></div>
       </div>
 
       <!-- KPI Summary Cards -->
@@ -165,7 +164,7 @@
             <span class="text-xl">💰</span>
           </div>
           <div id="totalBalance" class="text-2xl md:text-3xl font-black font-mono text-emerald-600 tracking-tight">₪0</div>
-          <div class="mt-2 text-[11px] font-bold text-slate-400">שווי נוכחי נבחר</div>
+          <div class="mt-2 text-[11px] font-bold text-slate-400">שווי שוק נוכחי</div>
         </div>
 
         <div class="bg-white border-2 border-amber-100 rounded-[28px] p-5 shadow-bobo hover:shadow-lg transition">
@@ -198,7 +197,7 @@
 
       <div class="flex items-center justify-between mb-5 px-1">
         <div class="flex items-center gap-2">
-          <h3 class="text-lg font-black text-slate-800" id="sectionTitle">קופות פעילות</h3>
+          <h3 class="text-lg font-black text-slate-800" id="sectionTitle">כל הקופות של המשפחה</h3>
           <span id="fundCount" class="text-xs font-mono font-bold bg-amber-200 text-amber-900 px-2.5 py-0.5 rounded-full">0</span>
         </div>
       </div>
@@ -207,10 +206,10 @@
 
       <div id="emptyState" class="hidden text-center py-16 bg-white border-3 border-dashed border-amber-200 rounded-[32px] p-8 shadow-bobo-sm">
         <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-amber-100 flex items-center justify-center text-3xl">
-          🍼
+          🏡
         </div>
         <h4 class="text-lg font-black text-slate-800 mb-1" id="emptyTitle">אין עדיין קופות להצגה</h4>
-        <p class="text-xs text-slate-500 max-w-sm mx-auto mb-5 font-medium">הוסיפו קופה חדשה ושייכו אותה לבן המשפחה המתאים!</p>
+        <p class="text-xs text-slate-500 max-w-sm mx-auto mb-5 font-medium">הוסיפו קופה חדשה ב-Bobo & Co. ושייכו אותה לבן המשפחה המתאים!</p>
         <button onclick="openAddModal()" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black px-5 py-2.5 rounded-2xl text-xs shadow-bobo-button transition">
           הוספת קופה ראשונה ✨
         </button>
@@ -226,7 +225,7 @@
       <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
         <div class="flex items-center gap-2">
           <span class="text-2xl">📝</span>
-          <h3 id="modalTitle" class="text-lg font-black text-slate-800">הוספת קופה</h3>
+          <h3 id="modalTitle" class="text-lg font-black text-slate-800">הוספת קופה חדשה</h3>
         </div>
         <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center font-bold">✕</button>
       </div>
@@ -242,7 +241,7 @@
               <option value="בובו">בובו 🧸</option>
               <option value="אבא">אבא 👨</option>
               <option value="אמא">אמא 👩</option>
-              <option value="משותף">משותף / כללי 🏡</option>
+              <option value="משותף">משותף 🏡</option>
               <option value="__custom__">שם אחר...</option>
             </select>
             <input type="text" id="fieldOwnerCustom" placeholder="הקלד שם..." class="w-1/2 bg-slate-50 border-2 border-slate-200 rounded-2xl px-3 py-2 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none hidden">
@@ -271,7 +270,7 @@
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">גוף מנהל *</label>
-            <input type="text" id="fieldManager" required placeholder="מיטב, אלטשולר..." class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-3.5 py-2 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
+            <input type="text" id="fieldManager" required placeholder="מיטב, אלטשולר, הראל..." class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-3.5 py-2 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">מספר חשבון / קופה</label>
@@ -344,7 +343,7 @@
     const sbClient = window.supabase.createClient(SB_URL, SB_ANON);
 
     let funds = [];
-    let currentFilter = 'ALL'; // ALL or specific member name
+    let currentFilter = 'ALL';
 
     const fmtILS = (n) => '₪' + Math.round(n || 0).toLocaleString('he-IL');
     const fmtPCT = (n) => (n >= 0 ? '+' : '') + Number(n || 0).toFixed(2) + '%';
@@ -392,7 +391,7 @@
 
       const { data, error } = await sbClient.auth.signInWithPassword({ email, password });
 
-      btn.textContent = 'פתח את הכספת ✨';
+      btn.textContent = 'פתח את הכספת המשפחתית ✨';
       btn.disabled = false;
 
       if (error) {
@@ -442,8 +441,6 @@
 
     function renderFilterTabs() {
       const container = document.getElementById('membersFilterTabs');
-      
-      // איסוף שמות החברים הייחודיים
       const allMembers = Array.from(new Set(['בובו', 'אבא', 'אמא', 'משותף', ...funds.map(f => f.owner)])).filter(Boolean);
 
       const tabBtn = (id, label, icon) => {
@@ -489,7 +486,7 @@
         : funds.filter(f => f.owner === currentFilter);
 
       document.getElementById('fundCount').textContent = filteredFunds.length;
-      document.getElementById('sectionTitle').textContent = currentFilter === 'ALL' ? 'כל הקופות של המשפחה' : `קופות של ${currentFilter}`;
+      document.getElementById('sectionTitle').textContent = currentFilter === 'ALL' ? 'כל הקופות של המשפחה' : `הקופות של ${currentFilter}`;
 
       if (filteredFunds.length === 0) {
         grid.innerHTML = '';
@@ -539,7 +536,6 @@
                 </div>
               </div>
 
-              <!-- Mini Stats Box -->
               <div class="grid grid-cols-3 gap-2 my-3 p-3 bg-slate-50/80 border border-slate-100 rounded-2xl text-center">
                 <div>
                   <span class="text-[10px] text-slate-400 font-bold block">הפקדות</span>
@@ -682,7 +678,7 @@
     }
 
     async function deleteFund(id) {
-      if (confirm('למחוק את הקופה הזו מהתיק המשפחתי? 🗑️')) {
+      if (confirm('למחוק את הקופה הזו מהתיק של Bobo & Co.? 🗑️')) {
         await sbClient.from('funds').delete().eq('id', id);
         loadFunds();
       }
