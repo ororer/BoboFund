@@ -65,7 +65,6 @@
 </head>
 <body class="text-slate-800 min-h-screen antialiased flex flex-col font-sans selection:bg-emerald-100 selection:text-emerald-800 w-full overflow-x-hidden">
 
-  <!-- Fullscreen Login Overlay -->
   <div id="authScreen" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4">
     <div class="bg-white border-4 border-amber-100 rounded-[32px] p-6 max-w-sm w-full shadow-2xl relative text-center">
       <div class="w-16 h-16 mx-auto -mt-12 mb-3 rounded-2xl bg-gradient-to-tr from-amber-300 via-amber-200 to-emerald-200 p-1 shadow-lg shadow-amber-500/20 flex items-center justify-center rotate-3">
@@ -96,10 +95,8 @@
     </div>
   </div>
 
-  <!-- Main App Shell -->
   <div id="appShell" class="flex-1 flex flex-col hidden w-full overflow-x-hidden">
 
-    <!-- Header -->
     <header class="border-b border-amber-100/80 bg-white/90 backdrop-blur-md sticky top-0 z-30 w-full">
       <div class="max-w-xl mx-auto px-4 h-14 flex items-center justify-between w-full">
         <div class="flex items-center gap-2">
@@ -126,7 +123,6 @@
 
     <main class="max-w-xl mx-auto px-4 pt-4 pb-20 w-full flex-1">
 
-      <!-- Single KPI Hero Card -->
       <div class="bg-white border-2 border-amber-100/90 rounded-[28px] p-5 mb-4 shadow-bobo text-center relative overflow-hidden">
         <div class="text-[11px] font-bold text-slate-400 mb-1 flex items-center justify-center gap-1.5">
           <span>שווי התיק המשפחתי</span>
@@ -151,21 +147,17 @@
         </div>
       </div>
 
-      <!-- Segmented Floating Pill Bar -->
       <div class="mb-5 flex items-center justify-center w-full">
         <div class="p-1 bg-slate-200/60 rounded-full flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full shadow-inner" id="membersCapsule"></div>
       </div>
 
-      <!-- Section Title & Counter -->
       <div class="flex items-center justify-between mb-3 px-1">
         <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider" id="listHeaderTitle">הקופות ברשימה</h3>
         <span id="listCountBadge" class="text-[11px] font-mono font-bold text-slate-400">0 קופות</span>
       </div>
 
-      <!-- Simplified Fund Cards List -->
       <div id="fundsList" class="space-y-2.5"></div>
 
-      <!-- Empty State -->
       <div id="emptyState" class="hidden text-center py-12 bg-white border-2 border-dashed border-amber-200 rounded-3xl p-6">
         <div class="w-12 h-12 mx-auto mb-2 rounded-full bg-amber-100 flex items-center justify-center text-xl">
           🏡
@@ -180,7 +172,6 @@
     </main>
   </div>
 
-  <!-- Deep Dive Interactive Detail Modal -->
   <div id="detailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
     <div class="bg-white border-t-4 sm:border-4 border-amber-100 rounded-t-[32px] sm:rounded-[32px] w-full max-w-md p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto no-scrollbar">
       
@@ -199,7 +190,6 @@
         <button onclick="closeDetailModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center font-bold text-sm">✕</button>
       </div>
 
-      <!-- Balances Breakdown Grid -->
       <div class="grid grid-cols-2 gap-2.5 mb-3">
         <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100 text-right">
           <span class="text-[10px] font-bold text-slate-400 block">יתרה כוללת (שווי)</span>
@@ -213,7 +203,6 @@
         </div>
       </div>
 
-      <!-- GemelNet Return Box (If track_id exists) -->
       <div id="detailGemelnetBox" class="hidden bg-emerald-50/60 border border-emerald-200 rounded-2xl p-3 mb-3 text-right">
         <div class="flex items-center justify-between mb-1">
           <span class="text-xs font-black text-emerald-900 flex items-center gap-1">
@@ -234,7 +223,6 @@
         </div>
       </div>
 
-      <!-- Profit & Tax Deep Dive Box -->
       <div class="bg-amber-50/50 border border-amber-100 rounded-2xl p-3.5 mb-3 space-y-2 text-right">
         <div class="flex items-center justify-between text-xs">
           <span class="text-slate-600 font-bold">רווח הון ברוטו:</span>
@@ -250,7 +238,6 @@
         </div>
       </div>
 
-      <!-- Additional Specs -->
       <div class="space-y-1.5 text-xs text-slate-500 mb-5 bg-slate-50 p-3 rounded-2xl border border-slate-100">
         <div class="flex justify-between" id="detailTrackIdRow">
           <span>קוד מסלול באוצר (מ״ה):</span>
@@ -270,7 +257,6 @@
         </div>
       </div>
 
-      <!-- Action Buttons -->
       <div class="grid grid-cols-2 gap-2 mb-2">
         <button id="btnActionQuick" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 transition">
           <span>⚡ עדכון יתרה</span>
@@ -287,7 +273,6 @@
     </div>
   </div>
 
-  <!-- Add / Edit Modal -->
   <div id="fundModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white border-4 border-amber-100 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl p-5">
       <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
@@ -304,6 +289,17 @@
         <div>
           <label class="block text-[11px] font-bold text-slate-600 mb-0.5">עבור מי הקופה? *</label>
           <select id="fieldOwnerSelect" class="w-full bg-amber-50 border border-amber-200 rounded-xl px-2.5 py-1.5 text-xs font-bold text-amber-900 focus:outline-none"></select>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-600 mb-0.5">קוד מסלול באוצר (מ״ה)</label>
+          <div class="flex gap-1.5">
+            <input type="text" id="fieldTrackId" placeholder="למשל: 11823" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 font-mono focus:border-emerald-400 focus:bg-white focus:outline-none transition">
+            <button type="button" id="btnFetchTrack" onclick="fetchDetailsByTrackId()" class="squish-btn bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 font-bold px-2.5 py-1.5 rounded-xl text-xs shrink-0 flex items-center gap-1 transition">
+              <span>🔍</span>
+              <span id="fetchTrackText">משוך פרטים</span>
+            </button>
+          </div>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
@@ -332,14 +328,9 @@
             <input type="text" id="fieldManager" required placeholder="מיטב, הראל..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
           </div>
           <div>
-            <label class="block text-[11px] font-bold text-slate-600 mb-0.5">קוד מסלול באוצר (מ״ה)</label>
-            <input type="text" id="fieldTrackId" placeholder="למשל: 11823" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 font-mono focus:border-emerald-400 focus:bg-white focus:outline-none transition">
+            <label class="block text-[11px] font-bold text-slate-600 mb-0.5">מספר חשבון אצל המנהל</label>
+            <input type="text" id="fieldNumber" placeholder="1234567" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 font-mono focus:border-emerald-400 focus:bg-white focus:outline-none transition">
           </div>
-        </div>
-
-        <div>
-          <label class="block text-[11px] font-bold text-slate-600 mb-0.5">מספר חשבון / קופה אצל המנהל</label>
-          <input type="text" id="fieldNumber" placeholder="1234567" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 font-mono focus:border-emerald-400 focus:bg-white focus:outline-none transition">
         </div>
 
         <div class="grid grid-cols-3 gap-1.5 bg-slate-50 p-2 rounded-xl border border-slate-200/80">
@@ -385,7 +376,6 @@
     </div>
   </div>
 
-  <!-- Quick Balance Update Modal -->
   <div id="quickModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white border-4 border-amber-100 rounded-3xl w-full max-w-xs p-5 shadow-2xl text-center">
       <div class="w-10 h-10 mx-auto mb-2 rounded-full bg-emerald-100 flex items-center justify-center text-xl">
@@ -405,7 +395,6 @@
     </div>
   </div>
 
-  <!-- One-Time Deposit Modal -->
   <div id="depositModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white border-4 border-amber-100 rounded-3xl w-full max-w-xs p-5 shadow-2xl text-center">
       <div class="w-10 h-10 mx-auto mb-2 rounded-full bg-blue-100 flex items-center justify-center text-xl">
@@ -434,7 +423,6 @@
     </div>
   </div>
 
-  <!-- Settings Modal -->
   <div id="settingsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white border-4 border-amber-100 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl p-5">
       <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
@@ -560,6 +548,68 @@
       }
     }
 
+    async function fetchDetailsByTrackId() {
+      const trackInput = document.getElementById('fieldTrackId');
+      const trackId = trackInput.value.trim();
+      const btnText = document.getElementById('fetchTrackText');
+
+      if (!trackId) {
+        alert('נא להזין קוד מ"ה קודם');
+        trackInput.focus();
+        return;
+      }
+
+      btnText.textContent = 'מושך... ⏳';
+
+      try {
+        const url = `https://data.gov.il/api/3/action/datastore_search?resource_id=0863004d-e9ef-4c9a-b44c-2eb646f906e5&q=${encodeURIComponent(trackId)}&limit=10`;
+        const res = await fetch(url);
+        const data = await res.json();
+        const records = data?.result?.records || [];
+
+        const match = records.find(r => String(r.FUND_ID).trim() === trackId || String(r.SHM_KUPA || '').trim() === trackId);
+
+        if (match) {
+          if (match.FUND_NAME) {
+            document.getElementById('fieldName').value = match.FUND_NAME;
+          }
+          
+          if (match.MANAGING_CORPORATION) {
+            let managerName = match.MANAGING_CORPORATION
+              .replace(/בע"מ|בע״מ/g, '')
+              .replace(/ניהול קופות גמל ופנסיה|ניהול קופות גמל|קופות גמל/g, '')
+              .trim();
+            document.getElementById('fieldManager').value = managerName;
+          }
+
+          const typeSelect = document.getElementById('fieldType');
+          const fundName = (match.FUND_NAME || '');
+          if (fundName.includes('להשקעה')) {
+            typeSelect.value = 'קופת גמל להשקעה';
+          } else if (fundName.includes('השתלמות')) {
+            typeSelect.value = 'קרן השתלמות';
+          } else if (fundName.includes('חיסכון לכל ילד') || fundName.includes('לילד')) {
+            typeSelect.value = 'חיסכון לכל ילד';
+          } else if (fundName.includes('פוליסת חיסכון') || fundName.includes('חיסכון מיוחד')) {
+            typeSelect.value = 'פוליסת חיסכון';
+          } else if (fundName.includes('גמל')) {
+            typeSelect.value = 'קופת גמל';
+          }
+          handleTypeChange(typeSelect.value);
+
+          btnText.textContent = 'הושלם! ✨';
+          setTimeout(() => { btnText.textContent = 'משוך פרטים'; }, 2000);
+        } else {
+          alert(`לא נמצאו פרטים במאגר גמל-נט עבור מ"ה ${trackId}`);
+          btnText.textContent = 'משוך פרטים';
+        }
+      } catch (err) {
+        console.error('Error fetching GemelNet details:', err);
+        alert('שגיאה בתקשורת עם מאגר משרד האוצר. בדוק את החיבור לרשת.');
+        btnText.textContent = 'משוך פרטים';
+      }
+    }
+
     async function checkAuth() {
       const { data: { session } } = await sbClient.auth.getSession();
       if (session) {
@@ -627,7 +677,7 @@
           taxRate: item.tax_rate !== undefined && item.tax_rate !== null ? Number(item.tax_rate) : 25,
           feeAccumulation: item.fee_accumulation,
           feeDeposit: item.fee_deposit,
-          gemelnetReturn: item.gemelnet_return_monthly !== null ? Number(item.gemelnet_return_monthly) : null,
+          gemelnetReturn: item.gemelnet_return_monthly !== null && item.gemelnet_return_monthly !== undefined ? Number(item.gemelnet_return_monthly) : null,
           gemelnetPeriod: item.gemelnet_period || '',
           notes: item.notes,
           updatedAt: item.updated_at
@@ -795,17 +845,14 @@
       document.getElementById('detailTaxAmount').textContent = `-${fmtILS(taxAmount)}`;
       document.getElementById('detailNetBalance').textContent = fmtILS(netBalance);
 
-      // Track ID
       document.getElementById('detailTrackId').textContent = f.trackId || 'לא הוגדר';
 
-      // GemelNet Return Section
       const gemelBox = document.getElementById('detailGemelnetBox');
-      if (f.gemelnetReturn !== null) {
+      if (f.gemelnetReturn !== null && f.gemelnetReturn !== undefined) {
         gemelBox.classList.remove('hidden');
         document.getElementById('detailGemelnetPeriod').textContent = f.gemelnetPeriod || 'חודש אחרון';
         document.getElementById('detailGemelnetGross').textContent = fmtPCT(f.gemelnetReturn);
 
-        // Net return calculation: gemelnet_return - (fee_accumulation / 12)
         const feeAccMonthly = (Number(f.feeAccumulation) || 0) / 12;
         const netReturnEstimated = f.gemelnetReturn - feeAccMonthly;
         document.getElementById('detailGemelnetNet').textContent = `${fmtPCT(netReturnEstimated)} (בניכוי ${feeAccMonthly.toFixed(2)}% דמ״נ)`;
