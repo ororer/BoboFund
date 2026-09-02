@@ -8,7 +8,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&family=Varela+Round&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 
   <script>
@@ -310,7 +310,8 @@
     const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlYW1rc2FueG50ZmV5emxxZHJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzMjg1OTksImV4cCI6MjEwMzkwNDU5OX0.o5XMCnvXaBmwZ8GqoQ03-_KVwQZfFeniLnhMo6RFvoQ';
     const SHARED_VAULT_ID = 'bobo-fund';
 
-    const supabase = window.supabase.createClient(SB_URL, SB_ANON);
+    // יצירת הקליינט עם שם ייחודי sbClient שלא מתנגש
+    const sbClient = window.supabase.createClient(SB_URL, SB_ANON);
 
     let funds = [];
 
@@ -330,7 +331,7 @@
     };
 
     async function checkAuth() {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session } } = await sbClient.auth.getSession();
       if (session) {
         showApp(session.user.email);
       } else {
@@ -350,7 +351,7 @@
       btn.textContent = 'פותח את הכספת... ⏳';
       btn.disabled = true;
 
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await sbClient.auth.signInWithPassword({ email, password });
 
       btn.textContent = 'פתח את הכספת ✨';
       btn.disabled = false;
@@ -372,12 +373,12 @@
     }
 
     async function handleLogout() {
-      await supabase.auth.signOut();
+      await sbClient.auth.signOut();
       location.reload();
     }
 
     async function loadFunds() {
-      const { data, error } = await supabase
+      const { data, error } = await sbClient
         .from('funds')
         .select('*')
         .eq('vault_id', SHARED_VAULT_ID);
@@ -544,13 +545,13 @@
       };
 
       closeModal();
-      await supabase.from('funds').upsert(payload);
+      await sbClient.from('funds').upsert(payload);
       loadFunds();
     }
 
     async function deleteFund(id) {
       if (confirm('למחוק את הקופה הזו מהתיק של בובו? 🗑️')) {
-        await supabase.from('funds').delete().eq('id', id);
+        await sbClient.from('funds').delete().eq('id', id);
         loadFunds();
       }
     }
@@ -574,7 +575,7 @@
       const id = document.getElementById('quickId').value;
       const newBal = parseFloat(document.getElementById('quickBalanceVal').value);
       closeQuickModal();
-      await supabase.from('funds').update({ balance: newBal, updated_at: new Date().toISOString() }).eq('id', id);
+      await sbClient.from('funds').update({ balance: newBal, updated_at: new Date().toISOString() }).eq('id', id);
       loadFunds();
     }
 
