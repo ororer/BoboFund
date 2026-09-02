@@ -1,33 +1,40 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl" class="dark">
+<html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>BoboFund | האוצר של בובו</title>
+  <title>BoboFund 🧸 | האוצר של בובו</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Heebo:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&family=Varela+Round&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 
   <script>
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Heebo', 'Plus Jakarta Sans', 'sans-serif'],
+            sans: ['Varela Round', 'Heebo', 'sans-serif'],
             mono: ['Plus Jakarta Sans', 'sans-serif'],
           },
           colors: {
-            obsidian: '#0A0D12',
-            surface: '#121721',
-            surfaceCard: '#171E2C',
-            surfaceHover: '#1F283B',
-            borderSubtle: '#263045',
-            accentEmerald: '#10B981',
-            accentGold: '#F59E0B'
+            creamBg: '#FAF7F2',
+            softMint: '#10B981',
+            mintLight: '#ECFDF5',
+            candyPeach: '#FFEDD5',
+            candyPurple: '#F3E8FF',
+            candyBlue: '#E0F2FE',
+            boboAmber: '#F59E0B',
+            boboDark: '#1E293B',
+            cardBorder: '#F1ECE4'
+          },
+          boxShadow: {
+            'bobo': '0 10px 25px -5px rgba(220, 210, 195, 0.45), 0 8px 10px -6px rgba(220, 210, 195, 0.3)',
+            'bobo-sm': '0 4px 12px rgba(220, 210, 195, 0.35)',
+            'bobo-button': '0 4px 0 #059669',
+            'bobo-coral': '0 4px 0 #D97706',
           }
         }
       }
@@ -36,242 +43,286 @@
 
   <style>
     body {
-      background: radial-gradient(circle at 50% 0%, #151F2E 0%, #0A0D12 75%);
-      letter-spacing: -0.01em;
+      background-color: #FAF7F2;
+      background-image: radial-gradient(#E8E0D5 0.9px, transparent 0.9px), radial-gradient(#E8E0D5 0.9px, #FAF7F2 0.9px);
+      background-size: 36px 36px;
+      background-position: 0 0, 18px 18px;
     }
-    .glass-panel {
-      background: rgba(23, 30, 44, 0.72);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+    .squish-btn {
+      transition: all 0.1s ease;
     }
-    .kpi-glow {
-      position: relative;
-    }
-    .kpi-glow::before {
-      content: '';
-      position: absolute;
-      inset: -1px;
-      border-radius: 1.25rem;
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), transparent 45%, rgba(16, 185, 129, 0.12));
-      z-index: -1;
+    .squish-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.1) !important;
     }
   </style>
 </head>
-<body class="text-slate-200 min-h-screen antialiased flex flex-col font-sans selection:bg-emerald-500/20 selection:text-emerald-300">
+<body class="text-slate-800 min-h-screen antialiased flex flex-col font-sans selection:bg-emerald-100 selection:text-emerald-800">
 
-  <!-- Fullscreen Login Screen -->
-  <div id="authScreen" class="fixed inset-0 z-50 bg-obsidian flex items-center justify-center p-4">
-    <div class="glass-panel border border-borderSubtle rounded-3xl p-8 max-w-sm w-full shadow-2xl relative">
-      <div class="text-center mb-6">
-        <div class="w-12 h-12 mx-auto mb-3 rounded-2xl bg-gradient-to-tr from-amber-400 via-emerald-400 to-teal-300 p-[1px] shadow-lg shadow-emerald-500/20 flex items-center justify-center">
-          <div class="w-full h-full bg-obsidian rounded-[15px] flex items-center justify-center">
-            <svg class="w-6 h-6 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21V10m0 0a4 4 0 014-4h1.5a.5.5 0 01.5.5v1.5a4 4 0 01-4 4H12zm0 0a4 4 0 00-4-4H6.5a.5.5 0 00-.5.5V8a4 4 0 004 4H12z" />
-            </svg>
-          </div>
+  <!-- Login Modal Overlay -->
+  <div id="authScreen" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white border-4 border-amber-100 rounded-[32px] p-8 max-w-sm w-full shadow-2xl relative text-center">
+      
+      <div class="w-20 h-20 mx-auto -mt-14 mb-4 rounded-3xl bg-gradient-to-tr from-amber-300 via-amber-200 to-emerald-200 p-1 shadow-lg shadow-amber-500/20 flex items-center justify-center rotate-3 hover:rotate-0 transition-transform">
+        <div class="w-full h-full bg-white rounded-[22px] flex items-center justify-center text-3xl">
+          🧸
         </div>
-        <h2 class="text-xl font-extrabold text-white">כניסה ל-BoboFund</h2>
-        <p class="text-xs text-slate-400 mt-1">התחבר עם המייל והסיסמה המורשים</p>
       </div>
 
-      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+      <h2 class="text-2xl font-black text-slate-800 tracking-tight">האוצר של בובו</h2>
+      <p class="text-xs text-slate-500 mt-1 mb-6 font-medium">כניסה מאובטחת לתיק החסכונות של בובו הקטנה</p>
+
+      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-3.5 text-right">
         <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">כתובת אימייל</label>
-          <input type="email" id="loginEmail" required placeholder="name@example.com" class="w-full bg-surface border border-borderSubtle rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none">
+          <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">מייל מורשה</label>
+          <input type="email" id="loginEmail" required placeholder="mom_or_dad@example.com" class="w-full bg-slate-50 border-2 border-slate-200/80 rounded-2xl px-4 py-2.5 text-sm text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">סיסמה</label>
-          <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full bg-surface border border-borderSubtle rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none">
+          <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">סיסמה</label>
+          <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full bg-slate-50 border-2 border-slate-200/80 rounded-2xl px-4 py-2.5 text-sm text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
         </div>
 
-        <div id="loginError" class="hidden text-xs text-rose-400 bg-rose-950/40 border border-rose-800/40 rounded-xl p-2.5 text-center"></div>
+        <div id="loginError" class="hidden text-xs font-bold text-rose-600 bg-rose-50 border-2 border-rose-200 rounded-2xl p-2.5 text-center"></div>
 
-        <button type="submit" id="loginBtn" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2.5 rounded-xl text-xs transition shadow-lg shadow-emerald-500/20 mt-2">
-          התחבר לתיק
+        <button type="submit" id="loginBtn" class="w-full squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black py-3 rounded-2xl text-sm shadow-bobo-button transition mt-3">
+          פתח את הכספת ✨
         </button>
       </form>
     </div>
   </div>
 
-  <!-- App Shell -->
+  <!-- Main App Shell -->
   <div id="appShell" class="flex-1 flex flex-col hidden">
-    <!-- Top Navigation -->
-    <nav class="border-b border-borderSubtle/60 bg-obsidian/85 backdrop-blur-xl sticky top-0 z-30">
-      <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+
+    <!-- Top Friendly Bar -->
+    <nav class="border-b border-amber-100/80 bg-white/90 backdrop-blur-md sticky top-0 z-30 shadow-sm">
+      <div class="max-w-6xl mx-auto px-5 h-18 py-3 flex items-center justify-between">
         
+        <!-- Brand -->
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-400 via-emerald-400 to-teal-300 p-[1px] shadow-lg shadow-emerald-500/15">
-            <div class="w-full h-full bg-obsidian rounded-[15px] flex items-center justify-center">
-              <svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21V10m0 0a4 4 0 014-4h1.5a.5.5 0 01.5.5v1.5a4 4 0 01-4 4H12zm0 0a4 4 0 00-4-4H6.5a.5.5 0 00-.5.5V8a4 4 0 004 4H12z" />
-              </svg>
-            </div>
+          <div class="w-11 h-11 rounded-2xl bg-amber-100 border-2 border-amber-200 flex items-center justify-center text-2xl shadow-sm">
+            🧸
           </div>
           <div>
-            <span class="font-extrabold text-lg tracking-tight text-white">Bobo<span class="text-emerald-400 font-mono">Fund</span></span>
-            <span id="userBadge" class="text-[10px] font-mono block text-slate-400 truncate max-w-[140px]"></span>
+            <div class="flex items-center gap-2">
+              <span class="font-black text-xl tracking-tight text-slate-800">Bobo<span class="text-emerald-500 font-mono">Fund</span></span>
+              <span class="text-[11px] font-bold bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full border border-amber-200/80">הקרן של בובו ✨</span>
+            </div>
+            <span id="userBadge" class="text-[11px] text-slate-400 block font-medium"></span>
           </div>
         </div>
 
-        <div class="flex items-center gap-2">
-          <button onclick="handleLogout()" class="px-3 py-1.5 rounded-xl border border-borderSubtle bg-surfaceCard hover:bg-surfaceHover text-xs text-slate-300 transition">
-            התנתק
+        <!-- Actions -->
+        <div class="flex items-center gap-2.5">
+          <button onclick="handleLogout()" title="התנתק" class="w-9 h-9 flex items-center justify-center rounded-2xl border-2 border-slate-200 bg-slate-50 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 text-slate-500 text-sm transition">
+            🚪
           </button>
-          <button onclick="openAddModal()" class="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold px-3.5 py-1.5 rounded-xl text-xs flex items-center gap-1.5 transition shadow-lg shadow-emerald-500/20">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+          <button onclick="openAddModal()" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black px-4 py-2.5 rounded-2xl text-xs flex items-center gap-2 shadow-bobo-button transition">
+            <span class="text-base leading-none">➕</span>
             <span>קופה חדשה</span>
           </button>
         </div>
+
       </div>
     </nav>
 
-    <main class="max-w-6xl mx-auto px-5 pt-8 pb-20 w-full flex-1">
-      <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
-        <div>
-          <div class="flex items-center gap-2 mb-1">
-            <span class="text-xs font-bold text-amber-400/90 tracking-wide uppercase">העתיד של בובו</span>
-            <span class="w-1 h-1 rounded-full bg-slate-600"></span>
-            <span class="text-xs text-slate-400">מאובטח ומוגן</span>
+    <main class="max-w-6xl mx-auto px-5 pt-8 pb-24 w-full flex-1">
+
+      <!-- Friendly Banner -->
+      <div class="bg-gradient-to-r from-amber-200/50 via-rose-100/40 to-emerald-100/50 border-2 border-amber-200/60 rounded-[28px] p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-4 shadow-bobo-sm">
+        <div class="flex items-center gap-4 text-center md:text-right">
+          <div class="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-3xl shrink-0">
+            🌱
           </div>
-          <h2 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">הקופות והאוצר של בובו</h2>
+          <div>
+            <h2 class="text-xl md:text-2xl font-black text-slate-800 tracking-tight">העתיד היפה והמתוק של בובו</h2>
+            <p class="text-xs md:text-sm text-slate-600 font-medium mt-0.5">כל שקל ששומרים היום צומח לעץ גדול מחר 🌳</p>
+          </div>
         </div>
-        <div class="text-left font-mono">
-          <span class="text-[10px] uppercase tracking-wider text-slate-500 block">סנכרון ענן</span>
-          <span id="lastSyncedTime" class="text-xs text-emerald-400 font-medium">פעיל</span>
+        <div class="flex items-center gap-2 bg-white/80 border border-amber-200/80 px-3.5 py-1.5 rounded-full font-mono text-xs text-slate-600">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>ענן מסונכרן לשניכם</span>
         </div>
       </div>
 
-      <!-- KPI Grid -->
+      <!-- KPI Summary Cards -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-        <div class="glass-panel kpi-glow rounded-2xl p-5">
-          <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">סך הכל נצבר</div>
-          <div id="totalBalance" class="text-2xl md:text-3xl font-extrabold font-mono text-white tracking-tight">₪0</div>
+        
+        <!-- Total -->
+        <div class="bg-white border-2 border-emerald-100 rounded-[28px] p-5 shadow-bobo hover:shadow-lg transition">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-black text-emerald-800">סך הכל נצבר לבובו</span>
+            <span class="text-xl">💰</span>
+          </div>
+          <div id="totalBalance" class="text-2xl md:text-3xl font-black font-mono text-emerald-600 tracking-tight">₪0</div>
+          <div class="mt-2 text-[11px] font-bold text-slate-400">שווי נוכחי של כל הקופות</div>
         </div>
-        <div class="glass-panel kpi-glow rounded-2xl p-5">
-          <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">סך הפקדות (קרן)</div>
-          <div id="totalDeposits" class="text-2xl md:text-3xl font-extrabold font-mono text-slate-300 tracking-tight">₪0</div>
+
+        <!-- Deposits -->
+        <div class="bg-white border-2 border-amber-100 rounded-[28px] p-5 shadow-bobo hover:shadow-lg transition">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-black text-amber-800">סך הכל הפקדנו (קרן)</span>
+            <span class="text-xl">🏦</span>
+          </div>
+          <div id="totalDeposits" class="text-2xl md:text-3xl font-black font-mono text-slate-700 tracking-tight">₪0</div>
+          <div class="mt-2 text-[11px] font-bold text-slate-400">הכסף שהכנסנו לקופות</div>
         </div>
-        <div class="glass-panel kpi-glow rounded-2xl p-5">
-          <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">רווח נקי</div>
-          <div id="totalProfit" class="text-2xl md:text-3xl font-extrabold font-mono text-emerald-400 tracking-tight">₪0</div>
+
+        <!-- Profit -->
+        <div class="bg-white border-2 border-rose-100 rounded-[28px] p-5 shadow-bobo hover:shadow-lg transition">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-black text-rose-800">כמה הכסף הרוויח?</span>
+            <span class="text-xl">📈</span>
+          </div>
+          <div id="totalProfit" class="text-2xl md:text-3xl font-black font-mono text-emerald-600 tracking-tight">₪0</div>
+          <div class="mt-2 text-[11px] font-bold text-slate-400">רווח נקי שנצבר במתנה</div>
         </div>
-        <div class="glass-panel kpi-glow rounded-2xl p-5">
-          <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">תשואה משוקללת</div>
-          <div id="totalRoi" class="text-2xl md:text-3xl font-extrabold font-mono text-emerald-400 tracking-tight">0.00%</div>
+
+        <!-- ROI -->
+        <div class="bg-white border-2 border-purple-100 rounded-[28px] p-5 shadow-bobo hover:shadow-lg transition">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-black text-purple-800">תשואת התיק הכוללת</span>
+            <span class="text-xl">🚀</span>
+          </div>
+          <div id="totalRoi" class="text-2xl md:text-3xl font-black font-mono text-emerald-600 tracking-tight">0.00%</div>
+          <div class="mt-2 text-[11px] font-bold text-slate-400">אחוז הצמיחה מאז ההתחלה</div>
         </div>
       </div>
 
-      <!-- Active Funds Header -->
-      <div class="flex items-center justify-between mb-5 border-b border-borderSubtle/60 pb-3">
+      <!-- Section Title -->
+      <div class="flex items-center justify-between mb-5 px-1">
         <div class="flex items-center gap-2">
-          <h3 class="text-base font-bold text-white">קופות פעילות</h3>
-          <span id="fundCount" class="text-xs font-mono font-bold bg-surfaceCard text-emerald-400 px-2 py-0.5 rounded-full border border-borderSubtle">0</span>
+          <h3 class="text-lg font-black text-slate-800">הקופות הפעילות של בובו</h3>
+          <span id="fundCount" class="text-xs font-mono font-bold bg-amber-200 text-amber-900 px-2.5 py-0.5 rounded-full">0</span>
         </div>
       </div>
 
-      <!-- Cards Grid -->
+      <!-- Funds Grid -->
       <div id="fundsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
 
       <!-- Empty State -->
-      <div id="emptyState" class="hidden text-center py-20 border border-dashed border-borderSubtle rounded-3xl bg-surface/30">
-        <h4 class="text-base font-bold text-slate-200 mb-1">אין עדיין קופות בתיק</h4>
-        <p class="text-xs text-slate-500 max-w-sm mx-auto mb-4">לחצו על "קופה חדשה" כדי להזין את הקופה הראשונה של בובו.</p>
+      <div id="emptyState" class="hidden text-center py-16 bg-white border-3 border-dashed border-amber-200 rounded-[32px] p-8 shadow-bobo-sm">
+        <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-amber-100 flex items-center justify-center text-3xl">
+          🍼
+        </div>
+        <h4 class="text-lg font-black text-slate-800 mb-1">עדיין אין קופות בתיק של בובו</h4>
+        <p class="text-xs text-slate-500 max-w-sm mx-auto mb-5 font-medium">הוסיפו את קופת הגמל להשקעה, חיסכון לכל ילד או הפיקדון הראשון!</p>
+        <button onclick="openAddModal()" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black px-5 py-2.5 rounded-2xl text-xs shadow-bobo-button transition">
+          הוספת קופה ראשונה לבובו ✨
+        </button>
       </div>
+
     </main>
   </div>
 
-  <!-- Add/Edit Modal -->
-  <div id="fundModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-surfaceCard border border-borderSubtle rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl p-6">
-      <div class="flex justify-between items-center mb-4">
-        <h3 id="modalTitle" class="text-base font-bold text-white">הוספת קופה</h3>
-        <button onclick="closeModal()" class="text-slate-400 hover:text-white">✕</button>
+  <!-- Add / Edit Modal -->
+  <div id="fundModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white border-4 border-amber-100 rounded-[32px] w-full max-w-md overflow-hidden shadow-2xl p-6">
+      
+      <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">📝</span>
+          <h3 id="modalTitle" class="text-lg font-black text-slate-800">הוספת קופה חדשה</h3>
+        </div>
+        <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center font-bold">✕</button>
       </div>
-      <form id="fundForm" onsubmit="saveFundForm(event)" class="space-y-3.5">
+
+      <form id="fundForm" onsubmit="saveFundForm(event)" class="space-y-3.5 text-right">
         <input type="hidden" id="fieldId">
+
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">שם הקופה *</label>
-            <input type="text" id="fieldName" required class="w-full bg-surface border border-borderSubtle rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+            <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">שם הקופה / מסלול *</label>
+            <input type="text" id="fieldName" required placeholder="למשל: מחקה S&P 500" class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-3.5 py-2 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">סוג *</label>
-            <select id="fieldType" class="w-full bg-surface border border-borderSubtle rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+            <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">סוג הקופה *</label>
+            <select id="fieldType" class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-3.5 py-2 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
               <option value="קופת גמל להשקעה">קופת גמל להשקעה</option>
               <option value="חיסכון לכל ילד">חיסכון לכל ילד</option>
               <option value="פוליסת חיסכון">פוליסת חיסכון</option>
               <option value="פיקדון בנקאי">פיקדון בנקאי</option>
               <option value="קרן השתלמות">קרן השתלמות</option>
               <option value="תיק השקעות עצמאי">תיק השקעות עצמאי</option>
+              <option value="אחר">אחר</option>
             </select>
           </div>
         </div>
+
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">גוף מנהל *</label>
-            <input type="text" id="fieldManager" required class="w-full bg-surface border border-borderSubtle rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+            <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">גוף מנהל *</label>
+            <input type="text" id="fieldManager" required placeholder="מיטב, אלטשולר, הראל..." class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-3.5 py-2 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">מספר קופה</label>
-            <input type="text" id="fieldNumber" class="w-full bg-surface border border-borderSubtle rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+            <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">מספר חשבון / קופה</label>
+            <input type="text" id="fieldNumber" placeholder="1234567" class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-3.5 py-2 text-xs text-slate-800 font-mono focus:border-emerald-400 focus:bg-white focus:outline-none transition">
           </div>
         </div>
+
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">סך הפקדות (קרן) ₪ *</label>
-            <input type="number" step="any" id="fieldDeposits" required class="w-full bg-surface border border-borderSubtle rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+            <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">סך הפקדות (קרן) ₪ *</label>
+            <input type="number" step="any" id="fieldDeposits" required placeholder="0" class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-3.5 py-2 text-xs font-mono text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">שווי יתרה עדכני ₪ *</label>
-            <input type="number" step="any" id="fieldBalance" required class="w-full bg-surface border border-borderSubtle rounded-xl px-3 py-2 text-xs text-emerald-400 font-bold focus:outline-none">
+            <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">שווי יתרה עדכני ₪ *</label>
+            <input type="number" step="any" id="fieldBalance" required placeholder="0" class="w-full bg-emerald-50 border-2 border-emerald-300 rounded-2xl px-3.5 py-2 text-xs font-mono font-bold text-emerald-700 focus:border-emerald-500 focus:bg-white focus:outline-none transition">
           </div>
         </div>
+
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">דמ״נ מצבירה (%)</label>
-            <input type="number" step="0.01" id="fieldFeeAcc" class="w-full bg-surface border border-borderSubtle rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+            <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">דמ״נ צבירה (%)</label>
+            <input type="number" step="0.01" id="fieldFeeAcc" placeholder="0.5" class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-3.5 py-2 text-xs font-mono text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">דמ״נ מהפקדה (%)</label>
-            <input type="number" step="0.01" id="fieldFeeDep" class="w-full bg-surface border border-borderSubtle rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+            <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">דמ״נ הפקדה (%)</label>
+            <input type="number" step="0.01" id="fieldFeeDep" placeholder="0" class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-3.5 py-2 text-xs font-mono text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
           </div>
         </div>
+
         <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">הערות</label>
-          <input type="text" id="fieldNotes" class="w-full bg-surface border border-borderSubtle rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none">
+          <label class="block text-xs font-bold text-slate-600 mb-1 mr-1">הערות / הסדרי חסכון</label>
+          <input type="text" id="fieldNotes" placeholder="הוראת קבע כל 10 לחודש" class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-3.5 py-2 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
         </div>
-        <div class="pt-3 flex justify-end gap-2 border-t border-borderSubtle/60">
-          <button type="button" onclick="closeModal()" class="px-3.5 py-1.5 text-xs text-slate-400 hover:text-white">ביטול</button>
-          <button type="submit" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-4 py-1.5 rounded-xl text-xs transition">שמור</button>
+
+        <div class="pt-3 flex justify-end gap-2 border-t border-slate-100">
+          <button type="button" onclick="closeModal()" class="px-4 py-2 text-xs font-bold text-slate-400 hover:text-slate-600">ביטול</button>
+          <button type="submit" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black px-5 py-2 rounded-2xl text-xs shadow-bobo-button transition">שמור קופה ✨</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- Quick Balance Modal -->
-  <div id="quickModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-surfaceCard border border-borderSubtle rounded-3xl w-full max-w-sm p-6">
-      <h4 class="text-sm font-bold text-white mb-1">עדכון יתרה מהיר</h4>
-      <p id="quickName" class="text-xs text-slate-400 mb-4 truncate"></p>
+  <div id="quickModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white border-4 border-amber-100 rounded-[32px] w-full max-w-sm p-6 shadow-2xl text-center">
+      <div class="w-12 h-12 mx-auto mb-2 rounded-full bg-emerald-100 flex items-center justify-center text-2xl">
+        ⚡
+      </div>
+      <h4 class="text-base font-black text-slate-800">עדכון יתרה מהיר</h4>
+      <p id="quickName" class="text-xs text-slate-400 mb-4 truncate font-medium"></p>
+      
       <form onsubmit="handleQuickUpdate(event)" class="space-y-4">
         <input type="hidden" id="quickId">
-        <input type="number" step="any" id="quickBalanceVal" required class="w-full bg-surface border border-borderSubtle rounded-xl px-3.5 py-2.5 text-xl font-mono font-extrabold text-emerald-400 focus:outline-none">
-        <div class="flex justify-end gap-2">
-          <button type="button" onclick="closeQuickModal()" class="px-3 py-1.5 text-xs text-slate-400">ביטול</button>
-          <button type="submit" class="bg-emerald-500 text-slate-950 font-bold px-4 py-1.5 rounded-xl text-xs">עדכן</button>
+        <div class="relative">
+          <input type="number" step="any" id="quickBalanceVal" required class="w-full bg-emerald-50 border-2 border-emerald-300 rounded-2xl px-4 py-3 text-2xl font-mono font-black text-emerald-600 text-center focus:outline-none focus:border-emerald-500 transition">
+        </div>
+        <div class="flex justify-center gap-2 pt-1">
+          <button type="button" onclick="closeQuickModal()" class="px-4 py-2 text-xs font-bold text-slate-400 hover:text-slate-600">ביטול</button>
+          <button type="submit" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black px-6 py-2 rounded-2xl text-xs shadow-bobo-button transition">עדכן יתרה ✨</button>
         </div>
       </form>
     </div>
   </div>
 
   <script>
-    // Supabase Config
     const SB_URL = 'https://geamksanxntfeyzlqdrs.supabase.co';
-    const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlYW1rc2FueG50ZmV5emxxZHJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1OTQ2MzQsImV4cCI6MjA4ODE3MDYzNH0.n_b867cM4n9Jm_gDkvLd_Kx30n9p2Y1qB6nQ2VpWf9M'; // המפתח שלך יישמר ב-Session
     const SHARED_VAULT_ID = 'bobo-fund';
 
-    const supabase = window.supabase.createClient(SB_URL, localStorage.getItem('bobo_sb_key') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dummy');
+    // חיבור ל-Supabase
+    const supabase = window.supabase.createClient(SB_URL, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlYW1rc2FueG50ZmV5emxxZHJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1OTQ2MzQsImV4cCI6MjA4ODE3MDYzNH0.n_b867cM4n9Jm_gDkvLd_Kx30n9p2Y1qB6nQ2VpWf9M');
 
     let funds = [];
 
@@ -279,7 +330,18 @@
     const fmtPCT = (n) => (n >= 0 ? '+' : '') + Number(n || 0).toFixed(2) + '%';
     const fmtDate = (d) => d ? new Date(d).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' }) : 'טרם עודכן';
 
-    // Check Auth State on Startup
+    // אייקונים חמודים לפי סוג קופה
+    const getTypeIcon = (type) => {
+      switch(type) {
+        case 'חיסכון לכל ילד': return '🍼';
+        case 'קופת גמל להשקעה': return '🌱';
+        case 'פוליסת חיסכון': return '🛡️';
+        case 'פיקדון בנקאי': return '🏦';
+        case 'קרן השתלמות': return '💎';
+        default: return '⭐';
+      }
+    };
+
     async function checkAuth() {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
@@ -298,16 +360,16 @@
       const btn = document.getElementById('loginBtn');
 
       errorEl.classList.add('hidden');
-      btn.textContent = 'מתחבר...';
+      btn.textContent = 'פותח את הכספת... ⏳';
       btn.disabled = true;
 
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-      btn.textContent = 'התחבר לתיק';
+      btn.textContent = 'פתח את הכספת ✨';
       btn.disabled = false;
 
       if (error) {
-        errorEl.textContent = 'פרטי התחברות שגויים או משתמש לא קיים';
+        errorEl.textContent = 'אופס! המייל או הסיסמה לא נכונים 🥺';
         errorEl.classList.remove('hidden');
       } else {
         showApp(data.user.email);
@@ -317,7 +379,7 @@
     function showApp(email) {
       document.getElementById('authScreen').classList.add('hidden');
       document.getElementById('appShell').classList.remove('hidden');
-      document.getElementById('userBadge').textContent = email;
+      document.getElementById('userBadge').textContent = `מחובר כ: ${email}`;
       loadFunds();
     }
 
@@ -376,34 +438,55 @@
         totalDep += dep;
 
         return `
-          <div class="glass-panel rounded-2xl p-5 flex flex-col justify-between shadow-lg shadow-black/40">
+          <div class="bg-white border-2 border-cardBorder rounded-[28px] p-5 shadow-bobo hover:border-amber-200 transition flex flex-col justify-between">
             <div>
               <div class="flex items-start justify-between gap-3 mb-3">
-                <div>
-                  <span class="text-[10px] font-mono uppercase font-bold text-amber-300 bg-amber-950/60 border border-amber-800/40 px-2 py-0.5 rounded">${f.type}</span>
-                  <h4 class="text-base font-bold text-white mt-1">${f.name}</h4>
-                  <p class="text-xs text-slate-400">${f.manager} ${f.number ? `• מס' ${f.number}` : ''}</p>
+                <div class="flex items-start gap-2.5">
+                  <span class="text-2xl p-2 bg-amber-50 border border-amber-100 rounded-2xl">${getTypeIcon(f.type)}</span>
+                  <div>
+                    <span class="text-[11px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">${f.type}</span>
+                    <h4 class="text-base font-black text-slate-800 mt-1">${f.name}</h4>
+                    <p class="text-xs text-slate-400 font-medium">${f.manager} ${f.number ? `• מס' ${f.number}` : ''}</p>
+                  </div>
                 </div>
                 <div class="text-left font-mono">
-                  <span class="text-[10px] text-slate-500 uppercase block">יתרה</span>
-                  <span class="text-lg font-extrabold text-white">${fmtILS(bal)}</span>
+                  <span class="text-[10px] text-slate-400 font-bold block">יתרה</span>
+                  <span class="text-lg font-black text-emerald-600">${fmtILS(bal)}</span>
                 </div>
               </div>
-              <div class="grid grid-cols-3 gap-2 my-4 p-3 bg-surface/80 rounded-xl text-center">
-                <div><span class="text-[10px] text-slate-500 uppercase block">הופקד</span><span class="text-xs font-mono font-bold">${fmtILS(dep)}</span></div>
-                <div><span class="text-[10px] text-slate-500 uppercase block">רווח</span><span class="text-xs font-mono font-bold ${isPos ? 'text-emerald-400' : 'text-rose-400'}">${fmtILS(profit)}</span></div>
-                <div><span class="text-[10px] text-slate-500 uppercase block">תשואה</span><span class="text-xs font-mono font-bold ${isPos ? 'text-emerald-400' : 'text-rose-400'}">${fmtPCT(roi)}</span></div>
+
+              <!-- Mini Stats Box -->
+              <div class="grid grid-cols-3 gap-2 my-3 p-3 bg-slate-50/80 border border-slate-100 rounded-2xl text-center">
+                <div>
+                  <span class="text-[10px] text-slate-400 font-bold block">הפקדות</span>
+                  <span class="text-xs font-mono font-bold text-slate-700">${fmtILS(dep)}</span>
+                </div>
+                <div>
+                  <span class="text-[10px] text-slate-400 font-bold block">רווח</span>
+                  <span class="text-xs font-mono font-bold ${isPos ? 'text-emerald-600' : 'text-rose-500'}">${fmtILS(profit)}</span>
+                </div>
+                <div>
+                  <span class="text-[10px] text-slate-400 font-bold block">תשואה</span>
+                  <span class="text-xs font-mono font-bold ${isPos ? 'text-emerald-600' : 'text-rose-500'}">${fmtPCT(roi)}</span>
+                </div>
               </div>
-              <div class="flex items-center justify-between text-[11px] text-slate-400 border-t border-borderSubtle/40 pt-2 font-mono text-[10px]">
-                <div>${f.feeAccumulation ? `צבירה: ${f.feeAccumulation}%` : ''}</div>
-                <div>עודכן: ${fmtDate(f.updatedAt)}</div>
+
+              <div class="flex items-center justify-between text-[11px] text-slate-400 font-medium pt-1">
+                <div>${f.feeAccumulation ? `דמ״נ: <b>${f.feeAccumulation}%</b>` : ''}</div>
+                <div class="text-[10px]">עודכן: ${fmtDate(f.updatedAt)}</div>
               </div>
+
+              ${f.notes ? `<p class="mt-2 text-[11px] text-slate-500 bg-amber-50/60 p-2 rounded-xl border border-amber-100 font-medium truncate">💬 ${f.notes}</p>` : ''}
             </div>
-            <div class="mt-4 pt-3 border-t border-borderSubtle/50 flex items-center justify-between">
-              <button onclick="openQuickModal('${f.id}')" class="text-xs font-semibold text-emerald-400 hover:text-emerald-300 bg-emerald-950/30 border border-emerald-800/40 px-3 py-1 rounded-xl">עדכון יתרה מהיר</button>
-              <div class="flex gap-2">
-                <button onclick="editFund('${f.id}')" class="text-slate-400 hover:text-white text-xs">ערוך</button>
-                <button onclick="deleteFund('${f.id}')" class="text-rose-500 hover:text-rose-400 text-xs">מחק</button>
+
+            <!-- Card Actions -->
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+              <button onclick="openQuickModal('${f.id}')" class="squish-btn text-xs font-black text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3.5 py-1.5 rounded-xl transition flex items-center gap-1">
+                <span>⚡ עדכון יתרה</span>
+              </button>
+              <div class="flex gap-2 text-xs font-bold">
+                <button onclick="editFund('${f.id}')" class="text-slate-400 hover:text-slate-700">ערוך</button>
+                <button onclick="deleteFund('${f.id}')" class="text-rose-400 hover:text-rose-600">מחק</button>
               </div>
             </div>
           </div>
@@ -418,14 +501,20 @@
       const roi = dep > 0 ? (profit / dep) * 100 : 0;
       document.getElementById('totalBalance').textContent = fmtILS(bal);
       document.getElementById('totalDeposits').textContent = fmtILS(dep);
-      document.getElementById('totalProfit').textContent = fmtILS(profit);
-      document.getElementById('totalRoi').textContent = fmtPCT(roi);
+      
+      const profitEl = document.getElementById('totalProfit');
+      profitEl.textContent = fmtILS(profit);
+      profitEl.className = `text-2xl md:text-3xl font-black font-mono tracking-tight ${profit >= 0 ? 'text-emerald-600' : 'text-rose-500'}`;
+
+      const roiEl = document.getElementById('totalRoi');
+      roiEl.textContent = fmtPCT(roi);
+      roiEl.className = `text-2xl md:text-3xl font-black font-mono tracking-tight ${roi >= 0 ? 'text-emerald-600' : 'text-rose-500'}`;
     }
 
     function openAddModal() {
       document.getElementById('fundForm').reset();
       document.getElementById('fieldId').value = '';
-      document.getElementById('modalTitle').textContent = 'הוספת קופה';
+      document.getElementById('modalTitle').textContent = 'הוספת קופה לבובו ✨';
       document.getElementById('fundModal').classList.remove('hidden');
     }
 
@@ -446,6 +535,7 @@
       document.getElementById('fieldFeeAcc').value = f.feeAccumulation || '';
       document.getElementById('fieldFeeDep').value = f.feeDeposit || '';
       document.getElementById('fieldNotes').value = f.notes || '';
+      document.getElementById('modalTitle').textContent = 'עריכת קופה ✏️';
       document.getElementById('fundModal').classList.remove('hidden');
     }
 
@@ -473,7 +563,7 @@
     }
 
     async function deleteFund(id) {
-      if (confirm('למחוק קופה זו?')) {
+      if (confirm('למחוק את הקופה הזו מהתיק של בובו? 🗑️')) {
         await supabase.from('funds').delete().eq('id', id);
         loadFunds();
       }
@@ -483,9 +573,10 @@
       const f = funds.find(x => x.id === id);
       if (!f) return;
       document.getElementById('quickId').value = f.id;
-      document.getElementById('quickName').textContent = `${f.name} • ${f.manager}`;
+      document.getElementById('quickName').textContent = `${f.name} (${f.manager})`;
       document.getElementById('quickBalanceVal').value = f.balance;
       document.getElementById('quickModal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('quickBalanceVal').focus(), 50);
     }
 
     function closeQuickModal() {
@@ -501,7 +592,6 @@
       loadFunds();
     }
 
-    // Startup check
     checkAuth();
   </script>
 </body>
