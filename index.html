@@ -61,6 +61,12 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
+    .period-tab-active {
+      background-color: #ffffff;
+      color: #0f172a;
+      font-weight: 800;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
   </style>
 </head>
 <body class="text-slate-800 min-h-screen antialiased flex flex-col font-sans selection:bg-emerald-100 selection:text-emerald-800 w-full overflow-x-hidden">
@@ -133,6 +139,7 @@
 
     <main class="max-w-xl mx-auto px-4 pt-4 pb-20 w-full flex-1">
 
+      <!-- Total Family KPI Card -->
       <div class="bg-white border-2 border-amber-100/90 rounded-[28px] p-5 mb-4 shadow-bobo text-center relative overflow-hidden">
         <div class="text-[11px] font-bold text-slate-400 mb-1 flex items-center justify-center gap-1.5">
           <span>שווי התיק המשפחתי</span>
@@ -157,10 +164,53 @@
         </div>
       </div>
 
-      <div class="mb-5 flex items-center justify-center w-full">
+      <!-- Family Members Filter Capsule -->
+      <div class="mb-4 flex items-center justify-center w-full">
         <div class="p-1 bg-slate-200/60 rounded-full flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full shadow-inner" id="membersCapsule"></div>
       </div>
 
+      <!-- Period Filter & Metrics (Option B) -->
+      <div class="bg-white border-2 border-amber-100/80 rounded-[24px] p-4 mb-5 shadow-bobo-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3.5 pb-2.5 border-b border-slate-100">
+          <div class="flex items-center gap-1.5">
+            <span class="text-base">📊</span>
+            <h3 class="text-xs font-black text-slate-800">ביצועים ועלויות לפי תקופה</h3>
+          </div>
+
+          <!-- Period Tabs -->
+          <div class="flex bg-slate-100/90 p-1 rounded-xl text-xs font-bold text-slate-500">
+            <button type="button" onclick="triggerHaptic(); setPeriod('1M')" id="tab-period-1M" class="period-tab flex-1 py-1 px-2 rounded-lg transition-all text-center">1M</button>
+            <button type="button" onclick="triggerHaptic(); setPeriod('YTD')" id="tab-period-YTD" class="period-tab flex-1 py-1 px-2 rounded-lg transition-all text-center">YTD</button>
+            <button type="button" onclick="triggerHaptic(); setPeriod('1Y')" id="tab-period-1Y" class="period-tab flex-1 py-1 px-2 rounded-lg transition-all text-center">שנה</button>
+            <button type="button" onclick="triggerHaptic(); setPeriod('3Y')" id="tab-period-3Y" class="period-tab flex-1 py-1 px-2 rounded-lg transition-all text-center">3 שנים</button>
+            <button type="button" onclick="triggerHaptic(); setPeriod('ALL')" id="tab-period-ALL" class="period-tab flex-1 py-1 px-2 rounded-lg transition-all text-center period-tab-active">הכל</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <!-- دמי ניהול לתקופה -->
+          <div class="bg-amber-50/40 border border-amber-200/60 p-3 rounded-2xl text-right">
+            <div class="flex items-center justify-between text-slate-400 mb-0.5">
+              <span class="text-[10px] font-bold text-amber-900">דמי ניהול לתקופה</span>
+              <span class="text-xs">🏷️</span>
+            </div>
+            <div id="periodFeeDisplay" class="text-lg font-black font-mono text-slate-800">₪0</div>
+            <div id="periodFeeSub" class="text-[9px] text-slate-400 mt-0.5 truncate">מחושב עבור כל התקופה</div>
+          </div>
+
+          <!-- תשואה לתקופה -->
+          <div class="bg-emerald-50/40 border border-emerald-200/60 p-3 rounded-2xl text-right">
+            <div class="flex items-center justify-between text-slate-400 mb-0.5">
+              <span class="text-[10px] font-bold text-emerald-950">תשואה משוקללת</span>
+              <span class="text-xs">📈</span>
+            </div>
+            <div id="periodYieldDisplay" class="text-lg font-black font-mono text-emerald-600">0.00%</div>
+            <div id="periodYieldSub" class="text-[9px] text-slate-400 mt-0.5 truncate">לפי נתוני האוצר</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Funds List Section -->
       <div class="flex items-center justify-between mb-3 px-1">
         <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider" id="listHeaderTitle">הקופות ברשימה</h3>
         <span id="listCountBadge" class="text-[11px] font-mono font-bold text-slate-400">0 קופות</span>
@@ -537,6 +587,7 @@
 
     let funds = [];
     let currentFilter = 'ALL';
+    let currentPeriod = 'ALL';
     let activeDetailId = null;
 
     const DEFAULT_MEMBERS = [
@@ -654,7 +705,6 @@
       };
 
       try {
-        // Query Returns Resource with exact filter first, then fallback to text search
         let returnsData = await callGovApi(`${DATASTORE_API}?resource_id=${RESOURCE_RETURNS}&filters={"FUND_ID":"${trackId}"}&limit=20`);
         let records = returnsData?.result?.records || [];
 
@@ -663,7 +713,6 @@
           records = returnsData?.result?.records || [];
         }
 
-        // Fallback to tracks resource if not found in returns
         if (records.length === 0) {
           const tracksData = await callGovApi(`${DATASTORE_API}?resource_id=${RESOURCE_TRACKS}&q=${encodeURIComponent(trackId)}&limit=20`);
           records = tracksData?.result?.records || [];
@@ -671,7 +720,7 @@
 
         const match = records.find(r => 
           String(r.FUND_ID || '').trim() === trackId || 
-          String(r.SHM_KUPA || '').trim() === trackId ||
+          String(r.SHM_KUPA || '').trim() === trackId || 
           String(r.KUPA_ID || '').trim() === trackId
         ) || records[0];
 
@@ -696,8 +745,7 @@
           else if (fundName.includes('גמל')) typeSelect.value = 'קופת גמל';
           handleTypeChange(typeSelect.value);
 
-          // Extract Return Value
-          const monthlyReturnVal = match.TSUA_HODSHIT !== undefined ? match.TSUA_HODSHIT : match.TSUA_MITZTABERET_LETKUFA;
+          const monthlyReturnVal = match.MONTHLY_YIELD !== undefined ? match.MONTHLY_YIELD : (match.TSUA_HODSHIT !== undefined ? match.TSUA_HODSHIT : match.TSUA_MITZTABERET_LETKUFA);
           if (monthlyReturnVal !== undefined && monthlyReturnVal !== null) {
             const retNum = parseFloat(monthlyReturnVal) || 0;
             const periodStr = String(match.REPORT_PERIOD || 'אחרון').trim();
@@ -810,6 +858,9 @@
           inceptionDate: item.inception_date || null,
           isAnnuity: !!item.is_annuity,
           gemelnetReturn: item.gemelnet_return_monthly !== null && item.gemelnet_return_monthly !== undefined ? Number(item.gemelnet_return_monthly) : null,
+          gemelnetYieldYtd: item.gemelnet_yield_ytd !== null && item.gemelnet_yield_ytd !== undefined ? Number(item.gemelnet_yield_ytd) : null,
+          gemelnetYield3y: item.gemelnet_yield_3y !== null && item.gemelnet_yield_3y !== undefined ? Number(item.gemelnet_yield_3y) : null,
+          gemelnetYield5y: item.gemelnet_yield_5y !== null && item.gemelnet_yield_5y !== undefined ? Number(item.gemelnet_yield_5y) : null,
           gemelnetPeriod: item.gemelnet_period || '',
           notes: item.notes,
           updatedAt: item.updated_at
@@ -862,6 +913,127 @@
       render();
     }
 
+    function setPeriod(period) {
+      currentPeriod = period;
+      
+      document.querySelectorAll('.period-tab').forEach(btn => {
+        btn.classList.remove('period-tab-active');
+      });
+      const activeBtn = document.getElementById(`tab-period-${period}`);
+      if (activeBtn) activeBtn.classList.add('period-tab-active');
+
+      const filteredFunds = currentFilter === 'ALL' 
+        ? funds 
+        : funds.filter(f => f.owner === currentFilter);
+
+      updatePeriodMetrics(filteredFunds);
+    }
+
+    function getPeriodMonths(period, inceptionDateStr) {
+      const now = new Date();
+      const currentMonth = now.getMonth() + 1; // 1-12
+
+      switch(period) {
+        case '1M': return 1;
+        case 'YTD': return Math.max(currentMonth, 1);
+        case '1Y': return 12;
+        case '3Y': return 36;
+        case 'ALL':
+        default:
+          if (!inceptionDateStr) return 12;
+          const start = new Date(inceptionDateStr);
+          if (isNaN(start.getTime())) return 12;
+          const diff = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
+          return Math.max(diff, 1);
+      }
+    }
+
+    function updatePeriodMetrics(filteredFunds) {
+      const feeDisplay = document.getElementById('periodFeeDisplay');
+      const feeSub = document.getElementById('periodFeeSub');
+      const yieldDisplay = document.getElementById('periodYieldDisplay');
+      const yieldSub = document.getElementById('periodYieldSub');
+
+      if (!filteredFunds || filteredFunds.length === 0) {
+        feeDisplay.textContent = '₪0';
+        feeSub.textContent = 'אין קופות פעילות';
+        yieldDisplay.textContent = '0.00%';
+        yieldDisplay.className = 'text-lg font-black font-mono text-slate-400';
+        yieldSub.textContent = 'אין נתונים';
+        return;
+      }
+
+      let totalPeriodFees = 0;
+      let totalBalance = 0;
+      let weightedYieldNumerator = 0;
+      let totalBalanceWithYield = 0;
+
+      filteredFunds.forEach(f => {
+        const bal = Number(f.balance) || 0;
+        const dep = Number(f.deposits) || 0;
+        const feeAcc = Number(f.feeAccumulation) || 0; // באחוזים שנתיים
+        const months = getPeriodMonths(currentPeriod, f.inceptionDate);
+
+        totalBalance += bal;
+
+        // חישוב דמי ניהול לתקופה: יתרה * (אחוז דמי ניהול / 100) * (חודשים / 12)
+        const fundFee = bal * (feeAcc / 100) * (months / 12);
+        totalPeriodFees += fundFee;
+
+        // חישוב תשואה ספציפית לפי התקופה
+        let fundYield = null;
+
+        if (currentPeriod === '1M') {
+          fundYield = f.gemelnetReturn;
+        } else if (currentPeriod === 'YTD') {
+          fundYield = f.gemelnetYieldYtd;
+        } else if (currentPeriod === '3Y') {
+          fundYield = f.gemelnetYield3y;
+        } else if (currentPeriod === '1Y') {
+          // קירוב תשואה שנתית על בסיס נתוני האוצר או צבירה
+          if (f.gemelnetYield3y !== null) {
+            fundYield = f.gemelnetYield3y / 3;
+          } else if (dep > 0) {
+            fundYield = ((bal - dep) / dep) * 100;
+          }
+        } else {
+          // ALL - מאז ההקמה
+          if (dep > 0) {
+            fundYield = ((bal - dep) / dep) * 100;
+          }
+        }
+
+        if (fundYield !== null && !isNaN(fundYield)) {
+          weightedYieldNumerator += (fundYield * bal);
+          totalBalanceWithYield += bal;
+        }
+      });
+
+      const avgWeightedYield = totalBalanceWithYield > 0 
+        ? (weightedYieldNumerator / totalBalanceWithYield) 
+        : 0;
+
+      const periodLabels = {
+        '1M': 'חודש אחרון',
+        'YTD': 'מתחילת השנה',
+        '1Y': '12 חודשים אחרונים',
+        '3Y': '3 שנים (36 חודשים)',
+        'ALL': 'כל התקופה (משוקלל)'
+      };
+
+      feeDisplay.textContent = fmtILS(totalPeriodFees);
+      feeSub.textContent = `משוער עבור ${periodLabels[currentPeriod] || currentPeriod}`;
+
+      yieldDisplay.textContent = fmtPCT(avgWeightedYield);
+      yieldDisplay.className = `text-lg font-black font-mono ${avgWeightedYield >= 0 ? 'text-emerald-600' : 'text-rose-600'}`;
+
+      if (currentPeriod === '1M' || currentPeriod === 'YTD' || currentPeriod === '3Y') {
+        yieldSub.textContent = `סנכרון גמל-נט (${filteredFunds.filter(f => f.trackId).length} קופות אוצר)`;
+      } else {
+        yieldSub.textContent = `תשואת תיק משוקללת`;
+      }
+    }
+
     function render() {
       renderMembersCapsule();
 
@@ -874,6 +1046,8 @@
 
       document.getElementById('listCountBadge').textContent = `${filteredFunds.length} קופות`;
       document.getElementById('listHeaderTitle').textContent = currentFilter === 'ALL' ? 'כל הקופות של המשפחה' : `הקופות של ${currentFilter}`;
+
+      updatePeriodMetrics(filteredFunds);
 
       if (filteredFunds.length === 0) {
         listEl.innerHTML = '';
