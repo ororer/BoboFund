@@ -43,13 +43,14 @@ for fund in funds:
     params = {
         "resource_id": RESOURCE_ID,
         "q": track_id,
-        "limit": 50
+        "limit": 100
     }
 
     try:
         api_res = requests.get(GEMELNET_API, params=params, timeout=20).json()
         records = api_res.get("result", {}).get("records", [])
 
+        # Loose matching on all track ID variations
         matching = [
             r for r in records
             if str(r.get("FUND_ID", "")).strip() == track_id
@@ -58,28 +59,46 @@ for fund in funds:
         ]
 
         if matching:
-            # Sort descending by REPORT_PERIOD to get the latest reported month
+            # Sort descending by REPORT_PERIOD
             matching.sort(key=lambda x: str(x.get("REPORT_PERIOD", "")), reverse=True)
-            latest = matching[0]
 
-            monthly_return = float(latest.get("TSUA_HODSHIT") or latest.get("TSUA_MITZTABERET_LETKUFA") or 0)
-            period = str(latest.get("REPORT_PERIOD", "")).strip()
+            # Find the latest record that contains a valid non-empty yield
+            chosen_record = None
+            found_yield = None
 
-            update_payload = {
-                "gemelnet_return_monthly": monthly_return,
-                "gemelnet_period": period
-            }
+            for rec in matching:
+                raw_val = (
+                    rec.get("TSUA_HODSHIT")
+                    if rec.get("TSUA_HODSHIT") not in [None, ""]
+                    else rec.get("TSUA_MITZTABERET_LETKUFA")
+                )
+                if raw_val not in [None, ""]:
+                    try:
+                        found_yield = float(raw_val)
+                        chosen_record = rec
+                        break
+                    except (ValueError, TypeError):
+                        continue
 
-            patch_res = requests.patch(
-                f"{SUPABASE_URL}/rest/v1/funds?id=eq.{fund['id']}",
-                headers=headers,
-                json=update_payload
-            )
+            if chosen_record is not None and found_yield is not None:
+                period = str(chosen_record.get("REPORT_PERIOD", "")).strip()
+                update_payload = {
+                    "gemelnet_return_monthly": found_yield,
+                    "gemelnet_period": period
+                }
 
-            if patch_res.status_code in [200, 204]:
-                print(f" SUCCESS: Updated return to {monthly_return}% (Period: {period})")
+                patch_res = requests.patch(
+                    f"{SUPABASE_URL}/rest/v1/funds?id=eq.{fund['id']}",
+                    headers=headers,
+                    json=update_payload
+                )
+
+                if patch_res.status_code in [200, 204]:
+                    print(f" SUCCESS: Updated return to {found_yield}% (Period: {period})")
+                else:
+                    print(f" FAILED TO UPDATE DB: Status {patch_res.status_code}, Body: {patch_res.text}")
             else:
-                print(f" FAILED TO UPDATE DB: Status {patch_res.status_code}, Body: {patch_res.text}")
+                print(f" WARNING: Matching records found for track {track_id} but none contained a valid return value.")
         else:
             print(f" No matching records found in GemelNet for track {track_id}")
     except Exception as e:
