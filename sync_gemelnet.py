@@ -50,7 +50,6 @@ for fund in funds:
         api_res = requests.get(GEMELNET_API, params=params, timeout=20).json()
         records = api_res.get("result", {}).get("records", [])
 
-        # Loose matching on all track ID variations
         matching = [
             r for r in records
             if str(r.get("FUND_ID", "")).strip() == track_id
@@ -59,26 +58,32 @@ for fund in funds:
         ]
 
         if matching:
-            # Sort descending by REPORT_PERIOD
+            # Sort descending by REPORT_PERIOD (latest year/month first)
             matching.sort(key=lambda x: str(x.get("REPORT_PERIOD", "")), reverse=True)
 
-            # Find the latest record that contains a valid non-empty yield
             chosen_record = None
             found_yield = None
 
+            # Look for the first period that has an actual non-zero yield
             for rec in matching:
-                raw_val = (
-                    rec.get("TSUA_HODSHIT")
-                    if rec.get("TSUA_HODSHIT") not in [None, ""]
-                    else rec.get("TSUA_MITZTABERET_LETKUFA")
-                )
+                raw_val = rec.get("TSUA_HODSHIT")
+                if raw_val in [None, ""]:
+                    raw_val = rec.get("TSUA_MITZTABERET_LETKUFA")
+
                 if raw_val not in [None, ""]:
                     try:
-                        found_yield = float(raw_val)
-                        chosen_record = rec
-                        break
+                        val_float = float(raw_val)
+                        if val_float != 0.0:  # Skip empty placeholder months
+                            found_yield = val_float
+                            chosen_record = rec
+                            break
                     except (ValueError, TypeError):
                         continue
+
+            # Fallback to the latest record if all were 0.0
+            if chosen_record is None and matching:
+                chosen_record = matching[0]
+                found_yield = float(chosen_record.get("TSUA_HODSHIT") or 0.0)
 
             if chosen_record is not None and found_yield is not None:
                 period = str(chosen_record.get("REPORT_PERIOD", "")).strip()
@@ -97,8 +102,6 @@ for fund in funds:
                     print(f" SUCCESS: Updated return to {found_yield}% (Period: {period})")
                 else:
                     print(f" FAILED TO UPDATE DB: Status {patch_res.status_code}, Body: {patch_res.text}")
-            else:
-                print(f" WARNING: Matching records found for track {track_id} but none contained a valid return value.")
         else:
             print(f" No matching records found in GemelNet for track {track_id}")
     except Exception as e:
