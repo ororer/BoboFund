@@ -188,7 +188,7 @@
         </div>
 
         <div class="grid grid-cols-2 gap-2.5">
-          <!-- دמי ניהול לתקופה -->
+          <!-- דמי ניהול לתקופה -->
           <div class="bg-amber-50/40 border border-amber-200/60 p-3 rounded-2xl text-right">
             <div class="flex items-center justify-between text-slate-400 mb-0.5">
               <span class="text-[10px] font-bold text-amber-900">דמי ניהול לתקופה</span>
@@ -372,7 +372,11 @@
 
       <form id="fundForm" onsubmit="saveFundForm(event)" class="space-y-2.5 text-right">
         <input type="hidden" id="fieldId">
+        <!-- שדות מוסתרים לשמירת נתוני האוצר המלאים (משימה 2) -->
         <input type="hidden" id="fieldGemelnetReturn">
+        <input type="hidden" id="fieldGemelnetYieldYtd">
+        <input type="hidden" id="fieldGemelnetYield3y">
+        <input type="hidden" id="fieldGemelnetYield5y">
         <input type="hidden" id="fieldGemelnetPeriod">
 
         <div class="grid grid-cols-2 gap-2">
@@ -673,6 +677,7 @@
       }
     }
 
+    // משימה 2: משיכת נתונים מלאה ממאגר האוצר כולל שדות מצטברים
     async function fetchDetailsByTrackId() {
       const trackInput = document.getElementById('fieldTrackId');
       const trackId = trackInput.value.trim();
@@ -745,17 +750,24 @@
           else if (fundName.includes('גמל')) typeSelect.value = 'קופת גמל';
           handleTypeChange(typeSelect.value);
 
+          // שליפת כלל נתוני התשואה הרלוונטיים
           const monthlyReturnVal = match.MONTHLY_YIELD !== undefined ? match.MONTHLY_YIELD : (match.TSUA_HODSHIT !== undefined ? match.TSUA_HODSHIT : match.TSUA_MITZTABERET_LETKUFA);
+          const ytdVal = match.YEAR_TO_DATE_YIELD !== undefined ? match.YEAR_TO_DATE_YIELD : null;
+          const y3Val = match.YIELD_TRAILING_3_YRS !== undefined ? match.YIELD_TRAILING_3_YRS : null;
+          const y5Val = match.YIELD_TRAILING_5_YRS !== undefined ? match.YIELD_TRAILING_5_YRS : null;
+          const periodStr = String(match.REPORT_PERIOD || 'אחרון').trim();
+
           if (monthlyReturnVal !== undefined && monthlyReturnVal !== null) {
             const retNum = parseFloat(monthlyReturnVal) || 0;
-            const periodStr = String(match.REPORT_PERIOD || 'אחרון').trim();
-
             document.getElementById('fieldGemelnetReturn').value = retNum;
             document.getElementById('fieldGemelnetPeriod').value = periodStr;
-
-            badgeEl.textContent = `🏛️ תשואה חודשית שנמשכה: ${retNum >= 0 ? '+' : ''}${retNum.toFixed(2)}% (${periodStr})`;
+            badgeEl.textContent = `🏛️ תשואה שנמשכה: חודש ${retNum >= 0 ? '+' : ''}${retNum.toFixed(2)}% | מתחילת שנה: ${ytdVal ? Number(ytdVal).toFixed(2) + '%' : '--'}`;
             badgeEl.classList.remove('hidden');
           }
+
+          document.getElementById('fieldGemelnetYieldYtd').value = ytdVal !== null ? parseFloat(ytdVal) : '';
+          document.getElementById('fieldGemelnetYield3y').value = y3Val !== null ? parseFloat(y3Val) : '';
+          document.getElementById('fieldGemelnetYield5y').value = y5Val !== null ? parseFloat(y5Val) : '';
 
           btnText.textContent = 'הושלם בהצלחה! ✨';
           setTimeout(() => { btnText.textContent = 'משוך פרטים ותשואה'; }, 2000);
@@ -922,11 +934,7 @@
       const activeBtn = document.getElementById(`tab-period-${period}`);
       if (activeBtn) activeBtn.classList.add('period-tab-active');
 
-      const filteredFunds = currentFilter === 'ALL' 
-        ? funds 
-        : funds.filter(f => f.owner === currentFilter);
-
-      updatePeriodMetrics(filteredFunds);
+      render();
     }
 
     function getPeriodMonths(period, inceptionDateStr) {
@@ -948,6 +956,26 @@
       }
     }
 
+    // פונקציית עזר להחזרת תשואת קופה לפי התקופה הנבחרת
+    function getFundPeriodYield(f, period) {
+      const bal = Number(f.balance) || 0;
+      const dep = Number(f.deposits) || 0;
+
+      if (period === '1M') {
+        return f.gemelnetReturn;
+      } else if (period === 'YTD') {
+        return f.gemelnetYieldYtd;
+      } else if (period === '3Y') {
+        return f.gemelnetYield3y;
+      } else if (period === '1Y') {
+        if (f.gemelnetYield3y !== null) return f.gemelnetYield3y / 3;
+        return dep > 0 ? ((bal - dep) / dep) * 100 : null;
+      } else {
+        // ALL
+        return dep > 0 ? ((bal - dep) / dep) * 100 : null;
+      }
+    }
+
     function updatePeriodMetrics(filteredFunds) {
       const feeDisplay = document.getElementById('periodFeeDisplay');
       const feeSub = document.getElementById('periodFeeSub');
@@ -964,45 +992,18 @@
       }
 
       let totalPeriodFees = 0;
-      let totalBalance = 0;
       let weightedYieldNumerator = 0;
       let totalBalanceWithYield = 0;
 
       filteredFunds.forEach(f => {
         const bal = Number(f.balance) || 0;
-        const dep = Number(f.deposits) || 0;
-        const feeAcc = Number(f.feeAccumulation) || 0; // באחוזים שנתיים
+        const feeAcc = Number(f.feeAccumulation) || 0;
         const months = getPeriodMonths(currentPeriod, f.inceptionDate);
 
-        totalBalance += bal;
-
-        // חישוב דמי ניהול לתקופה: יתרה * (אחוז דמי ניהול / 100) * (חודשים / 12)
         const fundFee = bal * (feeAcc / 100) * (months / 12);
         totalPeriodFees += fundFee;
 
-        // חישוב תשואה ספציפית לפי התקופה
-        let fundYield = null;
-
-        if (currentPeriod === '1M') {
-          fundYield = f.gemelnetReturn;
-        } else if (currentPeriod === 'YTD') {
-          fundYield = f.gemelnetYieldYtd;
-        } else if (currentPeriod === '3Y') {
-          fundYield = f.gemelnetYield3y;
-        } else if (currentPeriod === '1Y') {
-          // קירוב תשואה שנתית על בסיס נתוני האוצר או צבירה
-          if (f.gemelnetYield3y !== null) {
-            fundYield = f.gemelnetYield3y / 3;
-          } else if (dep > 0) {
-            fundYield = ((bal - dep) / dep) * 100;
-          }
-        } else {
-          // ALL - מאז ההקמה
-          if (dep > 0) {
-            fundYield = ((bal - dep) / dep) * 100;
-          }
-        }
-
+        const fundYield = getFundPeriodYield(f, currentPeriod);
         if (fundYield !== null && !isNaN(fundYield)) {
           weightedYieldNumerator += (fundYield * bal);
           totalBalanceWithYield += bal;
@@ -1059,39 +1060,68 @@
       emptyEl.classList.add('hidden');
       let totalBal = 0, totalDep = 0, totalMonthly = 0;
 
+      const periodLabels = {
+        '1M': '1M',
+        'YTD': 'YTD',
+        '1Y': 'שנה',
+        '3Y': '3 שנים',
+        'ALL': 'הכל'
+      };
+
       listEl.innerHTML = filteredFunds.map(f => {
         const dep = Number(f.deposits) || 0;
         const bal = Number(f.balance) || 0;
-        const monthly = Number(f.monthlyDeposit) || 0;
+        const feeAcc = Number(f.feeAccumulation) || 0;
         const grossProfit = bal - dep;
         const roi = dep > 0 ? (grossProfit / dep) * 100 : 0;
         const isPos = grossProfit >= 0;
 
+        // משימה 1: חישוב דמי ניהול ותשואה לתקופה עבור הכרטיס הבודד
+        const months = getPeriodMonths(currentPeriod, f.inceptionDate);
+        const cardPeriodFee = bal * (feeAcc / 100) * (months / 12);
+        const cardPeriodYield = getFundPeriodYield(f, currentPeriod);
+
         return `
-          <div onclick="triggerHaptic(); openDetailModal('${f.id}')" class="squish-btn bg-white border border-cardBorder ${getTypeAccentBorder(f.type)} hover:border-amber-200 rounded-2xl p-3.5 shadow-sm transition flex items-center justify-between cursor-pointer">
-            <div class="flex items-center gap-3 min-w-0">
-              <span class="text-2xl p-2 bg-amber-50/70 border border-amber-100 rounded-xl shrink-0">${getTypeIcon(f.type)}</span>
-              <div class="min-w-0">
-                <div class="flex items-center gap-1.5 mb-0.5">
-                  <span class="text-[9px] font-black px-1.5 py-0.2 rounded-full border ${getMemberBadgeColor(f.owner)} flex items-center gap-0.5">
-                    <span>${getMemberIcon(f.owner)}</span>
-                    <span>${f.owner}</span>
-                  </span>
-                  <span class="text-[10px] text-slate-400 font-medium truncate">${f.manager}</span>
-                  ${f.trackId ? `<span class="text-[9px] font-mono text-emerald-700 bg-emerald-50 px-1 py-0.2 rounded">מ״ה: ${f.trackId}</span>` : ''}
+          <div onclick="triggerHaptic(); openDetailModal('${f.id}')" class="squish-btn bg-white border border-cardBorder ${getTypeAccentBorder(f.type)} hover:border-amber-200 rounded-2xl p-3.5 shadow-sm transition cursor-pointer">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3 min-w-0">
+                <span class="text-2xl p-2 bg-amber-50/70 border border-amber-100 rounded-xl shrink-0">${getTypeIcon(f.type)}</span>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5 mb-0.5">
+                    <span class="text-[9px] font-black px-1.5 py-0.2 rounded-full border ${getMemberBadgeColor(f.owner)} flex items-center gap-0.5">
+                      <span>${getMemberIcon(f.owner)}</span>
+                      <span>${f.owner}</span>
+                    </span>
+                    <span class="text-[10px] text-slate-400 font-medium truncate">${f.manager}</span>
+                    ${f.trackId ? `<span class="text-[9px] font-mono text-emerald-700 bg-emerald-50 px-1 py-0.2 rounded">מ״ה: ${f.trackId}</span>` : ''}
+                  </div>
+                  <h4 class="text-sm font-black text-slate-800 leading-tight truncate">${f.name}</h4>
                 </div>
-                <h4 class="text-sm font-black text-slate-800 leading-tight truncate">${f.name}</h4>
+              </div>
+
+              <div class="flex items-center gap-2.5 shrink-0 font-mono">
+                <div class="text-left">
+                  <div class="text-sm font-black text-slate-800">${fmtILS(bal)}</div>
+                  <div class="text-[10px] font-bold ${isPos ? 'text-emerald-600' : 'text-rose-500'}">
+                    ${fmtPCT(roi)}
+                  </div>
+                </div>
+                <span class="text-slate-300 text-xs">‹</span>
               </div>
             </div>
 
-            <div class="flex items-center gap-2.5 shrink-0 font-mono">
-              <div class="text-left">
-                <div class="text-sm font-black text-slate-800">${fmtILS(bal)}</div>
-                <div class="text-[10px] font-bold ${isPos ? 'text-emerald-600' : 'text-rose-500'}">
-                  ${fmtPCT(roi)}
-                </div>
-              </div>
-              <span class="text-slate-300 text-xs">‹</span>
+            <!-- שורת סיכום תקופתי ברמת הקופה (משימה 1) -->
+            <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400 font-medium">
+              <span class="flex items-center gap-1">
+                <span>🏷️ דמי ניהול (${periodLabels[currentPeriod]}):</span>
+                <strong class="text-slate-700 font-mono">${fmtILS(cardPeriodFee)}</strong>
+              </span>
+              <span class="flex items-center gap-1">
+                <span>תשואת ${periodLabels[currentPeriod]}:</span>
+                <strong class="font-mono ${cardPeriodYield !== null && cardPeriodYield >= 0 ? 'text-emerald-600' : (cardPeriodYield !== null ? 'text-rose-500' : 'text-slate-400')}">
+                  ${cardPeriodYield !== null ? fmtPCT(cardPeriodYield) : '--'}
+                </strong>
+              </span>
             </div>
           </div>
         `;
@@ -1260,6 +1290,9 @@
       document.getElementById('fundForm').reset();
       document.getElementById('fieldId').value = '';
       document.getElementById('fieldGemelnetReturn').value = '';
+      document.getElementById('fieldGemelnetYieldYtd').value = '';
+      document.getElementById('fieldGemelnetYield3y').value = '';
+      document.getElementById('fieldGemelnetYield5y').value = '';
       document.getElementById('fieldGemelnetPeriod').value = '';
       document.getElementById('fetchReturnBadge').classList.add('hidden');
       document.getElementById('fieldInceptionDate').value = new Date().toISOString().slice(0, 10);
@@ -1299,6 +1332,9 @@
       document.getElementById('fieldNotes').value = f.notes || '';
 
       document.getElementById('fieldGemelnetReturn').value = f.gemelnetReturn !== null ? f.gemelnetReturn : '';
+      document.getElementById('fieldGemelnetYieldYtd').value = f.gemelnetYieldYtd !== null ? f.gemelnetYieldYtd : '';
+      document.getElementById('fieldGemelnetYield3y').value = f.gemelnetYield3y !== null ? f.gemelnetYield3y : '';
+      document.getElementById('fieldGemelnetYield5y').value = f.gemelnetYield5y !== null ? f.gemelnetYield5y : '';
       document.getElementById('fieldGemelnetPeriod').value = f.gemelnetPeriod || '';
       document.getElementById('fetchReturnBadge').classList.add('hidden');
 
@@ -1307,6 +1343,7 @@
       document.getElementById('fundModal').classList.remove('hidden');
     }
 
+    // משימה 2: שמירת כלל שדות התשואה של משרד האוצר ל-Supabase
     async function saveFundForm(e) {
       e.preventDefault();
       triggerHaptic();
@@ -1314,6 +1351,9 @@
       const selectedOwner = document.getElementById('fieldOwnerSelect').value;
 
       const retVal = document.getElementById('fieldGemelnetReturn').value;
+      const ytdVal = document.getElementById('fieldGemelnetYieldYtd').value;
+      const y3Val = document.getElementById('fieldGemelnetYield3y').value;
+      const y5Val = document.getElementById('fieldGemelnetYield5y').value;
       const periodVal = document.getElementById('fieldGemelnetPeriod').value;
 
       const payload = {
@@ -1334,6 +1374,9 @@
         fee_accumulation: document.getElementById('fieldFeeAcc').value ? Number(document.getElementById('fieldFeeAcc').value) : null,
         fee_deposit: document.getElementById('fieldFeeDep').value ? Number(document.getElementById('fieldFeeDep').value) : null,
         gemelnet_return_monthly: retVal !== '' ? parseFloat(retVal) : null,
+        gemelnet_yield_ytd: ytdVal !== '' ? parseFloat(ytdVal) : null,
+        gemelnet_yield_3y: y3Val !== '' ? parseFloat(y3Val) : null,
+        gemelnet_yield_5y: y5Val !== '' ? parseFloat(y5Val) : null,
         gemelnet_period: periodVal || null,
         notes: document.getElementById('fieldNotes').value,
         updated_at: new Date().toISOString()
