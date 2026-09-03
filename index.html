@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Bobo & Co. 🧸 | החסכונות של המשפחה</title>
   
+  <!-- Apple Touch Icon & Favicon for Home Screen -->
+  <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%23FAF7F2'/><rect x='24' y='24' width='464' height='464' rx='104' fill='%23FEF3C7' stroke='%23F59E0B' stroke-width='16'/><text x='50%25' y='60%25' font-size='270' text-anchor='middle' dominant-baseline='central'>🧸</text><circle cx='400' cy='110' r='48' fill='%2310B981'/><text x='400' y='124' font-size='50' text-anchor='middle' dominant-baseline='central' fill='white'>₪</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%23FAF7F2'/><rect x='24' y='24' width='464' height='464' rx='104' fill='%23FEF3C7' stroke='%23F59E0B' stroke-width='16'/><text x='50%25' y='60%25' font-size='270' text-anchor='middle' dominant-baseline='central'>🧸</text><circle cx='400' cy='110' r='48' fill='%2310B981'/><text x='400' y='124' font-size='50' text-anchor='middle' dominant-baseline='central' fill='white'>₪</text></svg>">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Bobo & Co. 🧸">
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -49,7 +56,7 @@
       background-position: 0 0, 18px 18px;
     }
     .squish-btn {
-      transition: all 0.1s ease;
+      transition: all 0.15s ease;
     }
     .squish-btn:active {
       transform: scale(0.97);
@@ -76,7 +83,7 @@
     <div class="bg-white border-4 border-amber-100 rounded-[32px] p-6 max-w-sm w-full shadow-2xl relative text-center">
       <div class="w-16 h-16 mx-auto -mt-12 mb-3 rounded-2xl bg-gradient-to-tr from-amber-300 via-amber-200 to-emerald-200 p-1 shadow-lg shadow-amber-500/20 flex items-center justify-center rotate-3">
         <div class="w-full h-full bg-white rounded-[14px] flex items-center justify-center text-3xl">
-          🏡
+          🧸
         </div>
       </div>
 
@@ -115,9 +122,9 @@
 
     <header class="border-b border-amber-100/80 bg-white/90 backdrop-blur-md sticky top-0 z-30 w-full">
       <div class="max-w-xl mx-auto px-4 h-14 flex items-center justify-between w-full">
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 cursor-pointer" onclick="navigateToHome()">
           <div class="w-8 h-8 rounded-xl bg-amber-100 border border-amber-200 flex items-center justify-center text-base shadow-sm">
-            🏡
+            🧸
           </div>
           <span class="font-black text-base text-slate-800 tracking-tight">Bobo <span class="text-emerald-500 font-mono">& Co.</span></span>
         </div>
@@ -139,10 +146,19 @@
 
     <main class="max-w-xl mx-auto px-4 pt-4 pb-20 w-full flex-1">
 
-      <!-- Total Family KPI Card -->
+      <!-- Breadcrumb Bar (Appears inside a member view) -->
+      <div id="memberHeaderNav" class="hidden mb-4 flex items-center justify-between">
+        <button onclick="triggerHaptic(); navigateToHome()" class="squish-btn bg-white border border-slate-200 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 flex items-center gap-1 shadow-sm">
+          <span>‹</span>
+          <span>חזרה לכל המשפחה</span>
+        </button>
+        <div id="activeMemberTitle" class="flex items-center gap-2 text-xs font-black text-slate-700"></div>
+      </div>
+
+      <!-- KPI Summary Card (Dynamic for Total or Active Member) -->
       <div class="bg-white border-2 border-amber-100/90 rounded-[28px] p-5 mb-4 shadow-bobo text-center relative overflow-hidden">
         <div class="text-[11px] font-bold text-slate-400 mb-1 flex items-center justify-center gap-1.5">
-          <span>שווי התיק המשפחתי</span>
+          <span id="heroCardTitle">שווי התיק המשפחתי</span>
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
         </div>
         <div id="heroBalance" class="text-3xl sm:text-4xl font-black font-mono text-slate-800 tracking-tight">₪0</div>
@@ -164,12 +180,7 @@
         </div>
       </div>
 
-      <!-- Family Members Filter Capsule -->
-      <div class="mb-4 flex items-center justify-center w-full">
-        <div class="p-1 bg-slate-200/60 rounded-full flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full shadow-inner" id="membersCapsule"></div>
-      </div>
-
-      <!-- Period Filter & Metrics (Option B) -->
+      <!-- Period Filter & Metrics -->
       <div class="bg-white border-2 border-amber-100/80 rounded-[24px] p-4 mb-5 shadow-bobo-sm">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3.5 pb-2.5 border-b border-slate-100">
           <div class="flex items-center gap-1.5">
@@ -177,7 +188,6 @@
             <h3 class="text-xs font-black text-slate-800">ביצועים ועלויות לפי תקופה</h3>
           </div>
 
-          <!-- Period Tabs -->
           <div class="flex bg-slate-100/90 p-1 rounded-xl text-xs font-bold text-slate-500">
             <button type="button" onclick="triggerHaptic(); setPeriod('1M')" id="tab-period-1M" class="period-tab flex-1 py-1 px-2 rounded-lg transition-all text-center">1M</button>
             <button type="button" onclick="triggerHaptic(); setPeriod('YTD')" id="tab-period-YTD" class="period-tab flex-1 py-1 px-2 rounded-lg transition-all text-center">YTD</button>
@@ -188,7 +198,6 @@
         </div>
 
         <div class="grid grid-cols-2 gap-2.5">
-          <!-- דמי ניהול לתקופה -->
           <div class="bg-amber-50/40 border border-amber-200/60 p-3 rounded-2xl text-right">
             <div class="flex items-center justify-between text-slate-400 mb-0.5">
               <span class="text-[10px] font-bold text-amber-900">דמי ניהול לתקופה</span>
@@ -198,7 +207,6 @@
             <div id="periodFeeSub" class="text-[9px] text-slate-400 mt-0.5 truncate">מחושב עבור כל התקופה</div>
           </div>
 
-          <!-- תשואה לתקופה -->
           <div class="bg-emerald-50/40 border border-emerald-200/60 p-3 rounded-2xl text-right">
             <div class="flex items-center justify-between text-slate-400 mb-0.5">
               <span class="text-[10px] font-bold text-emerald-950">תשואה משוקללת</span>
@@ -210,17 +218,27 @@
         </div>
       </div>
 
-      <!-- Funds List Section -->
-      <div class="flex items-center justify-between mb-3 px-1">
-        <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider" id="listHeaderTitle">הקופות ברשימה</h3>
-        <span id="listCountBadge" class="text-[11px] font-mono font-bold text-slate-400">0 קופות</span>
+      <!-- VIEW 1: HOME VIEW - BIG FAMILY MEMBER CARDS -->
+      <div id="homeMembersView" class="space-y-3">
+        <div class="flex items-center justify-between px-1 mb-1">
+          <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider">בני המשפחה וההון האישי</h3>
+          <span class="text-[11px] text-slate-400 font-bold">לחץ לצפייה בקופות</span>
+        </div>
+        <div id="familyHubCards" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
       </div>
 
-      <div id="fundsList" class="space-y-2.5"></div>
+      <!-- VIEW 2: MEMBER VIEW - ACCORDION GROUPED FUNDS -->
+      <div id="memberFundsView" class="hidden space-y-3">
+        <div class="flex items-center justify-between px-1">
+          <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider" id="memberListHeader">הקופות של המשתמש</h3>
+          <span id="memberFundCountBadge" class="text-[11px] font-mono font-bold text-slate-400">0 קופות</span>
+        </div>
+        <div id="groupedFundsList" class="space-y-3"></div>
+      </div>
 
-      <div id="emptyState" class="hidden text-center py-12 bg-white border-2 border-dashed border-amber-200 rounded-3xl p-6">
+      <div id="emptyState" class="hidden text-center py-12 bg-white border-2 border-dashed border-amber-200 rounded-3xl p-6 mt-4">
         <div class="w-12 h-12 mx-auto mb-2 rounded-full bg-amber-100 flex items-center justify-center text-xl">
-          🏡
+          🧸
         </div>
         <h4 class="text-sm font-black text-slate-800 mb-1">אין עדיין קופות להצגה</h4>
         <p class="text-xs text-slate-500 mb-4 font-medium">הוסיפו קופה ראשונה לכספת המשפחתית</p>
@@ -251,7 +269,6 @@
         <button onclick="closeDetailModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center font-bold text-sm">✕</button>
       </div>
 
-      <!-- Balances Breakdown Grid -->
       <div class="grid grid-cols-2 gap-2.5 mb-3">
         <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100 text-right">
           <span class="text-[10px] font-bold text-slate-400 block">יתרה כוללת (שווי)</span>
@@ -265,7 +282,6 @@
         </div>
       </div>
 
-      <!-- GemelNet Return Box (Always loaded if available) -->
       <div id="detailGemelnetBox" class="hidden bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-3.5 mb-3 text-right">
         <div class="flex items-center justify-between mb-1.5">
           <span class="text-xs font-black text-emerald-950 flex items-center gap-1.5">
@@ -286,7 +302,6 @@
         </div>
       </div>
 
-      <!-- Profit & Tax Deep Dive Box -->
       <div class="bg-amber-50/50 border border-amber-100 rounded-2xl p-3.5 mb-3 space-y-2 text-right">
         <div class="flex items-center justify-between text-xs">
           <span class="text-slate-600 font-bold">רווח הון ברוטו:</span>
@@ -305,7 +320,6 @@
         </div>
       </div>
 
-      <!-- Additional Specs -->
       <div class="space-y-1.5 text-xs text-slate-500 mb-4 bg-slate-50 p-3 rounded-2xl border border-slate-100">
         <div class="flex justify-between" id="detailTrackIdRow">
           <span>קוד מסלול באוצר (מ״ה):</span>
@@ -329,7 +343,6 @@
         </div>
       </div>
 
-      <!-- Action Buttons -->
       <div class="grid grid-cols-2 gap-2 mb-3">
         <button id="btnActionQuick" class="squish-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 transition">
           <span>⚡ עדכון יתרה</span>
@@ -339,7 +352,6 @@
         </button>
       </div>
 
-      <!-- Transactions Ledger History -->
       <div class="mb-4 bg-slate-50 rounded-2xl border border-slate-200/80 p-3 text-right">
         <h4 class="text-[11px] font-black text-slate-700 mb-2 flex items-center justify-between">
           <span class="flex items-center gap-1">
@@ -359,7 +371,7 @@
     </div>
   </div>
 
-  <!-- Add / Edit Modal -->
+  <!-- Add / Edit Fund Modal -->
   <div id="fundModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white border-4 border-amber-100 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl p-5 max-h-[92vh] overflow-y-auto no-scrollbar">
       <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
@@ -372,7 +384,6 @@
 
       <form id="fundForm" onsubmit="saveFundForm(event)" class="space-y-2.5 text-right">
         <input type="hidden" id="fieldId">
-        <!-- שדות מוסתרים לשמירת נתוני האוצר המלאים (משימה 2) -->
         <input type="hidden" id="fieldGemelnetReturn">
         <input type="hidden" id="fieldGemelnetYieldYtd">
         <input type="hidden" id="fieldGemelnetYield3y">
@@ -526,7 +537,7 @@
     </div>
   </div>
 
-  <!-- Settings Modal -->
+  <!-- Settings Modal (With Profile Photo Uploads) -->
   <div id="settingsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white border-4 border-amber-100 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl p-5">
       <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
@@ -542,13 +553,13 @@
           <div class="flex items-center justify-between mb-2">
             <h4 class="text-xs font-black text-slate-800 flex items-center gap-1">
               <span>👨‍👩‍👧‍👦</span>
-              <span>בני המשפחה</span>
+              <span>בני המשפחה ותמונות</span>
             </h4>
             <button onclick="openMemberAddPrompt()" class="squish-btn bg-amber-200 hover:bg-amber-300 text-amber-900 font-bold px-2 py-0.5 rounded-lg text-[10px]">
               + הוסף
             </button>
           </div>
-          <div id="settingsMembersList" class="space-y-1.5"></div>
+          <div id="settingsMembersList" class="space-y-2"></div>
         </div>
 
         <div class="bg-emerald-50/50 border border-emerald-200 rounded-xl p-3 flex items-center justify-between">
@@ -582,6 +593,9 @@
     </div>
   </div>
 
+  <!-- Hidden Photo File Input for Members -->
+  <input type="file" id="memberPhotoInput" accept="image/*" class="hidden" onchange="handleMemberPhotoSelected(event)">
+
   <script>
     const SB_URL = 'https://geamksanxntfeyzlqdrs.supabase.co';
     const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlYW1rc2FueG50ZmV5emxxZHJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzMjg1OTksImV4cCI6MjEwMzkwNDU5OX0.o5XMCnvXaBmwZ8GqoQ03-_KVwQZfFeniLnhMo6RFvoQ';
@@ -590,15 +604,17 @@
     const sbClient = window.supabase.createClient(SB_URL, SB_ANON);
 
     let funds = [];
-    let currentFilter = 'ALL';
+    let currentFilter = 'ALL'; // 'ALL' represents the Family Home view
     let currentPeriod = 'ALL';
     let activeDetailId = null;
+    let memberPhotoTargetIndex = null;
+    let expandedCategories = {}; // Records open/closed accordions
 
     const DEFAULT_MEMBERS = [
-      { name: 'בובו', icon: '🧸' },
-      { name: 'אבא', icon: '👨' },
-      { name: 'אמא', icon: '👩' },
-      { name: 'משותף', icon: '🏡' }
+      { name: 'בובו', icon: '🧸', avatar: '' },
+      { name: 'אבא', icon: '👨', avatar: '' },
+      { name: 'אמא', icon: '👩', avatar: '' },
+      { name: 'משותף', icon: '🏡', avatar: '' }
     ];
 
     let familyMembers = JSON.parse(localStorage.getItem('bobo_family_members')) || DEFAULT_MEMBERS;
@@ -644,6 +660,14 @@
       }
     };
 
+    // Profile Avatar Renderer (Photo with fallback to Emoji)
+    function renderAvatarHTML(m, sizeClasses = 'w-10 h-10', textClass = 'text-xl') {
+      if (m.avatar) {
+        return `<img src="${m.avatar}" alt="${m.name}" class="${sizeClasses} rounded-full object-cover border-2 border-amber-300 shadow-sm shrink-0">`;
+      }
+      return `<div class="${sizeClasses} rounded-full bg-amber-100 border-2 border-amber-200 flex items-center justify-center ${textClass} shadow-sm shrink-0">${m.icon || '⭐'}</div>`;
+    }
+
     const getMemberIcon = (name) => {
       const found = familyMembers.find(m => m.name === name);
       return found ? found.icon : '⭐';
@@ -677,7 +701,6 @@
       }
     }
 
-    // משימה 2: משיכת נתונים מלאה ממאגר האוצר כולל שדות מצטברים
     async function fetchDetailsByTrackId() {
       const trackInput = document.getElementById('fieldTrackId');
       const trackId = trackInput.value.trim();
@@ -750,7 +773,6 @@
           else if (fundName.includes('גמל')) typeSelect.value = 'קופת גמל';
           handleTypeChange(typeSelect.value);
 
-          // שליפת כלל נתוני התשואה הרלוונטיים
           const monthlyReturnVal = match.MONTHLY_YIELD !== undefined ? match.MONTHLY_YIELD : (match.TSUA_HODSHIT !== undefined ? match.TSUA_HODSHIT : match.TSUA_MITZTABERET_LETKUFA);
           const ytdVal = match.YEAR_TO_DATE_YIELD !== undefined ? match.YEAR_TO_DATE_YIELD : null;
           const y3Val = match.YIELD_TRAILING_3_YRS !== undefined ? match.YIELD_TRAILING_3_YRS : null;
@@ -880,7 +902,7 @@
 
         funds.forEach(f => {
           if (f.owner && !familyMembers.some(m => m.name === f.owner)) {
-            familyMembers.push({ name: f.owner, icon: '⭐' });
+            familyMembers.push({ name: f.owner, icon: '⭐', avatar: '' });
           }
         });
         saveFamilyMembers();
@@ -893,35 +915,13 @@
       }
     }
 
-    function renderMembersCapsule() {
-      const container = document.getElementById('membersCapsule');
-
-      const tabBtn = (id, label, icon, count) => {
-        const isActive = currentFilter === id;
-        return `
-          <button onclick="triggerHaptic(); setFilter('${id}')" class="squish-btn shrink-0 px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
-            isActive 
-              ? 'bg-white text-slate-900 shadow-capsule-active font-black scale-100' 
-              : 'text-slate-500 hover:text-slate-800'
-          }">
-            <span class="text-sm">${icon}</span>
-            <span>${label}</span>
-            <span class="text-[10px] opacity-60 font-mono">(${count})</span>
-          </button>
-        `;
-      };
-
-      let html = tabBtn('ALL', 'כל המשפחה', '🏡', funds.length);
-      familyMembers.forEach(m => {
-        const cnt = funds.filter(f => f.owner === m.name).length;
-        html += tabBtn(m.name, m.name, m.icon, cnt);
-      });
-
-      container.innerHTML = html;
+    function navigateToHome() {
+      currentFilter = 'ALL';
+      render();
     }
 
-    function setFilter(member) {
-      currentFilter = member;
+    function navigateToMember(memberName) {
+      currentFilter = memberName;
       render();
     }
 
@@ -956,24 +956,18 @@
       }
     }
 
-    // פונקציית עזר להחזרת תשואת קופה לפי התקופה הנבחרת
     function getFundPeriodYield(f, period) {
       const bal = Number(f.balance) || 0;
       const dep = Number(f.deposits) || 0;
 
-      if (period === '1M') {
-        return f.gemelnetReturn;
-      } else if (period === 'YTD') {
-        return f.gemelnetYieldYtd;
-      } else if (period === '3Y') {
-        return f.gemelnetYield3y;
-      } else if (period === '1Y') {
+      if (period === '1M') return f.gemelnetReturn;
+      if (period === 'YTD') return f.gemelnetYieldYtd;
+      if (period === '3Y') return f.gemelnetYield3y;
+      if (period === '1Y') {
         if (f.gemelnetYield3y !== null) return f.gemelnetYield3y / 3;
         return dep > 0 ? ((bal - dep) / dep) * 100 : null;
-      } else {
-        // ALL
-        return dep > 0 ? ((bal - dep) / dep) * 100 : null;
       }
+      return dep > 0 ? ((bal - dep) / dep) * 100 : null;
     }
 
     function updatePeriodMetrics(filteredFunds) {
@@ -1035,99 +1029,219 @@
       }
     }
 
-    function render() {
-      renderMembersCapsule();
+    function toggleCategory(catKey) {
+      triggerHaptic();
+      expandedCategories[catKey] = !expandedCategories[catKey];
+      renderMemberFundsView();
+    }
 
-      const listEl = document.getElementById('fundsList');
-      const emptyEl = document.getElementById('emptyState');
-      
-      const filteredFunds = currentFilter === 'ALL' 
-        ? funds 
-        : funds.filter(f => f.owner === currentFilter);
+    function renderFundCardHTML(f) {
+      const dep = Number(f.deposits) || 0;
+      const bal = Number(f.balance) || 0;
+      const feeAcc = Number(f.feeAccumulation) || 0;
+      const grossProfit = bal - dep;
+      const roi = dep > 0 ? (grossProfit / dep) * 100 : 0;
+      const isPos = grossProfit >= 0;
 
-      document.getElementById('listCountBadge').textContent = `${filteredFunds.length} קופות`;
-      document.getElementById('listHeaderTitle').textContent = currentFilter === 'ALL' ? 'כל הקופות של המשפחה' : `הקופות של ${currentFilter}`;
+      const months = getPeriodMonths(currentPeriod, f.inceptionDate);
+      const cardPeriodFee = bal * (feeAcc / 100) * (months / 12);
+      const cardPeriodYield = getFundPeriodYield(f, currentPeriod);
 
-      updatePeriodMetrics(filteredFunds);
+      const periodLabels = { '1M': '1M', 'YTD': 'YTD', '1Y': 'שנה', '3Y': '3 שנים', 'ALL': 'הכל' };
 
-      if (filteredFunds.length === 0) {
-        listEl.innerHTML = '';
-        emptyEl.classList.remove('hidden');
-        updateHeroKPIs(0, 0, 0);
-        return;
-      }
-
-      emptyEl.classList.add('hidden');
-      let totalBal = 0, totalDep = 0, totalMonthly = 0;
-
-      const periodLabels = {
-        '1M': '1M',
-        'YTD': 'YTD',
-        '1Y': 'שנה',
-        '3Y': '3 שנים',
-        'ALL': 'הכל'
-      };
-
-      listEl.innerHTML = filteredFunds.map(f => {
-        const dep = Number(f.deposits) || 0;
-        const bal = Number(f.balance) || 0;
-        const feeAcc = Number(f.feeAccumulation) || 0;
-        const grossProfit = bal - dep;
-        const roi = dep > 0 ? (grossProfit / dep) * 100 : 0;
-        const isPos = grossProfit >= 0;
-
-        // משימה 1: חישוב דמי ניהול ותשואה לתקופה עבור הכרטיס הבודד
-        const months = getPeriodMonths(currentPeriod, f.inceptionDate);
-        const cardPeriodFee = bal * (feeAcc / 100) * (months / 12);
-        const cardPeriodYield = getFundPeriodYield(f, currentPeriod);
-
-        return `
-          <div onclick="triggerHaptic(); openDetailModal('${f.id}')" class="squish-btn bg-white border border-cardBorder ${getTypeAccentBorder(f.type)} hover:border-amber-200 rounded-2xl p-3.5 shadow-sm transition cursor-pointer">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3 min-w-0">
-                <span class="text-2xl p-2 bg-amber-50/70 border border-amber-100 rounded-xl shrink-0">${getTypeIcon(f.type)}</span>
-                <div class="min-w-0">
-                  <div class="flex items-center gap-1.5 mb-0.5">
-                    <span class="text-[9px] font-black px-1.5 py-0.2 rounded-full border ${getMemberBadgeColor(f.owner)} flex items-center gap-0.5">
-                      <span>${getMemberIcon(f.owner)}</span>
-                      <span>${f.owner}</span>
-                    </span>
-                    <span class="text-[10px] text-slate-400 font-medium truncate">${f.manager}</span>
-                    ${f.trackId ? `<span class="text-[9px] font-mono text-emerald-700 bg-emerald-50 px-1 py-0.2 rounded">מ״ה: ${f.trackId}</span>` : ''}
-                  </div>
-                  <h4 class="text-sm font-black text-slate-800 leading-tight truncate">${f.name}</h4>
+      return `
+        <div onclick="triggerHaptic(); openDetailModal('${f.id}')" class="squish-btn bg-white border border-cardBorder ${getTypeAccentBorder(f.type)} hover:border-amber-200 rounded-2xl p-3.5 shadow-sm transition cursor-pointer">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="text-2xl p-2 bg-amber-50/70 border border-amber-100 rounded-xl shrink-0">${getTypeIcon(f.type)}</span>
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5 mb-0.5">
+                  <span class="text-[9px] font-black px-1.5 py-0.2 rounded-full border ${getMemberBadgeColor(f.owner)} flex items-center gap-0.5">
+                    <span>${getMemberIcon(f.owner)}</span>
+                    <span>${f.owner}</span>
+                  </span>
+                  <span class="text-[10px] text-slate-400 font-medium truncate">${f.manager}</span>
+                  ${f.trackId ? `<span class="text-[9px] font-mono text-emerald-700 bg-emerald-50 px-1 py-0.2 rounded">מ״ה: ${f.trackId}</span>` : ''}
                 </div>
-              </div>
-
-              <div class="flex items-center gap-2.5 shrink-0 font-mono">
-                <div class="text-left">
-                  <div class="text-sm font-black text-slate-800">${fmtILS(bal)}</div>
-                  <div class="text-[10px] font-bold ${isPos ? 'text-emerald-600' : 'text-rose-500'}">
-                    ${fmtPCT(roi)}
-                  </div>
-                </div>
-                <span class="text-slate-300 text-xs">‹</span>
+                <h4 class="text-sm font-black text-slate-800 leading-tight truncate">${f.name}</h4>
               </div>
             </div>
 
-            <!-- שורת סיכום תקופתי ברמת הקופה (משימה 1) -->
-            <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400 font-medium">
-              <span class="flex items-center gap-1">
-                <span>🏷️ דמי ניהול (${periodLabels[currentPeriod]}):</span>
-                <strong class="text-slate-700 font-mono">${fmtILS(cardPeriodFee)}</strong>
-              </span>
-              <span class="flex items-center gap-1">
-                <span>תשואת ${periodLabels[currentPeriod]}:</span>
-                <strong class="font-mono ${cardPeriodYield !== null && cardPeriodYield >= 0 ? 'text-emerald-600' : (cardPeriodYield !== null ? 'text-rose-500' : 'text-slate-400')}">
-                  ${cardPeriodYield !== null ? fmtPCT(cardPeriodYield) : '--'}
-                </strong>
-              </span>
+            <div class="flex items-center gap-2.5 shrink-0 font-mono">
+              <div class="text-left">
+                <div class="text-sm font-black text-slate-800">${fmtILS(bal)}</div>
+                <div class="text-[10px] font-bold ${isPos ? 'text-emerald-600' : 'text-rose-500'}">
+                  ${fmtPCT(roi)}
+                </div>
+              </div>
+              <span class="text-slate-300 text-xs">‹</span>
+            </div>
+          </div>
+
+          <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400 font-medium">
+            <span class="flex items-center gap-1">
+              <span>🏷️ דמי ניהול (${periodLabels[currentPeriod]}):</span>
+              <strong class="text-slate-700 font-mono">${fmtILS(cardPeriodFee)}</strong>
+            </span>
+            <span class="flex items-center gap-1">
+              <span>תשואת ${periodLabels[currentPeriod]}:</span>
+              <strong class="font-mono ${cardPeriodYield !== null && cardPeriodYield >= 0 ? 'text-emerald-600' : (cardPeriodYield !== null ? 'text-rose-500' : 'text-slate-400')}">
+                ${cardPeriodYield !== null ? fmtPCT(cardPeriodYield) : '--'}
+              </strong>
+            </span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Render Home View: Big Family Member Cards with individual net wealth
+    function renderHomeView() {
+      document.getElementById('homeMembersView').classList.remove('hidden');
+      document.getElementById('memberFundsView').classList.add('hidden');
+      document.getElementById('memberHeaderNav').classList.add('hidden');
+
+      const container = document.getElementById('familyHubCards');
+      container.innerHTML = familyMembers.map(m => {
+        const mFunds = funds.filter(f => f.owner === m.name);
+        const mBalance = mFunds.reduce((sum, f) => sum + (Number(f.balance) || 0), 0);
+        const mDeposits = mFunds.reduce((sum, f) => sum + (Number(f.deposits) || 0), 0);
+        const mProfit = mBalance - mDeposits;
+        const mRoi = mDeposits > 0 ? (mProfit / mDeposits) * 100 : 0;
+
+        return `
+          <div onclick="triggerHaptic(); navigateToMember('${m.name}')" class="squish-btn bg-white border-2 border-amber-100/90 hover:border-amber-300 rounded-[26px] p-4 shadow-bobo-sm flex items-center justify-between cursor-pointer transition">
+            <div class="flex items-center gap-3.5">
+              ${renderAvatarHTML(m, 'w-14 h-14', 'text-2xl')}
+              <div>
+                <h4 class="text-base font-black text-slate-800 leading-tight">${m.name}</h4>
+                <div class="text-xs text-slate-400 font-medium mt-0.5">${mFunds.length} קופות וחסכונות</div>
+                <div class="text-[10px] font-mono font-bold mt-1 ${mProfit >= 0 ? 'text-emerald-600' : 'text-rose-500'}">
+                  רווח: ${fmtPCT(mRoi)} (${fmtILS(mProfit)})
+                </div>
+              </div>
+            </div>
+
+            <div class="text-left font-mono shrink-0 pl-1">
+              <span class="text-[10px] font-bold text-slate-400 block">סך ההון:</span>
+              <div class="text-lg font-black text-slate-800">${fmtILS(mBalance)}</div>
+              <span class="text-amber-500 text-xs font-bold block mt-1">פתח קופות ‹</span>
             </div>
           </div>
         `;
       }).join('');
+    }
 
-      funds.forEach(f => {
+    // Render Member View: Smart Accordion Grouped by Fund Type
+    function renderMemberFundsView() {
+      document.getElementById('homeMembersView').classList.add('hidden');
+      document.getElementById('memberFundsView').classList.remove('hidden');
+      document.getElementById('memberHeaderNav').classList.remove('hidden');
+
+      const targetMember = familyMembers.find(m => m.name === currentFilter) || { name: currentFilter, icon: '⭐', avatar: '' };
+      
+      document.getElementById('activeMemberTitle').innerHTML = `
+        ${renderAvatarHTML(targetMember, 'w-6 h-6', 'text-xs')}
+        <span>הקופות של ${targetMember.name}</span>
+      `;
+      document.getElementById('memberListHeader').textContent = `רשימת הקופות של ${targetMember.name}`;
+
+      const mFunds = funds.filter(f => f.owner === currentFilter);
+      document.getElementById('memberFundCountBadge').textContent = `${mFunds.length} קופות`;
+
+      const container = document.getElementById('groupedFundsList');
+
+      if (mFunds.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8 bg-white rounded-2xl border border-slate-100 p-4">
+            <p class="text-xs text-slate-400">אין עדיין קופות עבור ${targetMember.name}</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Group funds by type
+      const groups = {};
+      mFunds.forEach(f => {
+        const t = f.type || 'אחר';
+        if (!groups[t]) groups[t] = [];
+        groups[t].push(f);
+      });
+
+      let html = '';
+
+      Object.keys(groups).forEach(typeKey => {
+        const groupFunds = groups[typeKey];
+
+        // If only 1 fund of this type -> show directly as a single card!
+        if (groupFunds.length === 1) {
+          html += renderFundCardHTML(groupFunds[0]);
+        } else {
+          // More than 1 fund of this type -> build foldable Accordion Category!
+          const groupBalance = groupFunds.reduce((s, f) => s + (Number(f.balance) || 0), 0);
+          const groupDeposits = groupFunds.reduce((s, f) => s + (Number(f.deposits) || 0), 0);
+          const groupProfit = groupBalance - groupDeposits;
+          const isExpanded = expandedCategories[typeKey] ?? true; // Open by default
+
+          html += `
+            <div class="bg-white border-2 border-amber-100 rounded-2xl overflow-hidden shadow-sm">
+              <div onclick="toggleCategory('${typeKey}')" class="p-3.5 bg-slate-50/80 hover:bg-slate-100/80 flex items-center justify-between cursor-pointer transition">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-xl p-1.5 bg-white border border-slate-200 rounded-xl">${getTypeIcon(typeKey)}</span>
+                  <div>
+                    <h4 class="text-xs font-black text-slate-800">${typeKey} <span class="text-slate-400 font-normal">(${groupFunds.length})</span></h4>
+                    <span class="text-[10px] text-slate-400 font-mono">רווח מצטבר: ${groupProfit >= 0 ? '+' : ''}${fmtILS(groupProfit)}</span>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-2 font-mono">
+                  <div class="text-left">
+                    <span class="text-xs font-black text-slate-800">${fmtILS(groupBalance)}</span>
+                  </div>
+                  <span class="text-slate-400 text-xs transform transition-transform ${isExpanded ? 'rotate-90' : ''}">‹</span>
+                </div>
+              </div>
+
+              ${isExpanded ? `
+                <div class="p-2.5 bg-amber-50/20 border-t border-slate-100 space-y-2">
+                  ${groupFunds.map(f => renderFundCardHTML(f)).join('')}
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }
+      });
+
+      container.innerHTML = html;
+    }
+
+    function render() {
+      const isHome = currentFilter === 'ALL';
+      const activeFunds = isHome ? funds : funds.filter(f => f.owner === currentFilter);
+
+      document.getElementById('heroCardTitle').textContent = isHome 
+        ? 'שווי התיק המשפחתי הכולל' 
+        : `סך שווי הקופות של ${currentFilter}`;
+
+      updatePeriodMetrics(activeFunds);
+
+      if (funds.length === 0) {
+        document.getElementById('homeMembersView').classList.add('hidden');
+        document.getElementById('memberFundsView').classList.add('hidden');
+        document.getElementById('emptyState').classList.remove('hidden');
+        updateHeroKPIs(0, 0, 0);
+        return;
+      }
+
+      document.getElementById('emptyState').classList.add('hidden');
+
+      if (isHome) {
+        renderHomeView();
+      } else {
+        renderMemberFundsView();
+      }
+
+      let totalBal = 0, totalDep = 0, totalMonthly = 0;
+      activeFunds.forEach(f => {
         totalBal += (Number(f.balance) || 0);
         totalDep += (Number(f.deposits) || 0);
         totalMonthly += (Number(f.monthlyDeposit) || 0);
@@ -1343,7 +1457,6 @@
       document.getElementById('fundModal').classList.remove('hidden');
     }
 
-    // משימה 2: שמירת כלל שדות התשואה של משרד האוצר ל-Supabase
     async function saveFundForm(e) {
       e.preventDefault();
       triggerHaptic();
@@ -1495,19 +1608,67 @@
     function renderSettingsMembers() {
       const listEl = document.getElementById('settingsMembersList');
       listEl.innerHTML = familyMembers.map((m, idx) => `
-        <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
-          <div class="flex items-center gap-1.5">
-            <span class="text-base">${m.icon}</span>
-            <span class="font-black text-xs text-slate-800">${m.name}</span>
+        <div class="flex items-center justify-between bg-white p-2.5 rounded-xl border border-slate-200">
+          <div class="flex items-center gap-2">
+            <div class="cursor-pointer relative" onclick="triggerMemberPhotoUpload(${idx})" title="לחץ להחלפת תמונה">
+              ${renderAvatarHTML(m, 'w-9 h-9', 'text-base')}
+              <span class="absolute -bottom-1 -right-1 bg-amber-500 text-white rounded-full p-0.5 text-[8px] leading-none">📷</span>
+            </div>
+            <div>
+              <span class="font-black text-xs text-slate-800 block">${m.name}</span>
+              <span class="text-[9px] text-slate-400">לחץ על התמונה להחלפה</span>
+            </div>
           </div>
           <div class="flex items-center gap-1">
-            <button onclick="editMemberPrompt(${idx})" class="text-[10px] text-slate-400 hover:text-slate-700 font-bold px-1.5 py-0.5">ערוך</button>
+            <button onclick="editMemberPrompt(${idx})" class="text-[10px] text-slate-500 hover:text-slate-800 font-bold px-2 py-1 bg-slate-100 rounded-lg">ערוך</button>
             ${familyMembers.length > 1 ? `
-              <button onclick="deleteMemberPrompt(${idx})" class="text-[10px] text-rose-500 hover:text-rose-700 font-bold px-1.5 py-0.5">מחק</button>
+              <button onclick="deleteMemberPrompt(${idx})" class="text-[10px] text-rose-500 hover:text-rose-700 font-bold px-2 py-1 bg-rose-50 rounded-lg">מחק</button>
             ` : ''}
           </div>
         </div>
       `).join('');
+    }
+
+    function triggerMemberPhotoUpload(idx) {
+      memberPhotoTargetIndex = idx;
+      document.getElementById('memberPhotoInput').click();
+    }
+
+    function handleMemberPhotoSelected(e) {
+      const file = e.target.files[0];
+      if (!file || memberPhotoTargetIndex === null) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        // Compress image using canvas to save storage space
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const maxDim = 240; // High quality thumbnail
+          let w = img.width;
+          let h = img.height;
+          if (w > h && w > maxDim) {
+            h = (h * maxDim) / w;
+            w = maxDim;
+          } else if (h > maxDim) {
+            w = (w * maxDim) / h;
+            h = maxDim;
+          }
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+
+          familyMembers[memberPhotoTargetIndex].avatar = compressedDataUrl;
+          saveFamilyMembers();
+          render();
+          renderSettingsMembers();
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+      e.target.value = '';
     }
 
     function openMemberAddPrompt() {
@@ -1516,7 +1677,7 @@
 
       const icon = prompt('הכנס אימוג\'י עבור בן המשפחה:', '⭐') || '⭐';
       
-      familyMembers.push({ name: name.trim(), icon });
+      familyMembers.push({ name: name.trim(), icon, avatar: '' });
       saveFamilyMembers();
       render();
       if (!document.getElementById('settingsModal').classList.contains('hidden')) {
