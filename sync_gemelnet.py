@@ -22,7 +22,7 @@ if not funds or not isinstance(funds, list):
 
 print(f"Found {len(funds)} funds with track_id.")
 
-# 2. Query data.gov.il GemelNet API (Active 2024+ datastore resource)
+# 2. Query data.gov.il GemelNet API
 GEMELNET_API = "https://data.gov.il/api/3/action/datastore_search"
 RESOURCE_ID = "a30dcbea-a1d2-482c-ae29-8f781f5025fb"
 
@@ -34,13 +34,14 @@ for fund in funds:
     params = {
         "resource_id": RESOURCE_ID,
         "q": track_id,
-        "limit": 20
+        "limit": 50
     }
 
     try:
         api_res = requests.get(GEMELNET_API, params=params, timeout=15).json()
         records = api_res.get("result", {}).get("records", [])
 
+        # Match by FUND_ID, SHM_KUPA, or KUPA_ID (loose string match)
         matching = [
             r for r in records 
             if str(r.get("FUND_ID", "")).strip() == track_id 
@@ -49,17 +50,25 @@ for fund in funds:
         ]
         
         if matching:
+            # Sort by REPORT_PERIOD descending to guarantee the latest month
+            matching.sort(key=lambda x: str(x.get("REPORT_PERIOD", "")), reverse=True)
             latest = matching[0]
-            monthly_return = float(latest.get("TSUA_HODSHIT", 0))
-            period = str(latest.get("REPORT_PERIOD", ""))
+            
+            monthly_return = float(latest.get("TSUA_HODSHIT", 0) or 0)
+            period = str(latest.get("REPORT_PERIOD", "")).strip()
 
             update_payload = {
                 "gemelnet_return_monthly": monthly_return,
                 "gemelnet_period": period
             }
-            patch_res = requests.patch(f"{SUPABASE_URL}/rest/v1/funds?id=eq.{fund['id']}", headers=headers, json=update_payload)
-            print(f"Updated {fund['name']} (Track {track_id}): Return {monthly_return}%, Period {period}")
+            
+            patch_res = requests.patch(
+                f"{SUPABASE_URL}/rest/v1/funds?id=eq.{fund['id']}", 
+                headers=headers, 
+                json=update_payload
+            )
+            print(f"SUCCESS: Updated {fund['name']} (Track {track_id}) -> Return: {monthly_return}%, Period: {period}")
         else:
-            print(f"No GemelNet record found for track {track_id}")
+            print(f"WARNING: No GemelNet record found for track {track_id} in {len(records)} results.")
     except Exception as e:
-        print(f"Error fetching GemelNet for {track_id}: {e}")
+        print(f"ERROR fetching GemelNet for {track_id}: {e}")
