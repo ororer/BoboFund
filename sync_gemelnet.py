@@ -16,7 +16,7 @@ headers = {
     "Prefer": "return=representation"
 }
 
-# 1. Fetch funds from Supabase
+# 1. שליפת כל הקופות מ-Supabase השייכות ל-vault
 res = requests.get(f"{SUPABASE_URL}/rest/v1/funds?select=id,track_id,name,vault_id&vault_id=eq.bobo-fund", headers=headers)
 if res.status_code != 200:
     print(f"Error fetching funds: {res.status_code} {res.text}")
@@ -25,7 +25,7 @@ if res.status_code != 200:
 funds = [f for f in res.json() if f.get("track_id") and str(f.get("track_id")).strip()]
 print(f"Funds with track_id to sync: {len(funds)}")
 
-# 2. Sync from data.gov.il GemelNet API
+# 2. סנכרון מול API גמל-נט של משרד האוצר (data.gov.il)
 GEMELNET_API = "https://data.gov.il/api/3/action/datastore_search"
 RESOURCE_ID = "a30dcbea-a1d2-482c-ae29-8f781f5025fb"
 
@@ -43,19 +43,26 @@ for fund in funds:
         api_res = requests.get(GEMELNET_API, params=params, timeout=20).json()
         records = api_res.get("result", {}).get("records", [])
 
-        # Filter strictly by FUND_ID
+        # סינון קפדני לפי FUND_ID
         matching = [r for r in records if str(r.get("FUND_ID", "")).strip() == track_id]
 
         if matching:
-            # Sort by REPORT_PERIOD descending to get the newest month
+            # מיון לפי REPORT_PERIOD בסדר יורד כדי לקבל את החודש העדכני ביותר
             matching.sort(key=lambda x: str(x.get("REPORT_PERIOD", "")), reverse=True)
             latest = matching[0]
 
+            # שליפת תשואות חודשיות ומצטברות
             monthly_yield = float(latest.get("MONTHLY_YIELD") or 0.0)
+            ytd_yield = float(latest.get("YEAR_TO_DATE_YIELD") or 0.0)
+            yield_3y = float(latest.get("YIELD_TRAILING_3_YRS") or 0.0)
+            yield_5y = float(latest.get("YIELD_TRAILING_5_YRS") or 0.0)
             period = str(latest.get("REPORT_PERIOD", "")).strip()
 
             update_payload = {
                 "gemelnet_return_monthly": monthly_yield,
+                "gemelnet_yield_ytd": ytd_yield,
+                "gemelnet_yield_3y": yield_3y,
+                "gemelnet_yield_5y": yield_5y,
                 "gemelnet_period": period
             }
 
@@ -66,7 +73,7 @@ for fund in funds:
             )
 
             if patch_res.status_code in [200, 204]:
-                print(f"SUCCESS: Updated {fund['name']} -> MONTHLY_YIELD: {monthly_yield}%, REPORT_PERIOD: {period}")
+                print(f"SUCCESS: Updated {fund['name']} -> 1M: {monthly_yield}%, YTD: {ytd_yield}%, 3Y: {yield_3y}%, Period: {period}")
             else:
                 print(f"DB Error on update: {patch_res.status_code} {patch_res.text}")
         else:
