@@ -77,7 +77,6 @@
       <h2 class="text-xl font-black text-slate-800 tracking-tight">Bobo & Co.</h2>
       <p class="text-xs text-slate-500 mt-0.5 mb-5 font-medium">הכספת של המשפוחה 🧸</p>
 
-      <!-- Biometric Fast Unlock Button (Shown if previously authenticated) -->
       <div id="bioUnlockSection" class="hidden mb-4 pb-4 border-b border-slate-100">
         <button type="button" onclick="handleBiometricUnlock()" class="w-full squish-btn bg-slate-900 hover:bg-slate-800 text-white font-black py-2.5 rounded-2xl text-xs transition flex items-center justify-center gap-2 shadow-md">
           <span class="text-base">🔒</span>
@@ -108,7 +107,6 @@
   <!-- Main App Shell -->
   <div id="appShell" class="flex-1 flex flex-col hidden w-full overflow-x-hidden">
 
-    <!-- Header -->
     <header class="border-b border-amber-100/80 bg-white/90 backdrop-blur-md sticky top-0 z-30 w-full">
       <div class="max-w-xl mx-auto px-4 h-14 flex items-center justify-between w-full">
         <div class="flex items-center gap-2">
@@ -135,7 +133,6 @@
 
     <main class="max-w-xl mx-auto px-4 pt-4 pb-20 w-full flex-1">
 
-      <!-- Single KPI Hero Card -->
       <div class="bg-white border-2 border-amber-100/90 rounded-[28px] p-5 mb-4 shadow-bobo text-center relative overflow-hidden">
         <div class="text-[11px] font-bold text-slate-400 mb-1 flex items-center justify-center gap-1.5">
           <span>שווי התיק המשפחתי</span>
@@ -160,21 +157,17 @@
         </div>
       </div>
 
-      <!-- Segmented Floating Pill Bar -->
       <div class="mb-5 flex items-center justify-center w-full">
         <div class="p-1 bg-slate-200/60 rounded-full flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full shadow-inner" id="membersCapsule"></div>
       </div>
 
-      <!-- Section Title & Counter -->
       <div class="flex items-center justify-between mb-3 px-1">
         <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider" id="listHeaderTitle">הקופות ברשימה</h3>
         <span id="listCountBadge" class="text-[11px] font-mono font-bold text-slate-400">0 קופות</span>
       </div>
 
-      <!-- Simplified Fund Cards List -->
       <div id="fundsList" class="space-y-2.5"></div>
 
-      <!-- Empty State -->
       <div id="emptyState" class="hidden text-center py-12 bg-white border-2 border-dashed border-amber-200 rounded-3xl p-6">
         <div class="w-12 h-12 mx-auto mb-2 rounded-full bg-amber-100 flex items-center justify-center text-xl">
           🏡
@@ -222,23 +215,23 @@
         </div>
       </div>
 
-      <!-- GemelNet Return Box -->
-      <div id="detailGemelnetBox" class="hidden bg-emerald-50/60 border border-emerald-200 rounded-2xl p-3 mb-3 text-right">
-        <div class="flex items-center justify-between mb-1">
-          <span class="text-xs font-black text-emerald-900 flex items-center gap-1">
-            <span>🏛️</span>
+      <!-- GemelNet Return Box (Always loaded if available) -->
+      <div id="detailGemelnetBox" class="hidden bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-3.5 mb-3 text-right">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-xs font-black text-emerald-950 flex items-center gap-1.5">
+            <span class="text-base">🏛️</span>
             <span>נתוני גמל-נט (משרד האוצר)</span>
           </span>
-          <span id="detailGemelnetPeriod" class="text-[10px] font-mono text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full font-bold"></span>
+          <span id="detailGemelnetPeriod" class="text-[10px] font-mono text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full font-black"></span>
         </div>
-        <div class="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-emerald-100 text-xs">
+        <div class="grid grid-cols-2 gap-2 pt-2 border-t border-emerald-200 text-xs">
           <div>
-            <span class="text-slate-500 block text-[10px]">תשואת מסלול ברוטו:</span>
-            <span id="detailGemelnetGross" class="font-mono font-black text-emerald-700">--</span>
+            <span class="text-slate-600 block text-[10px] font-bold">תשואת מסלול ברוטו:</span>
+            <span id="detailGemelnetGross" class="font-mono font-black text-emerald-800 text-sm">--</span>
           </div>
           <div>
-            <span class="text-slate-500 block text-[10px]">תשואה נטו (משוערת):</span>
-            <span id="detailGemelnetNet" class="font-mono font-black text-emerald-800">--</span>
+            <span class="text-slate-600 block text-[10px] font-bold">תשואה נטו (משוערת):</span>
+            <span id="detailGemelnetNet" class="font-mono font-black text-emerald-900 text-sm">--</span>
           </div>
         </div>
       </div>
@@ -296,7 +289,7 @@
         </button>
       </div>
 
-      <!-- Transactions Ledger History Accordion -->
+      <!-- Transactions Ledger History -->
       <div class="mb-4 bg-slate-50 rounded-2xl border border-slate-200/80 p-3 text-right">
         <h4 class="text-[11px] font-black text-slate-700 mb-2 flex items-center justify-between">
           <span class="flex items-center gap-1">
@@ -329,6 +322,8 @@
 
       <form id="fundForm" onsubmit="saveFundForm(event)" class="space-y-2.5 text-right">
         <input type="hidden" id="fieldId">
+        <input type="hidden" id="fieldGemelnetReturn">
+        <input type="hidden" id="fieldGemelnetPeriod">
 
         <div class="grid grid-cols-2 gap-2">
           <div>
@@ -341,22 +336,22 @@
           </div>
         </div>
 
-        <!-- Track ID Input with Auto Fetch Button -->
         <div>
           <label class="block text-[11px] font-bold text-slate-600 mb-0.5">קוד מסלול באוצר (מ״ה)</label>
           <div class="flex gap-1.5">
-            <input type="text" id="fieldTrackId" placeholder="למשל: 11823" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 font-mono focus:border-emerald-400 focus:bg-white focus:outline-none transition">
+            <input type="text" id="fieldTrackId" placeholder="למשל: 7799" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 font-mono focus:border-emerald-400 focus:bg-white focus:outline-none transition">
             <button type="button" id="btnFetchTrack" onclick="fetchDetailsByTrackId()" class="squish-btn bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 font-bold px-2.5 py-1.5 rounded-xl text-xs shrink-0 flex items-center gap-1 transition">
               <span>🔍</span>
-              <span id="fetchTrackText">משוך פרטים</span>
+              <span id="fetchTrackText">משוך פרטים ותשואה</span>
             </button>
           </div>
+          <div id="fetchReturnBadge" class="hidden mt-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200 text-center"></div>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="block text-[11px] font-bold text-slate-600 mb-0.5">שם הקופה *</label>
-            <input type="text" id="fieldName" required placeholder="מחקה S&P 500" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
+            <input type="text" id="fieldName" required placeholder="אלטשולר מניות" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
           </div>
           <div>
             <label class="block text-[11px] font-bold text-slate-600 mb-0.5">סוג הקופה *</label>
@@ -376,7 +371,7 @@
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="block text-[11px] font-bold text-slate-600 mb-0.5">גוף מנהל *</label>
-            <input type="text" id="fieldManager" required placeholder="מיטב, הראל..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
+            <input type="text" id="fieldManager" required placeholder="מיטב, אלטשולר..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 focus:border-emerald-400 focus:bg-white focus:outline-none transition">
           </div>
           <div>
             <label class="block text-[11px] font-bold text-slate-600 mb-0.5">מספר חשבון</label>
@@ -414,7 +409,6 @@
           </div>
         </div>
 
-        <!-- Annuity / Pension Toggle for Gemel LeHashkaa -->
         <div id="fieldAnnuityContainer" class="flex items-center gap-2 bg-amber-50 p-2 rounded-xl border border-amber-200 text-[11px]">
           <input type="checkbox" id="fieldIsAnnuity" class="w-4 h-4 rounded text-amber-600 accent-amber-600">
           <label for="fieldIsAnnuity" class="text-amber-900 font-bold">מיועד למשיכה כקצבה פטורה (מעל גיל 60) 🛡️</label>
@@ -436,9 +430,7 @@
   <!-- Quick Balance Update Modal -->
   <div id="quickModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white border-4 border-amber-100 rounded-3xl w-full max-w-xs p-5 shadow-2xl text-center">
-      <div class="w-10 h-10 mx-auto mb-2 rounded-full bg-emerald-100 flex items-center justify-center text-xl">
-        ⚡
-      </div>
+      <div class="w-10 h-10 mx-auto mb-2 rounded-full bg-emerald-100 flex items-center justify-center text-xl">⚡</div>
       <h4 class="text-sm font-black text-slate-800">עדכון יתרה מהיר</h4>
       <p id="quickName" class="text-[11px] text-slate-400 mb-3 truncate font-medium"></p>
       
@@ -456,9 +448,7 @@
   <!-- One-Time Deposit Modal -->
   <div id="depositModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white border-4 border-amber-100 rounded-3xl w-full max-w-xs p-5 shadow-2xl text-center">
-      <div class="w-10 h-10 mx-auto mb-2 rounded-full bg-blue-100 flex items-center justify-center text-xl">
-        ➕
-      </div>
+      <div class="w-10 h-10 mx-auto mb-2 rounded-full bg-blue-100 flex items-center justify-center text-xl">➕</div>
       <h4 class="text-sm font-black text-slate-800">הפקדה חד-פעמית</h4>
       <p id="depositFundName" class="text-[11px] text-slate-400 mb-3 truncate font-medium"></p>
       
@@ -636,6 +626,7 @@
       const trackInput = document.getElementById('fieldTrackId');
       const trackId = trackInput.value.trim();
       const btnText = document.getElementById('fetchTrackText');
+      const badgeEl = document.getElementById('fetchReturnBadge');
 
       if (!trackId) {
         alert('נא להזין קוד מ"ה קודם');
@@ -643,79 +634,91 @@
         return;
       }
 
-      btnText.textContent = 'מושך... ⏳';
+      btnText.textContent = 'מושך מהאוצר... ⏳';
+      badgeEl.classList.add('hidden');
 
-      const resources = [
-        'a30dcbea-a1d2-482c-ae29-8f781f5025fb',
-        '091176b5-0c58-472a-9e79-f5385fb9ff2e'
-      ];
+      const DATASTORE_API = 'https://data.gov.il/api/3/action/datastore_search';
+      const RESOURCE_RETURNS = 'a30dcbea-a1d2-482c-ae29-8f781f5025fb';
+      const RESOURCE_TRACKS = '091176b5-0c58-472a-9e79-f5385fb9ff2e';
 
-      let match = null;
-
-      for (const resId of resources) {
-        const targetUrl = `https://data.gov.il/api/3/action/datastore_search?resource_id=${resId}&q=${encodeURIComponent(trackId)}&limit=20`;
-        
+      const callGovApi = async (url) => {
         try {
-          let res;
-          try {
-            res = await fetch(targetUrl);
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          } catch (e) {
-            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
-            res = await fetch(proxyUrl);
+          const res = await fetch(url);
+          if (res.ok) return await res.json();
+        } catch (e) {
+          const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+          const pRes = await fetch(proxyUrl);
+          if (pRes.ok) return await pRes.json();
+        }
+        return null;
+      };
+
+      try {
+        // Query Returns Resource with exact filter first, then fallback to text search
+        let returnsData = await callGovApi(`${DATASTORE_API}?resource_id=${RESOURCE_RETURNS}&filters={"FUND_ID":"${trackId}"}&limit=20`);
+        let records = returnsData?.result?.records || [];
+
+        if (records.length === 0) {
+          returnsData = await callGovApi(`${DATASTORE_API}?resource_id=${RESOURCE_RETURNS}&q=${encodeURIComponent(trackId)}&limit=30`);
+          records = returnsData?.result?.records || [];
+        }
+
+        // Fallback to tracks resource if not found in returns
+        if (records.length === 0) {
+          const tracksData = await callGovApi(`${DATASTORE_API}?resource_id=${RESOURCE_TRACKS}&q=${encodeURIComponent(trackId)}&limit=20`);
+          records = tracksData?.result?.records || [];
+        }
+
+        const match = records.find(r => 
+          String(r.FUND_ID || '').trim() === trackId || 
+          String(r.SHM_KUPA || '').trim() === trackId ||
+          String(r.KUPA_ID || '').trim() === trackId
+        ) || records[0];
+
+        if (match) {
+          const fundName = match.FUND_NAME || match.SHM_KUPA || '';
+          if (fundName) document.getElementById('fieldName').value = fundName;
+          
+          const rawCorp = match.MANAGING_CORPORATION || match.CORPORATION_NAME || '';
+          if (rawCorp) {
+            let managerName = rawCorp
+              .replace(/בע"מ|בע״מ/g, '')
+              .replace(/ניהול קופות גמל ופנסיה|ניהול קופות גמל|קופות גמל/g, '')
+              .trim();
+            document.getElementById('fieldManager').value = managerName;
           }
 
-          if (res && res.ok) {
-            const data = await res.json();
-            const records = data?.result?.records || [];
+          const typeSelect = document.getElementById('fieldType');
+          if (fundName.includes('להשקעה')) typeSelect.value = 'קופת גמל להשקעה';
+          else if (fundName.includes('השתלמות')) typeSelect.value = 'קרן השתלמות';
+          else if (fundName.includes('חיסכון לכל ילד') || fundName.includes('לילד')) typeSelect.value = 'חיסכון לכל ילד';
+          else if (fundName.includes('פוליסת חיסכון') || fundName.includes('חיסכון מיוחד')) typeSelect.value = 'פוליסת חיסכון';
+          else if (fundName.includes('גמל')) typeSelect.value = 'קופת גמל';
+          handleTypeChange(typeSelect.value);
 
-            match = records.find(r => 
-              String(r.FUND_ID || '').trim() === trackId || 
-              String(r.SHM_KUPA || '').trim() === trackId ||
-              String(r.KUPA_ID || '').trim() === trackId
-            );
+          // Extract Return Value
+          const monthlyReturnVal = match.TSUA_HODSHIT !== undefined ? match.TSUA_HODSHIT : match.TSUA_MITZTABERET_LETKUFA;
+          if (monthlyReturnVal !== undefined && monthlyReturnVal !== null) {
+            const retNum = parseFloat(monthlyReturnVal) || 0;
+            const periodStr = String(match.REPORT_PERIOD || 'אחרון').trim();
 
-            if (match) break;
+            document.getElementById('fieldGemelnetReturn').value = retNum;
+            document.getElementById('fieldGemelnetPeriod').value = periodStr;
+
+            badgeEl.textContent = `🏛️ תשואה חודשית שנמשכה: ${retNum >= 0 ? '+' : ''}${retNum.toFixed(2)}% (${periodStr})`;
+            badgeEl.classList.remove('hidden');
           }
-        } catch (err) {
-          console.warn(`Attempt failed for resource ${resId}:`, err);
-        }
-      }
 
-      if (match) {
-        const fundName = match.FUND_NAME || match.SHM_KUPA || '';
-        if (fundName) {
-          document.getElementById('fieldName').value = fundName;
+          btnText.textContent = 'הושלם בהצלחה! ✨';
+          setTimeout(() => { btnText.textContent = 'משוך פרטים ותשואה'; }, 2000);
+        } else {
+          alert(`לא נמצאו פרטים במאגר עבור מ"ה ${trackId}`);
+          btnText.textContent = 'משוך פרטים ותשואה';
         }
-        
-        const rawCorp = match.MANAGING_CORPORATION || match.CORPORATION_NAME || '';
-        if (rawCorp) {
-          let managerName = rawCorp
-            .replace(/בע"מ|בע״מ/g, '')
-            .replace(/ניהול קופות גמל ופנסיה|ניהול קופות גמל|קופות גמל/g, '')
-            .trim();
-          document.getElementById('fieldManager').value = managerName;
-        }
-
-        const typeSelect = document.getElementById('fieldType');
-        if (fundName.includes('להשקעה')) {
-          typeSelect.value = 'קופת גמל להשקעה';
-        } else if (fundName.includes('השתלמות')) {
-          typeSelect.value = 'קרן השתלמות';
-        } else if (fundName.includes('חיסכון לכל ילד') || fundName.includes('לילד')) {
-          typeSelect.value = 'חיסכון לכל ילד';
-        } else if (fundName.includes('פוליסת חיסכון') || fundName.includes('חיסכון מיוחד')) {
-          typeSelect.value = 'פוליסת חיסכון';
-        } else if (fundName.includes('גמל')) {
-          typeSelect.value = 'קופת גמל';
-        }
-        handleTypeChange(typeSelect.value);
-
-        btnText.textContent = 'הושלם! ✨';
-        setTimeout(() => { btnText.textContent = 'משוך פרטים'; }, 2000);
-      } else {
-        alert(`לא נמצאו פרטים במאגר עבור מ"ה ${trackId}`);
-        btnText.textContent = 'משוך פרטים';
+      } catch (err) {
+        console.error('Fetch error:', err);
+        alert(`שגיאה במשיכת נתונים: ${err.message}`);
+        btnText.textContent = 'משוך פרטים ותשואה';
       }
     }
 
@@ -725,7 +728,7 @@
         localStorage.setItem('bobo_has_authenticated', 'true');
         showApp(session.user.email);
       } else {
-        if (localStorage.getItem('bobo_has_authenticated') === 'true' && window.PublicKeyCredential) {
+        if (localStorage.getItem('bobo_has_authenticated') === 'true') {
           document.getElementById('bioUnlockSection').classList.remove('hidden');
         }
         document.getElementById('authScreen').classList.remove('hidden');
@@ -890,10 +893,6 @@
         const roi = dep > 0 ? (grossProfit / dep) * 100 : 0;
         const isPos = grossProfit >= 0;
 
-        totalBal += bal;
-        totalDep += dep;
-        totalMonthly += monthly;
-
         return `
           <div onclick="triggerHaptic(); openDetailModal('${f.id}')" class="squish-btn bg-white border border-cardBorder ${getTypeAccentBorder(f.type)} hover:border-amber-200 rounded-2xl p-3.5 shadow-sm transition flex items-center justify-between cursor-pointer">
             <div class="flex items-center gap-3 min-w-0">
@@ -924,6 +923,11 @@
         `;
       }).join('');
 
+      funds.forEach(f => {
+        totalBal += (Number(f.balance) || 0);
+        totalDep += (Number(f.deposits) || 0);
+        totalMonthly += (Number(f.monthlyDeposit) || 0);
+      });
       updateHeroKPIs(totalBal, totalDep, totalMonthly);
     }
 
@@ -953,7 +957,6 @@
       const bal = Number(f.balance) || 0;
       const grossProfit = bal - dep;
       
-      // Check Annuity 0% tax exemption override
       const isTaxExemptAnnuity = (f.type === 'קופת גמל להשקעה' && f.isAnnuity);
       const taxPct = isTaxExemptAnnuity ? 0 : (Number(f.taxRate) || 0);
       const taxAmount = (grossProfit > 0 && taxPct > 0) ? (grossProfit * (taxPct / 100)) : 0;
@@ -972,7 +975,6 @@
       document.getElementById('detailUpdated').textContent = `עודכן: ${fmtDate(f.updatedAt)}`;
       document.getElementById('detailDeposits').textContent = fmtILS(dep);
 
-      // CAGR Calculation
       const cagrEl = document.getElementById('detailCagr');
       if (f.inceptionDate && dep > 0 && bal > 0) {
         const start = new Date(f.inceptionDate);
@@ -1000,7 +1002,7 @@
       const gemelBox = document.getElementById('detailGemelnetBox');
       if (f.gemelnetReturn !== null && f.gemelnetReturn !== undefined) {
         gemelBox.classList.remove('hidden');
-        document.getElementById('detailGemelnetPeriod').textContent = f.gemelnetPeriod || 'חודש אחרון';
+        document.getElementById('detailGemelnetPeriod').textContent = f.gemelnetPeriod ? `תקופה: ${f.gemelnetPeriod}` : 'חודש אחרון';
         document.getElementById('detailGemelnetGross').textContent = fmtPCT(f.gemelnetReturn);
 
         const feeAccMonthly = (Number(f.feeAccumulation) || 0) / 12;
@@ -1083,6 +1085,9 @@
     function openAddModal() {
       document.getElementById('fundForm').reset();
       document.getElementById('fieldId').value = '';
+      document.getElementById('fieldGemelnetReturn').value = '';
+      document.getElementById('fieldGemelnetPeriod').value = '';
+      document.getElementById('fetchReturnBadge').classList.add('hidden');
       document.getElementById('fieldInceptionDate').value = new Date().toISOString().slice(0, 10);
       
       const defaultOwner = (currentFilter !== 'ALL') ? currentFilter : 'בובו';
@@ -1119,6 +1124,10 @@
       document.getElementById('fieldIsAnnuity').checked = !!f.isAnnuity;
       document.getElementById('fieldNotes').value = f.notes || '';
 
+      document.getElementById('fieldGemelnetReturn').value = f.gemelnetReturn !== null ? f.gemelnetReturn : '';
+      document.getElementById('fieldGemelnetPeriod').value = f.gemelnetPeriod || '';
+      document.getElementById('fetchReturnBadge').classList.add('hidden');
+
       handleTypeChange(f.type);
       document.getElementById('modalTitle').textContent = 'עריכת קופה ✏️';
       document.getElementById('fundModal').classList.remove('hidden');
@@ -1129,6 +1138,9 @@
       triggerHaptic();
       const id = document.getElementById('fieldId').value || ('fund_' + Date.now());
       const selectedOwner = document.getElementById('fieldOwnerSelect').value;
+
+      const retVal = document.getElementById('fieldGemelnetReturn').value;
+      const periodVal = document.getElementById('fieldGemelnetPeriod').value;
 
       const payload = {
         id,
@@ -1147,6 +1159,8 @@
         tax_rate: parseFloat(document.getElementById('fieldTaxRate').value) || 0,
         fee_accumulation: document.getElementById('fieldFeeAcc').value ? Number(document.getElementById('fieldFeeAcc').value) : null,
         fee_deposit: document.getElementById('fieldFeeDep').value ? Number(document.getElementById('fieldFeeDep').value) : null,
+        gemelnet_return_monthly: retVal !== '' ? parseFloat(retVal) : null,
+        gemelnet_period: periodVal || null,
         notes: document.getElementById('fieldNotes').value,
         updated_at: new Date().toISOString()
       };
@@ -1188,10 +1202,8 @@
 
       closeQuickModal();
       
-      // Update Fund Balance
       await sbClient.from('funds').update({ balance: newBal, updated_at: new Date().toISOString() }).eq('id', id);
       
-      // Log Transaction
       await sbClient.from('transactions').insert({
         fund_id: id,
         vault_id: SHARED_VAULT_ID,
@@ -1236,14 +1248,12 @@
 
       closeDepositModal();
 
-      // Update Fund
       await sbClient.from('funds').update({
         deposits: newDeposits,
         balance: newBalance,
         updated_at: new Date().toISOString()
       }).eq('id', id);
 
-      // Log Transaction
       await sbClient.from('transactions').insert({
         fund_id: id,
         vault_id: SHARED_VAULT_ID,
