@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>בובו ושות' 🧸 | החסכונות של המשפחה</title>
   
-  <!-- Apple Touch Icon & Favicon -->
   <link rel="apple-touch-icon" href="./icon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./icon.png">
   <link rel="icon" type="image/png" sizes="192x192" href="./icon.png">
@@ -118,7 +117,6 @@
   <!-- Main App Shell -->
   <div id="appShell" class="flex-1 flex flex-col hidden w-full">
 
-    <!-- Top App Header -->
     <header class="bg-skyPastel/90 backdrop-blur-md sticky top-0 z-30 w-full px-4 pt-3 pb-2.5 border-b border-sky-200/50">
       <div class="max-w-md mx-auto flex items-center justify-between">
         <div class="flex items-center gap-2 cursor-pointer" onclick="navigateToHome()">
@@ -141,7 +139,7 @@
 
     <main class="max-w-md mx-auto px-4 pt-4 w-full flex-1">
 
-      <!-- Breadcrumb Bar (Appears only inside a member view) -->
+      <!-- Breadcrumb Bar -->
       <div id="memberHeaderNav" class="hidden mb-3 flex items-center justify-between">
         <button onclick="triggerHaptic(); navigateToHome()" class="squish-btn bg-creamCard border border-orange-200/70 px-3 py-1.5 rounded-xl text-xs font-bold text-warmBrown flex items-center gap-1 shadow-card">
           <span>‹</span>
@@ -150,13 +148,12 @@
         <div id="activeMemberTitle" class="flex items-center gap-2 text-xs font-black text-warmBrown"></div>
       </div>
 
-      <!-- Main Title -->
       <div id="mainPageTitleWrapper" class="text-center mb-3">
         <h1 class="text-xl font-black text-warmBrown tracking-tight" id="mainSectionHeading">הון משפחתי</h1>
       </div>
 
       <!-- Hero Total Family Wealth Card -->
-      <div class="bg-creamCard border-2 border-orange-200/70 rounded-[28px] p-4 mb-4 shadow-soft text-right relative">
+      <div class="bg-creamCard border-2 border-orange-200/70 rounded-[28px] p-4 mb-3 shadow-soft text-right relative">
         <div class="flex items-start justify-between">
           <div>
             <span class="text-[11px] font-bold text-warmBrown/60 block mb-0.5" id="heroLabel">סך הון נטו כולל</span>
@@ -173,26 +170,37 @@
             <span class="text-[9px] font-bold text-warmBrown/70 block mb-1.5">Asset Allocation</span>
             <div class="flex items-end justify-between h-14 px-1 gap-1" id="assetAllocationBars">
               <div class="flex-1 flex flex-col items-center">
-                <span class="text-[8px] font-mono text-warmBrown/60 font-bold mb-0.5">35%</span>
-                <div class="w-full bg-softOrange rounded-t-md" style="height: 38px;"></div>
+                <span class="text-[8px] font-mono text-warmBrown/60 font-bold mb-0.5" id="pct-gemel">0%</span>
+                <div id="bar-gemel" class="w-full bg-softOrange rounded-t-md transition-all duration-500" style="height: 10px;"></div>
                 <span class="text-[8px] text-warmBrown/70 mt-1 truncate">גמל</span>
               </div>
               <div class="flex-1 flex flex-col items-center">
-                <span class="text-[8px] font-mono text-warmBrown/60 font-bold mb-0.5">25%</span>
-                <div class="w-full bg-pastelBlue rounded-t-md" style="height: 28px;"></div>
+                <span class="text-[8px] font-mono text-warmBrown/60 font-bold mb-0.5" id="pct-study">0%</span>
+                <div id="bar-study" class="w-full bg-pastelBlue rounded-t-md transition-all duration-500" style="height: 10px;"></div>
                 <span class="text-[8px] text-warmBrown/70 mt-1 truncate">השתלמות</span>
               </div>
               <div class="flex-1 flex flex-col items-center">
-                <span class="text-[8px] font-mono text-warmBrown/60 font-bold mb-0.5">20%</span>
-                <div class="w-full bg-pastelGreen rounded-t-md" style="height: 22px;"></div>
+                <span class="text-[8px] font-mono text-warmBrown/60 font-bold mb-0.5" id="pct-deposit">0%</span>
+                <div id="bar-deposit" class="w-full bg-pastelGreen rounded-t-md transition-all duration-500" style="height: 10px;"></div>
                 <span class="text-[8px] text-warmBrown/70 mt-1 truncate">פיקדון</span>
               </div>
               <div class="flex-1 flex flex-col items-center">
-                <span class="text-[8px] font-mono text-warmBrown/60 font-bold mb-0.5">20%</span>
-                <div class="w-full bg-pastelPurple rounded-t-md" style="height: 22px;"></div>
-                <span class="text-[8px] text-warmBrown/70 mt-1 truncate">עצמאי</span>
+                <span class="text-[8px] font-mono text-warmBrown/60 font-bold mb-0.5" id="pct-other">0%</span>
+                <div id="bar-other" class="w-full bg-pastelPurple rounded-t-md transition-all duration-500" style="height: 10px;"></div>
+                <span class="text-[8px] text-warmBrown/70 mt-1 truncate">אחר</span>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- Family Target Milestone Bar -->
+        <div id="targetMilestoneBox" class="mt-3 pt-2.5 border-t border-orange-100 flex flex-col gap-1 hidden">
+          <div class="flex justify-between items-center text-[10px] font-bold text-warmBrown/70">
+            <span id="targetGoalTitle">🎯 מטרת יעד: ₪0</span>
+            <span id="targetGoalProgress">0% הושג</span>
+          </div>
+          <div class="w-full bg-orange-100 rounded-full h-1.5 overflow-hidden">
+            <div id="targetGoalBar" class="bg-softOrange h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
           </div>
         </div>
       </div>
@@ -219,7 +227,6 @@
             <span class="text-xs font-black text-warmBrown">ביצועי תיק (צמיחה כוללת)</span>
           </div>
 
-          <!-- Period Tabs (Pills) -->
           <div class="flex bg-creamBg p-1 rounded-xl text-[10px] font-bold text-warmBrown/60 border border-orange-100">
             <button type="button" onclick="triggerHaptic(); setPeriod('1M')" id="tab-period-1M" class="px-2 py-0.5 rounded-lg">1M</button>
             <button type="button" onclick="triggerHaptic(); setPeriod('YTD')" id="tab-period-YTD" class="px-2 py-0.5 rounded-lg period-pill-active">YTD</button>
@@ -236,7 +243,6 @@
           <span id="periodFeeSub" class="text-[10px] text-warmBrown/50">משוקלל לפי דיווחי האוצר</span>
         </div>
 
-        <!-- Visual Flowing Wave Graphic -->
         <div class="w-full h-14 mt-2 overflow-hidden rounded-xl bg-gradient-to-t from-emerald-50/70 to-transparent flex items-end">
           <svg viewBox="0 0 400 60" class="w-full h-full text-emerald-400" preserveAspectRatio="none">
             <path d="M0,45 C50,20 100,50 150,30 C200,10 250,40 300,20 C350,5 380,25 400,15 L400,60 L0,60 Z" fill="currentColor" opacity="0.25"></path>
@@ -257,36 +263,36 @@
 
     </main>
 
-    <!-- Bottom Navigation Bar: בדיוק כמו בתמונה (מימין לשמאל: הגדרות, פעולות, סקירה, יעדים, מרכז) -->
+    <!-- Bottom Navigation Bar (Grid RTL: מרכז בצד ימין קיצוני -> הגדרות בצד שמאל קיצוני) -->
     <nav class="fixed bottom-0 left-0 right-0 z-40 bg-skyPastel/95 backdrop-blur-md border-t border-sky-200/70 py-2">
-      <div class="max-w-md mx-auto px-6 flex flex-row-reverse items-center justify-between text-warmBrown">
-        <!-- שמאל קיצוני: מרכז -->
-        <button onclick="triggerHaptic(); navigateToHome()" class="flex flex-col items-center gap-0.5 text-orange-600 font-bold">
-          <span class="text-base">🏠</span>
+      <div class="max-w-md mx-auto px-4 grid grid-cols-5 text-center text-warmBrown" dir="rtl">
+        <!-- 1. מרכז (ימין קיצוני) -->
+        <button onclick="triggerHaptic(); navigateToHome()" class="flex flex-col items-center justify-center gap-0.5 text-orange-600 font-bold">
+          <span class="text-lg">🏠</span>
           <span class="text-[9px]">מרכז</span>
         </button>
 
-        <!-- יעדים -->
-        <button onclick="triggerHaptic(); alert('מודול יעדים יושק בגרסה הבאה 🎯')" class="flex flex-col items-center gap-0.5 opacity-70 hover:opacity-100">
-          <span class="text-base">🎯</span>
+        <!-- 2. יעדים -->
+        <button onclick="triggerHaptic(); openTargetPrompt()" class="flex flex-col items-center justify-center gap-0.5 opacity-70 hover:opacity-100">
+          <span class="text-lg">🎯</span>
           <span class="text-[9px] font-bold">יעדים</span>
         </button>
 
-        <!-- סקירה -->
-        <button onclick="triggerHaptic(); setPeriod('YTD')" class="flex flex-col items-center gap-0.5 opacity-70 hover:opacity-100">
-          <span class="text-base">📈</span>
+        <!-- 3. סקירה -->
+        <button onclick="triggerHaptic(); setPeriod('YTD')" class="flex flex-col items-center justify-center gap-0.5 opacity-70 hover:opacity-100">
+          <span class="text-lg">📈</span>
           <span class="text-[9px] font-bold">סקירה</span>
         </button>
 
-        <!-- פעולות -->
-        <button onclick="triggerHaptic(); alert('יומן הפעולות זמין בתוך פרטי כל קופה')" class="flex flex-col items-center gap-0.5 opacity-70 hover:opacity-100">
-          <span class="text-base">📄</span>
+        <!-- 4. פעולות -->
+        <button onclick="triggerHaptic(); alert('יומן הפעולות זמין ומנוהל בתוך פרטי כל קופה')" class="flex flex-col items-center justify-center gap-0.5 opacity-70 hover:opacity-100">
+          <span class="text-lg">📄</span>
           <span class="text-[9px] font-bold">פעולות</span>
         </button>
 
-        <!-- ימין קיצוני: הגדרות -->
-        <button onclick="triggerHaptic(); openSettingsModal()" class="flex flex-col items-center gap-0.5 opacity-70 hover:opacity-100">
-          <span class="text-base">⚙️</span>
+        <!-- 5. הגדרות (שמאל קיצוני) -->
+        <button onclick="triggerHaptic(); openSettingsModal()" class="flex flex-col items-center justify-center gap-0.5 opacity-70 hover:opacity-100">
+          <span class="text-lg">⚙️</span>
           <span class="text-[9px] font-bold">הגדרות</span>
         </button>
       </div>
@@ -323,6 +329,11 @@
           <span id="detailDeposits" class="text-lg font-black font-mono text-warmBrown/80">₪0</span>
           <span id="detailCagr" class="text-[9px] font-mono font-bold text-emerald-700 block mt-0.5"></span>
         </div>
+      </div>
+
+      <div id="detailGoalNotice" class="hidden mb-3 bg-amber-50 border border-amber-200 rounded-2xl p-2.5 text-xs text-amber-900 flex items-center gap-1.5 font-medium">
+        <span>🎯</span>
+        <span>מטרת החיסכון: <strong id="detailGoalText">--</strong></span>
       </div>
 
       <div id="detailGemelnetBox" class="hidden bg-emerald-50/80 border border-emerald-200 rounded-2xl p-3.5 mb-3">
@@ -391,9 +402,10 @@
         </button>
       </div>
 
+      <!-- Transactions Ledger History with Inline Edit Option -->
       <div class="mb-4 bg-creamBg rounded-2xl border border-orange-100 p-3">
         <h4 class="text-[11px] font-black text-warmBrown mb-2 flex items-center justify-between">
-          <span>📜 יומן פעולות אחרונות</span>
+          <span>📜 יומן פעולות (לחץ לעריכה)</span>
           <span id="txCountBadge" class="text-[9px] font-mono text-warmBrown/50 bg-white px-2 py-0.5 rounded-full border">טוען...</span>
         </h4>
         <div id="detailTxList" class="space-y-1 text-xs"></div>
@@ -463,6 +475,12 @@
               <option value="אחר">אחר</option>
             </select>
           </div>
+        </div>
+
+        <!-- Savings Goal Field -->
+        <div>
+          <label class="block text-[11px] font-bold text-warmBrown/70 mb-0.5">מטרת החיסכון</label>
+          <input type="text" id="fieldSavingsGoal" placeholder="למשל: בר מצווה, לימודים, דירה..." class="w-full bg-creamBg border border-orange-200 rounded-xl px-2.5 py-1.5 text-xs text-warmBrown focus:outline-none">
         </div>
 
         <div class="grid grid-cols-2 gap-2">
@@ -546,14 +564,19 @@
   <div id="depositModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-creamCard border-2 border-orange-200 rounded-3xl w-full max-w-xs p-5 text-center shadow-soft">
       <div class="w-10 h-10 mx-auto mb-2 rounded-full bg-softOrange/30 flex items-center justify-center text-xl">➕</div>
-      <h4 class="text-sm font-black text-warmBrown">הפקדה חד-פעמית</h4>
+      <h4 class="text-sm font-black text-warmBrown">הפקדה לקופה</h4>
       <p id="depositFundName" class="text-[11px] text-warmBrown/60 mb-3 truncate font-medium"></p>
       
-      <form onsubmit="handleOneTimeDeposit(event)" class="space-y-3 text-right">
+      <form onsubmit="handleOneTimeDeposit(event)" class="space-y-2.5 text-right">
         <input type="hidden" id="depositFundId">
         <div>
-          <label class="block text-[10px] font-bold text-warmBrown/70 mb-1 mr-1">סכום ההפקדה ₪</label>
+          <label class="block text-[10px] font-bold text-warmBrown/70 mb-0.5 mr-1">סכום ההפקדה ₪</label>
           <input type="number" step="any" id="depositAmount" required placeholder="5000" class="w-full bg-creamBg border-2 border-orange-200 rounded-xl px-3 py-2 text-lg font-mono font-black text-warmBrown text-center focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold text-warmBrown/70 mb-0.5 mr-1">תאריך ההפקדה</label>
+          <input type="date" id="depositDate" class="w-full bg-creamBg border border-orange-200 rounded-xl px-2 py-1.5 text-xs text-warmBrown focus:outline-none">
         </div>
 
         <div class="flex items-center gap-2 bg-creamBg p-2 rounded-xl border border-orange-100 text-[11px]">
@@ -577,7 +600,51 @@
         <button onclick="closeSettingsModal()" class="w-7 h-7 rounded-full bg-creamBg text-warmBrown/60 hover:bg-orange-100 flex items-center justify-center font-bold text-xs">✕</button>
       </div>
 
-      <div class="space-y-3 max-h-[65vh] overflow-y-auto pr-1 no-scrollbar text-right">
+      <div class="space-y-3 max-h-[68vh] overflow-y-auto pr-1 no-scrollbar text-right">
+        
+        <!-- Batch Sync Gov GemelNet -->
+        <div class="bg-emerald-50/80 border border-emerald-200 rounded-xl p-3 flex items-center justify-between">
+          <div>
+            <h4 class="text-xs font-black text-emerald-950 flex items-center gap-1">
+              <span>🏛️</span>
+              <span>סנכרון גמל-נט לכל הקופות</span>
+            </h4>
+            <p class="text-[10px] text-emerald-800">משיכת תשואות משרד האוצר בלחיצה אחת</p>
+          </div>
+          <button onclick="batchSyncAllFunds()" id="btnBatchSync" class="squish-btn bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-2.5 py-1.5 rounded-lg text-xs shrink-0">
+            סנכרן הכל 🔄
+          </button>
+        </div>
+
+        <!-- Monthly Auto-Deposit Automation (Feature 2) -->
+        <div class="bg-creamBg border border-orange-100 rounded-xl p-3 space-y-2">
+          <h4 class="text-xs font-black text-warmBrown flex items-center gap-1">
+            <span>🗓️</span>
+            <span>אוטומציית הוראות קבע</span>
+          </h4>
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-warmBrown/70">יום בחודש לחיוב:</span>
+            <input type="number" min="1" max="31" id="settingBillingDay" onchange="saveAutomationSettings()" class="w-16 bg-white border border-orange-200 rounded-lg p-1 text-center font-mono font-bold">
+          </div>
+          <div class="flex items-center gap-2 pt-1 text-[11px]">
+            <input type="checkbox" id="settingAutoAddMonthly" onchange="saveAutomationSettings()" class="w-4 h-4 rounded text-softOrange accent-orange-400">
+            <label for="settingAutoAddMonthly" class="text-warmBrown/80 font-medium">עדכן אוטומטית שווי יתרה ביום החיוב</label>
+          </div>
+        </div>
+
+        <!-- Family Target & Goal Setting -->
+        <div class="bg-amber-50/60 border border-amber-200/80 rounded-xl p-3 space-y-2">
+          <h4 class="text-xs font-black text-warmBrown flex items-center gap-1">
+            <span>🎯</span>
+            <span>יעד הון משפחתי</span>
+          </h4>
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-warmBrown/70">סכום יעד כולל ₪:</span>
+            <input type="number" id="settingTargetAmount" placeholder="1000000" onchange="saveTargetSettings()" class="w-24 bg-white border border-orange-200 rounded-lg p-1 text-center font-mono font-bold">
+          </div>
+        </div>
+
+        <!-- Members & Avatars -->
         <div class="bg-lightOrange border border-orange-200/80 rounded-xl p-3">
           <div class="flex items-center justify-between mb-2">
             <h4 class="text-xs font-black text-warmBrown">בני המשפחה ותמונות</h4>
@@ -588,14 +655,21 @@
           <div id="settingsMembersList" class="space-y-2"></div>
         </div>
 
-        <div class="bg-creamBg border border-orange-100 rounded-xl p-3 flex items-center justify-between">
-          <div>
-            <h4 class="text-xs font-black text-warmBrown">ייצוא ל-Excel (CSV)</h4>
-            <p class="text-[10px] text-warmBrown/60">הורדת גיבוי מלא של הקופות</p>
+        <!-- Backup & CSV Import/Export (Feature 4) -->
+        <div class="bg-creamBg border border-orange-100 rounded-xl p-3 space-y-2">
+          <h4 class="text-xs font-black text-warmBrown flex items-center gap-1">
+            <span>📊</span>
+            <span>גיבוי וייבוא נתונים (CSV)</span>
+          </h4>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="exportToCSV()" class="squish-btn bg-white border border-orange-200 text-warmBrown font-bold py-1.5 rounded-lg text-xs text-center">
+              ייצוא לאקסל ⬇️
+            </button>
+            <label class="squish-btn bg-softOrange text-warmBrown font-bold py-1.5 rounded-lg text-xs text-center cursor-pointer block">
+              ייבוא מקובץ ⬆️
+              <input type="file" id="importCsvInput" accept=".csv" class="hidden" onchange="importFromCSV(event)">
+            </label>
           </div>
-          <button onclick="exportToCSV()" class="squish-btn bg-softOrange text-warmBrown font-bold px-3 py-1 rounded-lg text-xs">
-            הורד ⬇️
-          </button>
         </div>
 
         <div class="bg-creamBg border border-orange-100 rounded-xl p-3">
@@ -776,6 +850,54 @@
       }
     }
 
+    // One-Click Batch Sync for all funds with Track IDs
+    async function batchSyncAllFunds() {
+      const btn = document.getElementById('btnBatchSync');
+      btn.textContent = 'מסנכרן... ⏳';
+      btn.disabled = true;
+
+      const DATASTORE_API = 'https://data.gov.il/api/3/action/datastore_search';
+      const RESOURCE_RETURNS = 'a30dcbea-a1d2-482c-ae29-8f781f5025fb';
+
+      let updatedCount = 0;
+
+      for (let f of funds) {
+        if (f.trackId) {
+          try {
+            const res = await fetch(`${DATASTORE_API}?resource_id=${RESOURCE_RETURNS}&filters={"FUND_ID":"${f.trackId}"}&limit=5`);
+            const data = await res.json();
+            const record = data?.result?.records?.[0];
+            if (record) {
+              const retVal = record.MONTHLY_YIELD !== undefined ? parseFloat(record.MONTHLY_YIELD) : parseFloat(record.TSUA_HODSHIT);
+              const ytdVal = record.YEAR_TO_DATE_YIELD !== undefined ? parseFloat(record.YEAR_TO_DATE_YIELD) : null;
+              const y3Val = record.YIELD_TRAILING_3_YRS !== undefined ? parseFloat(record.YIELD_TRAILING_3_YRS) : null;
+              const periodStr = String(record.REPORT_PERIOD || '').trim();
+
+              await sbClient.from('funds').update({
+                gemelnet_return_monthly: !isNaN(retVal) ? retVal : f.gemelnetReturn,
+                gemelnet_yield_ytd: !isNaN(ytdVal) ? ytdVal : f.gemelnetYieldYtd,
+                gemelnet_yield_3y: !isNaN(y3Val) ? y3Val : f.gemelnetYield3y,
+                gemelnet_period: periodStr || f.gemelnetPeriod,
+                updated_at: new Date().toISOString()
+              }).eq('id', f.id);
+
+              updatedCount++;
+            }
+          } catch (e) {
+            console.warn(`Sync failed for track ${f.trackId}:`, e);
+          }
+        }
+      }
+
+      btn.textContent = `סונכרנו ${updatedCount} קופות! ✨`;
+      setTimeout(() => {
+        btn.textContent = 'סנכרן הכל 🔄';
+        btn.disabled = false;
+      }, 2500);
+
+      loadFunds();
+    }
+
     async function checkAuth() {
       const { data: { session } } = await sbClient.auth.getSession();
       if (session) {
@@ -830,6 +952,7 @@
       document.getElementById('authScreen').classList.add('hidden');
       document.getElementById('appShell').classList.remove('hidden');
       document.getElementById('settingsUserEmail').textContent = email;
+      loadSettings();
       loadFunds();
     }
 
@@ -862,6 +985,7 @@
           feeDeposit: item.fee_deposit,
           inceptionDate: item.inception_date || null,
           isAnnuity: !!item.is_annuity,
+          savingsGoal: item.notes && item.notes.startsWith('GOAL:') ? item.notes.split('|')[0].replace('GOAL:', '').trim() : (item.savings_goal || ''),
           gemelnetReturn: item.gemelnet_return_monthly !== null && item.gemelnet_return_monthly !== undefined ? Number(item.gemelnet_return_monthly) : null,
           gemelnetYieldYtd: item.gemelnet_yield_ytd !== null && item.gemelnet_yield_ytd !== undefined ? Number(item.gemelnet_yield_ytd) : null,
           gemelnetYield3y: item.gemelnet_yield_3y !== null && item.gemelnet_yield_3y !== undefined ? Number(item.gemelnet_yield_3y) : null,
@@ -974,6 +1098,37 @@
       renderMemberFundsView();
     }
 
+    function updateAssetAllocation(activeFunds) {
+      const total = activeFunds.reduce((sum, f) => sum + (Number(f.balance) || 0), 0);
+      if (total <= 0) return;
+
+      let catTotals = { gemel: 0, study: 0, deposit: 0, other: 0 };
+      activeFunds.forEach(f => {
+        const b = Number(f.balance) || 0;
+        if (f.type.includes('גמל')) catTotals.gemel += b;
+        else if (f.type.includes('השתלמות')) catTotals.study += b;
+        else if (f.type.includes('פיקדון')) catTotals.deposit += b;
+        else catTotals.other += b;
+      });
+
+      const pGemel = Math.round((catTotals.gemel / total) * 100);
+      const pStudy = Math.round((catTotals.study / total) * 100);
+      const pDeposit = Math.round((catTotals.deposit / total) * 100);
+      const pOther = Math.max(0, 100 - (pGemel + pStudy + pDeposit));
+
+      document.getElementById('pct-gemel').textContent = `${pGemel}%`;
+      document.getElementById('bar-gemel').style.height = `${Math.max(8, pGemel * 0.45)}px`;
+
+      document.getElementById('pct-study').textContent = `${pStudy}%`;
+      document.getElementById('bar-study').style.height = `${Math.max(8, pStudy * 0.45)}px`;
+
+      document.getElementById('pct-deposit').textContent = `${pDeposit}%`;
+      document.getElementById('bar-deposit').style.height = `${Math.max(8, pDeposit * 0.45)}px`;
+
+      document.getElementById('pct-other').textContent = `${pOther}%`;
+      document.getElementById('bar-other').style.height = `${Math.max(8, pOther * 0.45)}px`;
+    }
+
     function renderHomeView() {
       document.getElementById('homeMembersView').classList.remove('hidden');
       document.getElementById('memberFundsView').classList.add('hidden');
@@ -1023,6 +1178,7 @@
               <div>
                 <span class="text-[9px] font-bold text-warmBrown/50 block">${f.manager}</span>
                 <h4 class="text-xs font-black text-warmBrown leading-tight">${f.name}</h4>
+                ${f.savingsGoal ? `<span class="text-[9px] text-amber-700 font-bold block mt-0.5">🎯 ${f.savingsGoal}</span>` : ''}
               </div>
             </div>
             <div class="text-left font-mono">
@@ -1104,6 +1260,7 @@
 
       document.getElementById('heroLabel').textContent = isHome ? 'סך הון נטו כולל' : `סך הון נטו (${currentFilter})`;
       updatePeriodMetrics(activeFunds);
+      updateAssetAllocation(activeFunds);
 
       if (funds.length === 0) {
         document.getElementById('homeMembersView').classList.add('hidden');
@@ -1127,11 +1284,36 @@
         totalMonthly += (Number(f.monthlyDeposit) || 0);
       });
       updateHeroKPIs(totalBal, totalMonthly);
+      updateTargetDisplay(totalBal);
     }
 
     function updateHeroKPIs(bal, monthly) {
       document.getElementById('heroBalance').textContent = fmtILS(bal);
       document.getElementById('heroMonthly').textContent = fmtILS(monthly);
+    }
+
+    function updateTargetDisplay(currentTotal) {
+      const targetBox = document.getElementById('targetMilestoneBox');
+      const targetAmt = parseFloat(localStorage.getItem('bobo_target_amount')) || 0;
+
+      if (targetAmt > 0 && currentFilter === 'ALL') {
+        targetBox.classList.remove('hidden');
+        const pct = Math.min(100, Math.round((currentTotal / targetAmt) * 100));
+        document.getElementById('targetGoalTitle').textContent = `🎯 יעד הון: ${fmtILS(targetAmt)}`;
+        document.getElementById('targetGoalProgress').textContent = `${pct}% הושג (${fmtILS(currentTotal)})`;
+        document.getElementById('targetGoalBar').style.width = `${pct}%`;
+      } else {
+        targetBox.classList.add('hidden');
+      }
+    }
+
+    function openTargetPrompt() {
+      const current = localStorage.getItem('bobo_target_amount') || '';
+      const val = prompt('הכנס יעד הון משפחתי כולל בשקלים (למשל: 1500000):', current);
+      if (val !== null) {
+        localStorage.setItem('bobo_target_amount', parseFloat(val) || 0);
+        render();
+      }
     }
 
     async function openDetailModal(id) {
@@ -1160,6 +1342,14 @@
       document.getElementById('detailBalance').textContent = fmtILS(bal);
       document.getElementById('detailUpdated').textContent = `עודכן: ${fmtDate(f.updatedAt)}`;
       document.getElementById('detailDeposits').textContent = fmtILS(dep);
+
+      const goalBox = document.getElementById('detailGoalNotice');
+      if (f.savingsGoal) {
+        goalBox.classList.remove('hidden');
+        document.getElementById('detailGoalText').textContent = f.savingsGoal;
+      } else {
+        goalBox.classList.add('hidden');
+      }
 
       const cagrEl = document.getElementById('detailCagr');
       if (f.inceptionDate && dep > 0 && bal > 0) {
@@ -1224,7 +1414,7 @@
         .select('*')
         .eq('fund_id', fundId)
         .order('created_at', { ascending: false })
-        .limit(5);
+        .limit(8);
 
       if (error || !data || data.length === 0) {
         badgeEl.textContent = '0 פעולות';
@@ -1236,9 +1426,9 @@
       listEl.innerHTML = data.map(tx => {
         const isDep = tx.type === 'DEPOSIT_ONETIME';
         return `
-          <div class="flex items-center justify-between py-1.5 border-b border-orange-100 last:border-0">
-            <div>
-              <span class="font-bold text-warmBrown block text-[11px]">${isDep ? '➕ הפקדה' : '⚡ עדכון יתרה'}</span>
+          <div class="flex items-center justify-between py-1.5 border-b border-orange-100 last:border-0 hover:bg-orange-50/50 p-1 rounded-lg">
+            <div class="cursor-pointer flex-1" onclick="editTransactionPrompt('${tx.id}', ${tx.amount}, '${tx.created_at}', '${tx.fund_id}', '${tx.type}')">
+              <span class="font-bold text-warmBrown block text-[11px]">${isDep ? '➕ הפקדה' : '⚡ עדכון יתרה'} ✏️</span>
               <span class="text-[9px] text-warmBrown/50 font-mono">${fmtDate(tx.created_at)}</span>
             </div>
             <div class="text-left font-mono">
@@ -1250,6 +1440,40 @@
           </div>
         `;
       }).join('');
+    }
+
+    // Direct Inline Transaction Editor (Date & Amount)
+    async function editTransactionPrompt(txId, oldAmount, oldDate, fundId, txType) {
+      const newAmountStr = prompt('ערוך סכום פעולה ₪:', oldAmount);
+      if (newAmountStr === null) return;
+      const newAmount = parseFloat(newAmountStr);
+      if (isNaN(newAmount)) return;
+
+      const dateOnly = oldDate ? oldDate.slice(0, 10) : new Date().toISOString().slice(0, 10);
+      const newDateStr = prompt('ערוך תאריך פעולה (YYYY-MM-DD):', dateOnly);
+      if (newDateStr === null) return;
+
+      triggerHaptic();
+      await sbClient.from('transactions').update({
+        amount: newAmount,
+        created_at: new Date(newDateStr).toISOString()
+      }).eq('id', txId);
+
+      // Recalculate fund deposits if it's a deposit transaction
+      if (txType === 'DEPOSIT_ONETIME') {
+        const diff = newAmount - oldAmount;
+        const f = funds.find(x => x.id === fundId);
+        if (f) {
+          const updatedDeposits = (f.deposits || 0) + diff;
+          await sbClient.from('funds').update({
+            deposits: updatedDeposits,
+            updated_at: new Date().toISOString()
+          }).eq('id', fundId);
+        }
+      }
+
+      await loadFunds();
+      loadTransactionsForFund(fundId);
     }
 
     function closeDetailModal() {
@@ -1269,6 +1493,7 @@
     function openAddModal() {
       document.getElementById('fundForm').reset();
       document.getElementById('fieldId').value = '';
+      document.getElementById('fieldSavingsGoal').value = '';
       document.getElementById('fieldGemelnetReturn').value = '';
       document.getElementById('fieldGemelnetYieldYtd').value = '';
       document.getElementById('fieldGemelnetYield3y').value = '';
@@ -1297,6 +1522,7 @@
       populateOwnerSelect(f.owner);
       document.getElementById('fieldName').value = f.name;
       document.getElementById('fieldType').value = f.type;
+      document.getElementById('fieldSavingsGoal').value = f.savingsGoal || '';
       document.getElementById('fieldManager').value = f.manager;
       document.getElementById('fieldTrackId').value = f.trackId || '';
       document.getElementById('fieldNumber').value = f.number || '';
@@ -1327,12 +1553,16 @@
       triggerHaptic();
       const id = document.getElementById('fieldId').value || ('fund_' + Date.now());
       const selectedOwner = document.getElementById('fieldOwnerSelect').value;
+      const savingsGoal = document.getElementById('fieldSavingsGoal').value.trim();
 
       const retVal = document.getElementById('fieldGemelnetReturn').value;
       const ytdVal = document.getElementById('fieldGemelnetYieldYtd').value;
       const y3Val = document.getElementById('fieldGemelnetYield3y').value;
       const y5Val = document.getElementById('fieldGemelnetYield5y').value;
       const periodVal = document.getElementById('fieldGemelnetPeriod').value;
+
+      const rawNotes = document.getElementById('fieldNotes').value;
+      const notesWithGoal = savingsGoal ? `GOAL:${savingsGoal} | ${rawNotes}` : rawNotes;
 
       const payload = {
         id,
@@ -1356,7 +1586,7 @@
         gemelnet_yield_3y: y3Val !== '' ? parseFloat(y3Val) : null,
         gemelnet_yield_5y: y5Val !== '' ? parseFloat(y5Val) : null,
         gemelnet_period: periodVal || null,
-        notes: document.getElementById('fieldNotes').value,
+        notes: notesWithGoal,
         updated_at: new Date().toISOString()
       };
 
@@ -1416,6 +1646,7 @@
       document.getElementById('depositFundId').value = f.id;
       document.getElementById('depositFundName').textContent = `${f.name} • ${f.owner}`;
       document.getElementById('depositAmount').value = '';
+      document.getElementById('depositDate').value = new Date().toISOString().slice(0, 10);
       document.getElementById('depositAddToBalance').checked = true;
       document.getElementById('depositModal').classList.remove('hidden');
       setTimeout(() => document.getElementById('depositAmount').focus(), 50);
@@ -1430,6 +1661,7 @@
       triggerHaptic();
       const id = document.getElementById('depositFundId').value;
       const amount = parseFloat(document.getElementById('depositAmount').value);
+      const depositDate = document.getElementById('depositDate').value;
       const updateBalance = document.getElementById('depositAddToBalance').checked;
 
       if (!amount || amount <= 0) return;
@@ -1454,6 +1686,7 @@
         type: 'DEPOSIT_ONETIME',
         amount: amount,
         balance_after: newBalance,
+        created_at: depositDate ? new Date(depositDate).toISOString() : new Date().toISOString(),
         note: 'הפקדה חד-פעמית'
       });
 
@@ -1462,11 +1695,31 @@
 
     function openSettingsModal() {
       renderSettingsMembers();
+      loadSettings();
       document.getElementById('settingsModal').classList.remove('hidden');
     }
 
     function closeSettingsModal() {
       document.getElementById('settingsModal').classList.add('hidden');
+    }
+
+    function loadSettings() {
+      document.getElementById('settingBillingDay').value = localStorage.getItem('bobo_billing_day') || 10;
+      document.getElementById('settingAutoAddMonthly').checked = localStorage.getItem('bobo_auto_add_monthly') === 'true';
+      document.getElementById('settingTargetAmount').value = localStorage.getItem('bobo_target_amount') || '';
+    }
+
+    function saveAutomationSettings() {
+      const day = parseInt(document.getElementById('settingBillingDay').value) || 10;
+      const autoAdd = document.getElementById('settingAutoAddMonthly').checked;
+      localStorage.setItem('bobo_billing_day', day);
+      localStorage.setItem('bobo_auto_add_monthly', autoAdd);
+    }
+
+    function saveTargetSettings() {
+      const amt = parseFloat(document.getElementById('settingTargetAmount').value) || 0;
+      localStorage.setItem('bobo_target_amount', amt);
+      render();
     }
 
     function renderSettingsMembers() {
@@ -1594,11 +1847,12 @@
         alert('אין נתונים לייצוא');
         return;
       }
-      const headers = ['בן משפחה', 'שם הקופה', 'סוג קופה', 'גוף מנהל', 'מ״ה', 'הפקדות', 'יתרה', 'הו״ק', 'תשואת גמל-נט %', 'מס %'];
+      const headers = ['בן משפחה', 'שם הקופה', 'סוג קופה', 'מטרת חיסכון', 'גוף מנהל', 'מ״ה', 'הפקדות', 'יתרה', 'הו״ק', 'תשואת גמל-נט %', 'מס %'];
       const rows = funds.map(f => [
         `"${f.owner || ''}"`,
         `"${f.name || ''}"`,
         `"${f.type || ''}"`,
+        `"${f.savingsGoal || ''}"`,
         `"${f.manager || ''}"`,
         `"${f.trackId || ''}"`,
         f.deposits || 0,
@@ -1617,6 +1871,51 @@
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+    }
+
+    // CSV File Importer (Feature 4)
+    function importFromCSV(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async (evt) => {
+        try {
+          const lines = evt.target.result.split('\n').filter(l => l.trim().length > 0);
+          if (lines.length <= 1) return alert('הקובץ ריק');
+
+          let importedCount = 0;
+          for (let i = 1; i < lines.length; i++) {
+            const cols = lines[i].split(',').map(c => c.replace(/^"|"$/g, '').trim());
+            if (cols.length >= 7) {
+              const [owner, name, type, goal, manager, trackId, deposits, balance, monthly] = cols;
+              const payload = {
+                id: 'fund_' + Date.now() + '_' + i,
+                vault_id: SHARED_VAULT_ID,
+                owner: owner || 'בובו',
+                name: name || 'קופה מיובאת',
+                type: type || 'קופת גמל להשקעה',
+                manager: manager || '',
+                track_id: trackId || null,
+                deposits: parseFloat(deposits) || 0,
+                balance: parseFloat(balance) || 0,
+                monthly_deposit: parseFloat(monthly) || 0,
+                notes: goal ? `GOAL:${goal}` : '',
+                updated_at: new Date().toISOString()
+              };
+              await sbClient.from('funds').upsert(payload);
+              importedCount++;
+            }
+          }
+          alert(`יובאו בהצלחה ${importedCount} קופות! ✨`);
+          closeSettingsModal();
+          loadFunds();
+        } catch (err) {
+          alert('שגיאה בקריאת קובץ ה-CSV');
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = '';
     }
 
     checkAuth();
