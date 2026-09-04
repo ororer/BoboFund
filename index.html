@@ -197,7 +197,7 @@
         </div>
       </div>
 
-      <!-- VIEW 1: 2x2 Family Member Cards (As seen in reference screenshot) -->
+      <!-- VIEW 1: 2x2 Family Member Cards (Visual match for screenshot) -->
       <div id="homeMembersView" class="mb-4">
         <div id="familyHubGrid" class="grid grid-cols-2 gap-3"></div>
       </div>
@@ -257,28 +257,37 @@
 
     </main>
 
-    <!-- Bottom Navigation Bar (As shown in screenshot) -->
+    <!-- Bottom Navigation Bar: RTL Ordered (מרכז -> יעדים -> סקירה -> פעולות -> הגדרות) -->
     <nav class="fixed bottom-0 left-0 right-0 z-40 bg-skyPastel/95 backdrop-blur-md border-t border-sky-200/70 py-2">
       <div class="max-w-md mx-auto px-6 flex items-center justify-between text-warmBrown">
-        <button onclick="triggerHaptic(); openSettingsModal()" class="flex flex-col items-center gap-0.5 opacity-70 hover:opacity-100">
-          <span class="text-base">⚙️</span>
-          <span class="text-[9px] font-bold">הגדרות</span>
+        <!-- 1. מרכז (ימין) -->
+        <button onclick="triggerHaptic(); navigateToHome()" class="flex flex-col items-center gap-0.5 text-orange-600 font-bold">
+          <span class="text-base">🏠</span>
+          <span class="text-[9px]">מרכז</span>
         </button>
-        <button onclick="triggerHaptic(); alert('יומן הפעולות זמין בתוך פרטי כל קופה')" class="flex flex-col items-center gap-0.5 opacity-70 hover:opacity-100">
-          <span class="text-base">📄</span>
-          <span class="text-[9px] font-bold">פעולות</span>
-        </button>
-        <button onclick="triggerHaptic(); setPeriod('YTD')" class="flex flex-col items-center gap-0.5 opacity-70 hover:opacity-100">
-          <span class="text-base">📈</span>
-          <span class="text-[9px] font-bold">סקירה</span>
-        </button>
+
+        <!-- 2. יעדים -->
         <button onclick="triggerHaptic(); alert('מודול יעדים יושק בגרסה הבאה 🎯')" class="flex flex-col items-center gap-0.5 opacity-70 hover:opacity-100">
           <span class="text-base">🎯</span>
           <span class="text-[9px] font-bold">יעדים</span>
         </button>
-        <button onclick="triggerHaptic(); navigateToHome()" class="flex flex-col items-center gap-0.5 text-orange-600 font-bold">
-          <span class="text-base">🏠</span>
-          <span class="text-[9px]">מרכז</span>
+
+        <!-- 3. סקירה -->
+        <button onclick="triggerHaptic(); setPeriod('YTD')" class="flex flex-col items-center gap-0.5 opacity-70 hover:opacity-100">
+          <span class="text-base">📈</span>
+          <span class="text-[9px] font-bold">סקירה</span>
+        </button>
+
+        <!-- 4. פעולות -->
+        <button onclick="triggerHaptic(); alert('יומן הפעולות זמין בתוך פרטי כל קופה')" class="flex flex-col items-center gap-0.5 opacity-70 hover:opacity-100">
+          <span class="text-base">📄</span>
+          <span class="text-[9px] font-bold">פעולות</span>
+        </button>
+
+        <!-- 5. הגדרות (שמאל) -->
+        <button onclick="triggerHaptic(); openSettingsModal()" class="flex flex-col items-center gap-0.5 opacity-70 hover:opacity-100">
+          <span class="text-base">⚙️</span>
+          <span class="text-[9px] font-bold">הגדרות</span>
         </button>
       </div>
     </nav>
@@ -965,7 +974,6 @@
       renderMemberFundsView();
     }
 
-    // 2x2 Family Member Grid (Visual match for screenshot)
     function renderHomeView() {
       document.getElementById('homeMembersView').classList.remove('hidden');
       document.getElementById('memberFundsView').classList.add('hidden');
@@ -981,7 +989,6 @@
         const mProfit = mBalance - mDeposits;
         const mRoi = mDeposits > 0 ? (mProfit / mDeposits) * 100 : 0;
 
-        // Alternate soft border colors (Orange/Sky) like screenshot
         const borderColor = idx % 2 === 0 ? 'border-orange-200/90' : 'border-sky-200/90';
 
         return `
