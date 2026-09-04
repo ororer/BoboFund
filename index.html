@@ -197,7 +197,7 @@
         </div>
       </div>
 
-      <!-- VIEW 1: 2x2 Family Member Cards (Visual match for screenshot) -->
+      <!-- VIEW 1: 2x2 Family Member Cards -->
       <div id="homeMembersView" class="mb-4">
         <div id="familyHubGrid" class="grid grid-cols-2 gap-3"></div>
       </div>
@@ -257,34 +257,34 @@
 
     </main>
 
-    <!-- Bottom Navigation Bar: RTL Ordered (מרכז -> יעדים -> סקירה -> פעולות -> הגדרות) -->
+    <!-- Bottom Navigation Bar: בדיוק כמו בתמונה (מימין לשמאל: הגדרות, פעולות, סקירה, יעדים, מרכז) -->
     <nav class="fixed bottom-0 left-0 right-0 z-40 bg-skyPastel/95 backdrop-blur-md border-t border-sky-200/70 py-2">
-      <div class="max-w-md mx-auto px-6 flex items-center justify-between text-warmBrown">
-        <!-- 1. מרכז (ימין) -->
+      <div class="max-w-md mx-auto px-6 flex flex-row-reverse items-center justify-between text-warmBrown">
+        <!-- שמאל קיצוני: מרכז -->
         <button onclick="triggerHaptic(); navigateToHome()" class="flex flex-col items-center gap-0.5 text-orange-600 font-bold">
           <span class="text-base">🏠</span>
           <span class="text-[9px]">מרכז</span>
         </button>
 
-        <!-- 2. יעדים -->
+        <!-- יעדים -->
         <button onclick="triggerHaptic(); alert('מודול יעדים יושק בגרסה הבאה 🎯')" class="flex flex-col items-center gap-0.5 opacity-70 hover:opacity-100">
           <span class="text-base">🎯</span>
           <span class="text-[9px] font-bold">יעדים</span>
         </button>
 
-        <!-- 3. סקירה -->
+        <!-- סקירה -->
         <button onclick="triggerHaptic(); setPeriod('YTD')" class="flex flex-col items-center gap-0.5 opacity-70 hover:opacity-100">
           <span class="text-base">📈</span>
           <span class="text-[9px] font-bold">סקירה</span>
         </button>
 
-        <!-- 4. פעולות -->
+        <!-- פעולות -->
         <button onclick="triggerHaptic(); alert('יומן הפעולות זמין בתוך פרטי כל קופה')" class="flex flex-col items-center gap-0.5 opacity-70 hover:opacity-100">
           <span class="text-base">📄</span>
           <span class="text-[9px] font-bold">פעולות</span>
         </button>
 
-        <!-- 5. הגדרות (שמאל) -->
+        <!-- ימין קיצוני: הגדרות -->
         <button onclick="triggerHaptic(); openSettingsModal()" class="flex flex-col items-center gap-0.5 opacity-70 hover:opacity-100">
           <span class="text-base">⚙️</span>
           <span class="text-[9px] font-bold">הגדרות</span>
