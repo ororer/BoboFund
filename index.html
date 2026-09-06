@@ -942,7 +942,7 @@
       location.reload();
     }
 
-    // Cloud-Synchronized Members Loader (Supabase table: family_members)
+    // Cloud-Synchronized Members Loader with Auto-Recovery for existing funds
     async function loadFamilyMembers() {
       const { data, error } = await sbClient
         .from('family_members')
@@ -950,17 +950,28 @@
         .eq('vault_id', SHARED_VAULT_ID)
         .order('created_at', { ascending: true });
 
-      if (!error && data && data.length > 0) {
+      if (!error && data) {
         familyMembers = data;
-      } else if (!error && (!data || data.length === 0)) {
-        // Initial setup for empty DB vault
-        const initial = [
-          { vault_id: SHARED_VAULT_ID, name: 'בובו', icon: '🧸', avatar: '' },
-          { vault_id: SHARED_VAULT_ID, name: 'אבא', icon: '👨', avatar: '' },
-          { vault_id: SHARED_VAULT_ID, name: 'משותף', icon: '🏡', avatar: '' }
-        ];
-        const { data: inserted } = await sbClient.from('family_members').insert(initial).select();
-        if (inserted) familyMembers = inserted;
+      }
+
+      // Safety: Read funds to check if there are orphan members (like 'אמא') not yet in family_members
+      const { data: rawFunds } = await sbClient.from('funds').select('owner').eq('vault_id', SHARED_VAULT_ID);
+      if (rawFunds && rawFunds.length > 0) {
+        const uniqueOwners = [...new Set(rawFunds.map(f => f.owner).filter(Boolean))];
+        for (let ownerName of uniqueOwners) {
+          if (!familyMembers.some(m => m.name === ownerName)) {
+            const newMember = {
+              vault_id: SHARED_VAULT_ID,
+              name: ownerName,
+              icon: ownerName === 'אמא' ? '👩' : (ownerName === 'אבא' ? '👨' : (ownerName === 'בובו' ? '🧸' : '⭐')),
+              avatar: ''
+            };
+            const { data: inserted } = await sbClient.from('family_members').insert(newMember).select();
+            if (inserted && inserted[0]) {
+              familyMembers.push(inserted[0]);
+            }
+          }
+        }
       }
 
       await loadFunds();
