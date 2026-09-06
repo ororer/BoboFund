@@ -263,34 +263,29 @@
 
     </main>
 
-    <!-- Bottom Navigation Bar (Grid RTL: מרכז בצד ימין קיצוני -> הגדרות בצד שמאל קיצוני) -->
+    <!-- Bottom Navigation Bar: Grid RTL -->
     <nav class="fixed bottom-0 left-0 right-0 z-40 bg-skyPastel/95 backdrop-blur-md border-t border-sky-200/70 py-2">
       <div class="max-w-md mx-auto px-4 grid grid-cols-5 text-center text-warmBrown" dir="rtl">
-        <!-- 1. מרכז (ימין קיצוני) -->
         <button onclick="triggerHaptic(); navigateToHome()" class="flex flex-col items-center justify-center gap-0.5 text-orange-600 font-bold">
           <span class="text-lg">🏠</span>
           <span class="text-[9px]">מרכז</span>
         </button>
 
-        <!-- 2. יעדים -->
         <button onclick="triggerHaptic(); openTargetPrompt()" class="flex flex-col items-center justify-center gap-0.5 opacity-70 hover:opacity-100">
           <span class="text-lg">🎯</span>
           <span class="text-[9px] font-bold">יעדים</span>
         </button>
 
-        <!-- 3. סקירה -->
         <button onclick="triggerHaptic(); setPeriod('YTD')" class="flex flex-col items-center justify-center gap-0.5 opacity-70 hover:opacity-100">
           <span class="text-lg">📈</span>
           <span class="text-[9px] font-bold">סקירה</span>
         </button>
 
-        <!-- 4. פעולות -->
         <button onclick="triggerHaptic(); alert('יומן הפעולות זמין ומנוהל בתוך פרטי כל קופה')" class="flex flex-col items-center justify-center gap-0.5 opacity-70 hover:opacity-100">
           <span class="text-lg">📄</span>
           <span class="text-[9px] font-bold">פעולות</span>
         </button>
 
-        <!-- 5. הגדרות (שמאל קיצוני) -->
         <button onclick="triggerHaptic(); openSettingsModal()" class="flex flex-col items-center justify-center gap-0.5 opacity-70 hover:opacity-100">
           <span class="text-lg">⚙️</span>
           <span class="text-[9px] font-bold">הגדרות</span>
@@ -402,7 +397,6 @@
         </button>
       </div>
 
-      <!-- Transactions Ledger History with Inline Edit Option -->
       <div class="mb-4 bg-creamBg rounded-2xl border border-orange-100 p-3">
         <h4 class="text-[11px] font-black text-warmBrown mb-2 flex items-center justify-between">
           <span>📜 יומן פעולות (לחץ לעריכה)</span>
@@ -477,7 +471,6 @@
           </div>
         </div>
 
-        <!-- Savings Goal Field -->
         <div>
           <label class="block text-[11px] font-bold text-warmBrown/70 mb-0.5">מטרת החיסכון</label>
           <input type="text" id="fieldSavingsGoal" placeholder="למשל: בר מצווה, לימודים, דירה..." class="w-full bg-creamBg border border-orange-200 rounded-xl px-2.5 py-1.5 text-xs text-warmBrown focus:outline-none">
@@ -616,7 +609,7 @@
           </button>
         </div>
 
-        <!-- Monthly Auto-Deposit Automation (Feature 2) -->
+        <!-- Monthly Auto-Deposit Automation -->
         <div class="bg-creamBg border border-orange-100 rounded-xl p-3 space-y-2">
           <h4 class="text-xs font-black text-warmBrown flex items-center gap-1">
             <span>🗓️</span>
@@ -655,7 +648,7 @@
           <div id="settingsMembersList" class="space-y-2"></div>
         </div>
 
-        <!-- Backup & CSV Import/Export (Feature 4) -->
+        <!-- Backup & CSV Import/Export -->
         <div class="bg-creamBg border border-orange-100 rounded-xl p-3 space-y-2">
           <h4 class="text-xs font-black text-warmBrown flex items-center gap-1">
             <span>📊</span>
@@ -697,24 +690,12 @@
     const sbClient = window.supabase.createClient(SB_URL, SB_ANON);
 
     let funds = [];
+    let familyMembers = [];
     let currentFilter = 'ALL';
     let currentPeriod = 'YTD';
     let activeDetailId = null;
-    let memberPhotoTargetIndex = null;
+    let memberPhotoTargetId = null;
     let expandedCategories = {};
-
-    const DEFAULT_MEMBERS = [
-      { name: 'בובו', icon: '🧸', avatar: '' },
-      { name: 'אבא', icon: '👨', avatar: '' },
-      { name: 'אמא', icon: '👩', avatar: '' },
-      { name: 'משותף', icon: '🏡', avatar: '' }
-    ];
-
-    let familyMembers = JSON.parse(localStorage.getItem('bobo_family_members')) || DEFAULT_MEMBERS;
-
-    function saveFamilyMembers() {
-      localStorage.setItem('bobo_family_members', JSON.stringify(familyMembers));
-    }
 
     const triggerHaptic = () => {
       if ('vibrate' in navigator) navigator.vibrate(12);
@@ -850,7 +831,6 @@
       }
     }
 
-    // One-Click Batch Sync for all funds with Track IDs
     async function batchSyncAllFunds() {
       const btn = document.getElementById('btnBatchSync');
       btn.textContent = 'מסנכרן... ⏳';
@@ -953,13 +933,37 @@
       document.getElementById('appShell').classList.remove('hidden');
       document.getElementById('settingsUserEmail').textContent = email;
       loadSettings();
-      loadFunds();
+      loadFamilyMembers();
     }
 
     async function handleLogout() {
       localStorage.removeItem('bobo_has_authenticated');
       await sbClient.auth.signOut();
       location.reload();
+    }
+
+    // Cloud-Synchronized Members Loader (Supabase table: family_members)
+    async function loadFamilyMembers() {
+      const { data, error } = await sbClient
+        .from('family_members')
+        .select('*')
+        .eq('vault_id', SHARED_VAULT_ID)
+        .order('created_at', { ascending: true });
+
+      if (!error && data && data.length > 0) {
+        familyMembers = data;
+      } else if (!error && (!data || data.length === 0)) {
+        // Initial setup for empty DB vault
+        const initial = [
+          { vault_id: SHARED_VAULT_ID, name: 'בובו', icon: '🧸', avatar: '' },
+          { vault_id: SHARED_VAULT_ID, name: 'אבא', icon: '👨', avatar: '' },
+          { vault_id: SHARED_VAULT_ID, name: 'משותף', icon: '🏡', avatar: '' }
+        ];
+        const { data: inserted } = await sbClient.from('family_members').insert(initial).select();
+        if (inserted) familyMembers = inserted;
+      }
+
+      await loadFunds();
     }
 
     async function loadFunds() {
@@ -971,7 +975,7 @@
       if (!error && data) {
         funds = data.map(item => ({
           id: item.id,
-          owner: item.owner || 'בובו',
+          owner: item.owner || (familyMembers[0] ? familyMembers[0].name : 'בובו'),
           name: item.name,
           type: item.type,
           manager: item.manager,
@@ -994,13 +998,6 @@
           notes: item.notes,
           updatedAt: item.updated_at
         }));
-
-        funds.forEach(f => {
-          if (f.owner && !familyMembers.some(m => m.name === f.owner)) {
-            familyMembers.push({ name: f.owner, icon: '🧸', avatar: '' });
-          }
-        });
-        saveFamilyMembers();
 
         render();
 
@@ -1209,7 +1206,7 @@
 
       const container = document.getElementById('groupedFundsList');
       if (mFunds.length === 0) {
-        container.innerHTML = `<div class="text-center py-6 text-xs text-warmBrown/50 bg-creamCard rounded-2xl border border-orange-100">אין עדיין קופות להצגה</div>`;
+        container.innerHTML = `<div class="text-center py-6 text-xs text-warmBrown/50 bg-creamCard rounded-2xl border border-orange-100">אין עדיין קופות להצגה עבור ${targetMember.name}</div>`;
         return;
       }
 
@@ -1442,7 +1439,6 @@
       }).join('');
     }
 
-    // Direct Inline Transaction Editor (Date & Amount)
     async function editTransactionPrompt(txId, oldAmount, oldDate, fundId, txType) {
       const newAmountStr = prompt('ערוך סכום פעולה ₪:', oldAmount);
       if (newAmountStr === null) return;
@@ -1459,7 +1455,6 @@
         created_at: new Date(newDateStr).toISOString()
       }).eq('id', txId);
 
-      // Recalculate fund deposits if it's a deposit transaction
       if (txType === 'DEPOSIT_ONETIME') {
         const diff = newAmount - oldAmount;
         const f = funds.find(x => x.id === fundId);
@@ -1502,7 +1497,7 @@
       document.getElementById('fetchReturnBadge').classList.add('hidden');
       document.getElementById('fieldInceptionDate').value = new Date().toISOString().slice(0, 10);
       
-      const defaultOwner = (currentFilter !== 'ALL') ? currentFilter : 'בובו';
+      const defaultOwner = (currentFilter !== 'ALL') ? currentFilter : (familyMembers[0] ? familyMembers[0].name : 'בובו');
       populateOwnerSelect(defaultOwner);
       handleTypeChange('קופת גמל להשקעה');
 
@@ -1567,7 +1562,7 @@
       const payload = {
         id,
         vault_id: SHARED_VAULT_ID,
-        owner: selectedOwner || 'בובו',
+        owner: selectedOwner || (familyMembers[0] ? familyMembers[0].name : 'בובו'),
         name: document.getElementById('fieldName').value,
         type: document.getElementById('fieldType').value,
         manager: document.getElementById('fieldManager').value,
@@ -1727,7 +1722,7 @@
       listEl.innerHTML = familyMembers.map((m, idx) => `
         <div class="flex items-center justify-between bg-creamCard p-2.5 rounded-xl border border-orange-200">
           <div class="flex items-center gap-2">
-            <div class="cursor-pointer relative" onclick="triggerMemberPhotoUpload(${idx})" title="לחץ להחלפת תמונה">
+            <div class="cursor-pointer relative" onclick="triggerMemberPhotoUpload('${m.id}')" title="לחץ להחלפת תמונה">
               ${renderAvatarHTML(m, 'w-8 h-8', 'text-sm')}
               <span class="absolute -bottom-1 -right-1 bg-softOrange text-warmBrown rounded-full p-0.5 text-[8px] leading-none">📷</span>
             </div>
@@ -1746,21 +1741,21 @@
       `).join('');
     }
 
-    function triggerMemberPhotoUpload(idx) {
-      memberPhotoTargetIndex = idx;
+    function triggerMemberPhotoUpload(memberId) {
+      memberPhotoTargetId = memberId;
       document.getElementById('memberPhotoInput').click();
     }
 
     function handleMemberPhotoSelected(e) {
       const file = e.target.files[0];
-      if (!file || memberPhotoTargetIndex === null) return;
+      if (!file || !memberPhotoTargetId) return;
 
       const reader = new FileReader();
       reader.onload = (event) => {
         const img = new Image();
-        img.onload = () => {
+        img.onload = async () => {
           const canvas = document.createElement('canvas');
-          const maxDim = 240;
+          const maxDim = 200;
           let w = img.width;
           let h = img.height;
           if (w > h && w > maxDim) {
@@ -1774,11 +1769,10 @@
           canvas.height = h;
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, w, h);
-          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
 
-          familyMembers[memberPhotoTargetIndex].avatar = compressedDataUrl;
-          saveFamilyMembers();
-          render();
+          await sbClient.from('family_members').update({ avatar: compressedDataUrl }).eq('id', memberPhotoTargetId);
+          await loadFamilyMembers();
           renderSettingsMembers();
         };
         img.src = event.target.result;
@@ -1787,38 +1781,42 @@
       e.target.value = '';
     }
 
-    function openMemberAddPrompt() {
+    async function openMemberAddPrompt() {
       const name = prompt('הכנס שם בן משפחה חדש:');
       if (!name || !name.trim()) return;
       const icon = prompt('הכנס אימוג\'י:', '🧸') || '🧸';
-      familyMembers.push({ name: name.trim(), icon, avatar: '' });
-      saveFamilyMembers();
-      render();
+
+      triggerHaptic();
+      await sbClient.from('family_members').insert({
+        vault_id: SHARED_VAULT_ID,
+        name: name.trim(),
+        icon,
+        avatar: ''
+      });
+
+      await loadFamilyMembers();
       if (!document.getElementById('settingsModal').classList.contains('hidden')) {
         renderSettingsMembers();
       }
     }
 
-    function editMemberPrompt(idx) {
+    async function editMemberPrompt(idx) {
       const current = familyMembers[idx];
       const newName = prompt('ערוך שם בן משפחה:', current.name);
       if (!newName || !newName.trim()) return;
       const newIcon = prompt('ערוך אימוג\'י:', current.icon) || current.icon;
 
+      triggerHaptic();
       const oldName = current.name;
-      current.name = newName.trim();
-      current.icon = newIcon;
-      saveFamilyMembers();
+      const updatedName = newName.trim();
 
-      if (oldName !== current.name) {
-        funds.forEach(f => {
-          if (f.owner === oldName) {
-            f.owner = current.name;
-            sbClient.from('funds').update({ owner: current.name }).eq('id', f.id);
-          }
-        });
+      await sbClient.from('family_members').update({ name: updatedName, icon: newIcon }).eq('id', current.id);
+
+      if (oldName !== updatedName) {
+        await sbClient.from('funds').update({ owner: updatedName }).eq('owner', oldName);
       }
-      render();
+
+      await loadFamilyMembers();
       renderSettingsMembers();
     }
 
@@ -1827,18 +1825,19 @@
       const assignedFunds = funds.filter(f => f.owner === target.name);
 
       if (assignedFunds.length > 0) {
-        const reassign = confirm(`ל-${target.name} יש ${assignedFunds.length} קופות. להעביר אותן ל"משותף" לפני המחיקה?`);
+        const fallbackMember = familyMembers.find(m => m.id !== target.id);
+        const targetFallbackName = fallbackMember ? fallbackMember.name : 'משותף';
+        const reassign = confirm(`ל-${target.name} יש ${assignedFunds.length} קופות. להעביר אותן ל"${targetFallbackName}" לפני המחיקה?`);
         if (!reassign) return;
-        for (let f of assignedFunds) {
-          f.owner = 'משותף';
-          await sbClient.from('funds').update({ owner: 'משותף' }).eq('id', f.id);
-        }
+
+        await sbClient.from('funds').update({ owner: targetFallbackName }).eq('owner', target.name);
       }
 
-      familyMembers.splice(idx, 1);
-      saveFamilyMembers();
+      triggerHaptic();
+      await sbClient.from('family_members').delete().eq('id', target.id);
+
       if (currentFilter === target.name) currentFilter = 'ALL';
-      render();
+      await loadFamilyMembers();
       renderSettingsMembers();
     }
 
@@ -1873,7 +1872,6 @@
       document.body.removeChild(link);
     }
 
-    // CSV File Importer (Feature 4)
     function importFromCSV(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -1892,7 +1890,7 @@
               const payload = {
                 id: 'fund_' + Date.now() + '_' + i,
                 vault_id: SHARED_VAULT_ID,
-                owner: owner || 'בובו',
+                owner: owner || (familyMembers[0] ? familyMembers[0].name : 'בובו'),
                 name: name || 'קופה מיובאת',
                 type: type || 'קופת גמל להשקעה',
                 manager: manager || '',
