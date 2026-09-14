@@ -1,0 +1,18 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    # רץ כל 3 ימים ב-06:00 בבוקר
+    - cron: '0 6 */3 * *'
+  workflow_dispatch: # מאפשר להריץ גם ידנית בכל רגע
+
+jobs:
+  ping-db:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase Database
+        run: |
+          curl -s -X GET "https://geamksanxntfeyzlqdrs.supabase.co/rest/v1/family_members?select=id&limit=1" \
+            -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlYW1rc2FueG50ZmV5emxxZHJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzMjg1OTksImV4cCI6MjEwMzkwNDU5OX0.o5XMCnvXaBmwZ8GqoQ03-_KVwQZfFeniLnhMo6RFvoQ" \
+            -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlYW1rc2FueG50ZmV5emxxZHJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzMjg1OTksImV4cCI6MjEwMzkwNDU5OX0.o5XMCnvXaBmwZ8GqoQ03-_KVwQZfFeniLnhMo6RFvoQ"
+          echo "Pinged Supabase successfully!"
