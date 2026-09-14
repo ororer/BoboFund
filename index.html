@@ -153,7 +153,11 @@
       </div>
 
       <!-- Hero Total Family Wealth Card -->
-      <div class="bg-creamCard border-2 border-orange-200/70 rounded-[28px] p-4 mb-3 shadow-soft text-right relative">
+      <div class="bg-creamCard border-2 border-orange-200/70 rounded-[28px] p-4 mb-3 shadow-soft text-right relative overflow-hidden">
+        <button onclick="shareSnapshot()" class="absolute top-4 left-4 squish-btn w-8 h-8 rounded-full bg-orange-100/80 hover:bg-orange-200 flex items-center justify-center text-sm shadow-sm border border-orange-200 text-warmBrown" title="שתף תמונת מצב">
+          📤
+        </button>
+        
         <div class="flex items-start justify-between">
           <div>
             <span class="text-[11px] font-bold text-warmBrown/60 block mb-0.5" id="heroLabel">סך הון נטו כולל</span>
@@ -166,7 +170,7 @@
           </div>
 
           <!-- Asset Allocation Visualizer Mini-Chart -->
-          <div class="bg-creamBg border border-orange-100 rounded-2xl p-2 text-center w-36 shrink-0">
+          <div class="bg-creamBg border border-orange-100 rounded-2xl p-2 text-center w-32 shrink-0 mt-6 sm:mt-0">
             <span class="text-[9px] font-bold text-warmBrown/70 block mb-1.5">Asset Allocation</span>
             <div class="flex items-end justify-between h-14 px-1 gap-1" id="assetAllocationBars">
               <div class="flex-1 flex flex-col items-center">
@@ -192,16 +196,14 @@
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Family Target Milestone Bar -->
-        <div id="targetMilestoneBox" class="mt-3 pt-2.5 border-t border-orange-100 flex flex-col gap-1 hidden">
-          <div class="flex justify-between items-center text-[10px] font-bold text-warmBrown/70">
-            <span id="targetGoalTitle">🎯 מטרת יעד: ₪0</span>
-            <span id="targetGoalProgress">0% הושג</span>
-          </div>
-          <div class="w-full bg-orange-100 rounded-full h-1.5 overflow-hidden">
-            <div id="targetGoalBar" class="bg-softOrange h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
-          </div>
+      <!-- Bobo's Monthly Digest Card -->
+      <div id="boboDigestCard" class="hidden bg-white/60 border border-sky-200/80 rounded-2xl p-3 mb-4 flex items-start gap-3 shadow-sm">
+        <div class="text-2xl p-1.5 bg-skyPastel rounded-xl border border-white shadow-sm shrink-0">🧸</div>
+        <div>
+          <h4 class="text-xs font-black text-warmBrown mb-0.5">סיכום החודש של בובו</h4>
+          <p id="boboDigestText" class="text-[11px] text-warmBrown/80 leading-relaxed font-medium"></p>
         </div>
       </div>
 
@@ -271,7 +273,7 @@
           <span class="text-[9px]">מרכז</span>
         </button>
 
-        <button onclick="triggerHaptic(); openTargetPrompt()" class="flex flex-col items-center justify-center gap-0.5 opacity-70 hover:opacity-100">
+        <button onclick="triggerHaptic(); openGoalsModal()" class="flex flex-col items-center justify-center gap-0.5 opacity-70 hover:opacity-100">
           <span class="text-lg">🎯</span>
           <span class="text-[9px] font-bold">יעדים</span>
         </button>
@@ -298,6 +300,16 @@
   <!-- Deep Dive Detail Modal -->
   <div id="detailModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
     <div class="bg-creamCard border-t-4 sm:border-2 border-orange-200 rounded-t-[32px] sm:rounded-[32px] w-full max-w-md p-6 shadow-soft relative max-h-[90vh] overflow-y-auto no-scrollbar text-right">
+      
+      <!-- Stale Data Warning Banner -->
+      <div id="detailStaleWarning" class="hidden mb-3 bg-rose-50 border border-rose-200 rounded-2xl p-2.5 text-xs text-rose-800 flex items-center justify-between font-medium shadow-sm">
+        <div class="flex items-center gap-1.5">
+          <span>⚠️</span>
+          <span>הקופה לא עודכנה מעל 30 יום</span>
+        </div>
+        <button id="btnActionQuickStale" class="px-2 py-1 bg-white rounded-lg shadow-sm text-[10px] font-bold text-rose-700 border border-rose-100 squish-btn">עדכן עכשיו</button>
+      </div>
+
       <div class="flex justify-between items-start mb-4 pb-3 border-b border-orange-100">
         <div class="flex items-center gap-3">
           <span id="detailIcon" class="text-2xl p-2 bg-creamBg rounded-2xl border border-orange-100">⭐</span>
@@ -326,7 +338,7 @@
         </div>
       </div>
 
-      <div id="detailGoalNotice" class="hidden mb-3 bg-amber-50 border border-amber-200 rounded-2xl p-2.5 text-xs text-amber-900 flex items-center gap-1.5 font-medium">
+      <div id="detailGoalNotice" class="hidden mb-3 bg-amber-50 border border-amber-200 rounded-2xl p-2.5 text-xs text-amber-900 flex items-center gap-1.5 font-medium shadow-sm">
         <span>🎯</span>
         <span>מטרת החיסכון: <strong id="detailGoalText">--</strong></span>
       </div>
@@ -356,6 +368,16 @@
           <span class="font-bold text-emerald-950 block text-[10px]">פירוט מסלולי ההשקעה:</span>
           <div id="detailTracksList" class="space-y-1"></div>
         </div>
+      </div>
+
+      <!-- Links & Agent Actions -->
+      <div id="detailLinksBox" class="grid grid-cols-2 gap-2 mb-3 hidden">
+        <a id="detailPortalLink" target="_blank" class="squish-btn bg-white border border-sky-200 text-sky-800 font-bold py-2 rounded-xl text-[10px] flex items-center justify-center gap-1 hidden">
+          <span>🌐</span><span>אזור אישי בגוף המנהל</span>
+        </a>
+        <a id="detailAgentLink" target="_blank" class="squish-btn bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold py-2 rounded-xl text-[10px] flex items-center justify-center gap-1 hidden">
+          <span>💬</span><span id="detailAgentNameTxt">וואטסאפ לסוכן</span>
+        </a>
       </div>
 
       <div class="bg-lightOrange/80 border border-orange-200/80 rounded-2xl p-3.5 mb-3 space-y-1.5">
@@ -393,13 +415,17 @@
           <span>דמי ניהול (צבירה / הפקדה):</span>
           <span id="detailFees" class="font-mono font-bold text-warmBrown">--</span>
         </div>
+        <div id="detailNotesRow" class="flex justify-between hidden pt-1 border-t border-orange-100/50">
+          <span>הערות מקופלות:</span>
+          <span id="detailNotesText" class="font-medium text-warmBrown text-left w-3/5"></span>
+        </div>
       </div>
 
       <div class="grid grid-cols-2 gap-2 mb-3">
-        <button id="btnActionQuick" class="squish-btn bg-softOrange hover:bg-orange-300 text-warmBrown font-black py-2.5 rounded-xl text-xs">
+        <button id="btnActionQuick" class="squish-btn bg-softOrange hover:bg-orange-300 text-warmBrown font-black py-2.5 rounded-xl text-xs shadow-sm">
           ⚡ עדכון יתרה
         </button>
-        <button id="btnActionDeposit" class="squish-btn bg-skyPastel hover:bg-sky-200 text-warmBrown font-black py-2.5 rounded-xl text-xs">
+        <button id="btnActionDeposit" class="squish-btn bg-skyPastel hover:bg-sky-200 text-warmBrown font-black py-2.5 rounded-xl text-xs shadow-sm">
           ➕ הפקדה
         </button>
       </div>
@@ -472,14 +498,9 @@
             <input type="text" id="fieldManager" required placeholder="מיטב, אלטשולר..." class="w-full bg-creamBg border border-orange-200 rounded-xl px-2.5 py-1.5 text-xs text-warmBrown focus:outline-none">
           </div>
           <div>
-            <label class="block text-[11px] font-bold text-warmBrown/70 mb-0.5">מספר חשבון</label>
+            <label class="block text-[11px] font-bold text-warmBrown/70 mb-0.5">מספר חשבון / פוליסה</label>
             <input type="text" id="fieldNumber" placeholder="1234567" class="w-full bg-creamBg border border-orange-200 rounded-xl px-2.5 py-1.5 text-xs text-warmBrown font-mono focus:outline-none">
           </div>
-        </div>
-
-        <div>
-          <label class="block text-[11px] font-bold text-warmBrown/70 mb-0.5">מטרת החיסכון</label>
-          <input type="text" id="fieldSavingsGoal" placeholder="למשל: בר מצווה, לימודים, דירה..." class="w-full bg-creamBg border border-orange-200 rounded-xl px-2.5 py-1.5 text-xs text-warmBrown focus:outline-none">
         </div>
 
         <!-- Dynamic Multi-Track Management -->
@@ -489,7 +510,7 @@
               <span>🏛️</span>
               <span>מסלולי השקעה (קודי מ״ה באוצר)</span>
             </label>
-            <button type="button" onclick="addTrackRow()" class="squish-btn bg-softOrange text-warmBrown font-bold text-[10px] px-2 py-0.5 rounded-lg">
+            <button type="button" onclick="addTrackRow()" class="squish-btn bg-softOrange text-warmBrown font-bold text-[10px] px-2 py-0.5 rounded-lg shadow-sm">
               + הוסף מסלול
             </button>
           </div>
@@ -500,7 +521,6 @@
             <span class="text-warmBrown/60">סה״כ הקצאה למסלולים:</span>
             <span id="tracksWeightTotal" class="font-mono text-emerald-700">100%</span>
           </div>
-          <p class="text-[9px] text-warmBrown/50 leading-tight">ניתן להוסיף מסלול יחיד (100%) או לפצל בין מסלולים שונים (לדוגמה 70% מחקה מדד S&P ו-30% כללי). התשואה המשוקללת תחושב אוטומטית.</p>
         </div>
 
         <div class="grid grid-cols-3 gap-1.5 bg-creamBg p-2 rounded-xl border border-orange-100">
@@ -538,16 +558,91 @@
           <label for="fieldIsAnnuity" class="text-warmBrown font-bold">מיועד לקצבה פטורה (מעל גיל 60) 🛡️</label>
         </div>
 
-        <div>
-          <label class="block text-[10px] font-bold text-warmBrown/70 mb-0.5">הערות</label>
-          <input type="text" id="fieldNotes" placeholder="הוראת קבע ב-10 לחודש" class="w-full bg-creamBg border border-orange-200 rounded-xl px-2.5 py-1.5 text-xs">
+        <!-- Goals & Contacts Segment -->
+        <div class="border-t border-orange-100 pt-2 space-y-2">
+          <div>
+            <label class="block text-[11px] font-bold text-warmBrown/70 mb-0.5">מטרת החיסכון (מופיע במרכז היעדים 🎯)</label>
+            <input type="text" id="fieldSavingsGoal" placeholder="למשל: בר מצווה, לימודים, חופשה..." class="w-full bg-creamBg border border-orange-200 rounded-xl px-2.5 py-1.5 text-xs text-warmBrown focus:outline-none">
+          </div>
+          
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[11px] font-bold text-warmBrown/70 mb-0.5">שם סוכן / איש קשר</label>
+              <input type="text" id="fieldAgentName" placeholder="ישראל ישראלי" class="w-full bg-creamBg border border-orange-200 rounded-xl px-2.5 py-1.5 text-xs text-warmBrown focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-warmBrown/70 mb-0.5">טלפון סוכן (לוואטסאפ)</label>
+              <input type="tel" id="fieldAgentPhone" placeholder="050-1234567" class="w-full bg-creamBg border border-orange-200 rounded-xl px-2.5 py-1.5 text-xs text-warmBrown font-mono focus:outline-none">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold text-warmBrown/70 mb-0.5">הערות לקופה</label>
+            <input type="text" id="fieldNotesText" placeholder="הטבת דמי ניהול עד 2028..." class="w-full bg-creamBg border border-orange-200 rounded-xl px-2.5 py-1.5 text-xs text-warmBrown focus:outline-none">
+          </div>
         </div>
 
         <div class="pt-2 flex justify-end gap-2 border-t border-orange-100">
           <button type="button" onclick="closeModal()" class="px-3 py-1.5 text-xs font-bold text-warmBrown/50 hover:text-warmBrown">ביטול</button>
-          <button type="submit" class="squish-btn bg-softOrange hover:bg-orange-300 text-warmBrown font-black px-4 py-1.5 rounded-xl text-xs">שמור ✨</button>
+          <button type="submit" class="squish-btn bg-softOrange hover:bg-orange-300 text-warmBrown font-black px-4 py-1.5 rounded-xl text-xs shadow-sm">שמור ✨</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Goals Modal (🎯) -->
+  <div id="goalsModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+    <div class="bg-creamCard border-t-4 sm:border-2 border-orange-200 rounded-t-[32px] sm:rounded-[32px] w-full max-w-md p-5 shadow-soft relative max-h-[90vh] overflow-y-auto no-scrollbar text-right">
+      <div class="flex justify-between items-center mb-4 pb-3 border-b border-orange-100">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl p-1.5 bg-creamBg rounded-2xl border border-orange-100">🎯</span>
+          <div>
+            <h3 class="text-base font-black text-warmBrown">מרכז היעדים המשפחתי</h3>
+            <p class="text-[11px] text-warmBrown/60">תכנון פיננסי וציוני דרך</p>
+          </div>
+        </div>
+        <button onclick="closeGoalsModal()" class="w-8 h-8 rounded-full bg-creamBg text-warmBrown/70 hover:bg-orange-100 flex items-center justify-center font-bold text-sm">✕</button>
+      </div>
+
+      <!-- Main Overall Goal Card -->
+      <div class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-4 mb-4 space-y-2 shadow-sm">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-black text-warmBrown">יעד על: הון משפחתי כולל</span>
+          <button onclick="editOverallTargetPrompt()" class="text-[10px] font-bold text-amber-800 bg-amber-100 hover:bg-amber-200 px-2 py-1 rounded-lg squish-btn">ערוך יעד ✏️</button>
+        </div>
+
+        <div class="flex items-baseline justify-between pt-1">
+          <span id="goalModalCurrentTotal" class="text-xl font-mono font-black text-warmBrown">₪0</span>
+          <span id="goalModalTargetTotal" class="text-xs font-mono font-bold text-warmBrown/60">מתוך ₪0</span>
+        </div>
+
+        <div class="w-full bg-amber-200/60 rounded-full h-2.5 overflow-hidden">
+          <div id="goalModalProgressBar" class="bg-softOrange h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
+        </div>
+
+        <div class="flex items-center justify-between text-[10px] text-warmBrown/70 pt-1 font-medium">
+          <span id="goalModalPctText">0% הושג</span>
+          <span id="goalModalRemainingText">נותרו ₪0</span>
+        </div>
+
+        <div id="goalModalVelocityNotice" class="bg-white/80 border border-amber-200/60 rounded-xl p-2.5 mt-2 text-[10.5px] text-warmBrown/80 flex items-center gap-1.5 shadow-sm">
+          <span>⏱️</span>
+          <span id="goalModalVelocityText">מחשב צפי להגעה לפי הפקדות חודשיות...</span>
+        </div>
+      </div>
+
+      <!-- Segmented Goals List (from Funds with savingsGoal) -->
+      <div class="space-y-3">
+        <div class="flex items-center justify-between px-1">
+          <h4 class="text-xs font-black text-warmBrown/80">מטרות חיסכון בקופות</h4>
+          <span id="goalSubCount" class="text-[10px] font-mono text-warmBrown/50 font-bold bg-creamBg px-2 py-0.5 rounded border border-orange-100">0 מטרות</span>
+        </div>
+        <div id="goalsSubList" class="space-y-2.5"></div>
+      </div>
+
+      <div class="pt-4 mt-3 border-t border-orange-100 text-center">
+        <button onclick="closeGoalsModal()" class="w-full py-2.5 bg-warmBrown text-white font-bold text-xs rounded-xl squish-btn">סגור</button>
+      </div>
     </div>
   </div>
 
@@ -641,18 +736,6 @@
           </div>
         </div>
 
-        <!-- Family Target & Goal Setting -->
-        <div class="bg-amber-50/60 border border-amber-200/80 rounded-xl p-3 space-y-2">
-          <h4 class="text-xs font-black text-warmBrown flex items-center gap-1">
-            <span>🎯</span>
-            <span>יעד הון משפחתי</span>
-          </h4>
-          <div class="flex items-center justify-between text-xs">
-            <span class="text-warmBrown/70">סכום יעד כולל ₪:</span>
-            <input type="number" id="settingTargetAmount" placeholder="1000000" onchange="saveTargetSettings()" class="w-24 bg-white border border-orange-200 rounded-lg p-1 text-center font-mono font-bold">
-          </div>
-        </div>
-
         <!-- Members & Avatars -->
         <div class="bg-lightOrange border border-orange-200/80 rounded-xl p-3">
           <div class="flex items-center justify-between mb-2">
@@ -691,7 +774,7 @@
       </div>
 
       <div class="pt-2 mt-2 border-t border-orange-100 text-center">
-        <button onclick="closeSettingsModal()" class="px-5 py-1 bg-warmBrown text-white font-black text-xs rounded-xl">סגור</button>
+        <button onclick="closeSettingsModal()" class="px-5 py-2 bg-warmBrown text-white font-black text-xs rounded-xl squish-btn">סגור</button>
       </div>
     </div>
   </div>
@@ -712,6 +795,31 @@
     let activeDetailId = null;
     let memberPhotoTargetId = null;
     let expandedCategories = {};
+
+    const managerLinks = {
+      'אלטשולר': 'https://www.as-invest.co.il/login/',
+      'מיטב': 'https://my.meitav.co.il/',
+      'הראל': 'https://www.harel-group.co.il/personal-area/',
+      'הפניקס': 'https://www.fnx.co.il/personal-area/',
+      'כלל': 'https://customer.clalbit.co.il/',
+      'מגדל': 'https://www.migdal.co.il/PersonalArea',
+      'מנורה': 'https://www.menoramivt.co.il/personal-area/',
+      'ילין': 'https://www.yl-invest.co.il/personal-area/',
+      'מור': 'https://www.more.co.il/personal-area/',
+      'אנליסט': 'https://www.analyst.co.il/'
+    };
+
+    function getManagerLink(managerName) {
+       if(!managerName) return null;
+       const key = Object.keys(managerLinks).find(k => managerName.includes(k));
+       return key ? managerLinks[key] : null;
+    }
+
+    function formatWhatsApp(phone) {
+       let clean = phone.replace(/\D/g, '');
+       if (clean.startsWith('0')) clean = '972' + clean.slice(1);
+       return `https://wa.me/${clean}`;
+    }
 
     const triggerHaptic = () => {
       if ('vibrate' in navigator) navigator.vibrate(12);
@@ -754,6 +862,38 @@
     const getMemberBadgeColor = (name) => {
       return 'bg-creamBg text-warmBrown border-orange-200';
     };
+
+    // Safe backwards-compatible notes parsing
+    function parseFundNotes(raw) {
+      if (!raw) return { goal: '', agent: '', phone: '', note: '' };
+      try {
+         if (raw.trim().startsWith('{')) {
+             const j = JSON.parse(raw);
+             return { goal: j.goal||'', agent: j.agent||'', phone: j.phone||'', note: j.note||'' };
+         }
+      } catch(e) {}
+      
+      let goal = '';
+      let note = raw;
+      if (raw.startsWith('GOAL:')) {
+         const parts = raw.split('|');
+         goal = parts[0].replace('GOAL:', '').trim();
+         note = parts.slice(1).join('|').trim();
+      }
+      return { goal, agent: '', phone: '', note };
+    }
+
+    function shareSnapshot() {
+      triggerHaptic();
+      const total = document.getElementById('heroBalance').innerText;
+      const text = `הסטטוס המשפחתי שלנו בבובו ושות' 🧸\nסך הון נטו: ${total}\nממשיכים בכל הכוח! 💪`;
+      
+      if (navigator.share) {
+        navigator.share({ title: "בובו ושות'", text: text }).catch(() => {});
+      } else {
+        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
+      }
+    }
 
     function handleTypeChange(val) {
       const taxInput = document.getElementById('fieldTaxRate');
@@ -1027,7 +1167,6 @@
       location.reload();
     }
 
-    // Cloud-Synchronized Members Loader with Auto-Recovery for existing funds
     async function loadFamilyMembers() {
       const { data, error } = await sbClient
         .from('family_members')
@@ -1039,7 +1178,6 @@
         familyMembers = data;
       }
 
-      // Safety: Read funds to check if there are orphan members (like 'אמא') not yet in family_members
       const { data: rawFunds } = await sbClient.from('funds').select('owner').eq('vault_id', SHARED_VAULT_ID);
       if (rawFunds && rawFunds.length > 0) {
         const uniqueOwners = [...new Set(rawFunds.map(f => f.owner).filter(Boolean))];
@@ -1069,32 +1207,40 @@
         .eq('vault_id', SHARED_VAULT_ID);
 
       if (!error && data) {
-        funds = data.map(item => ({
-          id: item.id,
-          owner: item.owner || (familyMembers[0] ? familyMembers[0].name : 'בובו'),
-          name: item.name,
-          type: item.type,
-          manager: item.manager,
-          trackId: item.track_id || '',
-          tracks: Array.isArray(item.tracks) ? item.tracks : [],
-          number: item.number,
-          deposits: Number(item.deposits) || 0,
-          balance: Number(item.balance) || 0,
-          monthlyDeposit: Number(item.monthly_deposit) || 0,
-          taxRate: item.tax_rate !== undefined && item.tax_rate !== null ? Number(item.tax_rate) : 25,
-          feeAccumulation: item.fee_accumulation,
-          feeDeposit: item.fee_deposit,
-          inceptionDate: item.inception_date || null,
-          isAnnuity: !!item.is_annuity,
-          savingsGoal: item.notes && item.notes.startsWith('GOAL:') ? item.notes.split('|')[0].replace('GOAL:', '').trim() : (item.savings_goal || ''),
-          gemelnetReturn: item.gemelnet_return_monthly !== null && item.gemelnet_return_monthly !== undefined ? Number(item.gemelnet_return_monthly) : null,
-          gemelnetYieldYtd: item.gemelnet_yield_ytd !== null && item.gemelnet_yield_ytd !== undefined ? Number(item.gemelnet_yield_ytd) : null,
-          gemelnetYield3y: item.gemelnet_yield_3y !== null && item.gemelnet_yield_3y !== undefined ? Number(item.gemelnet_yield_3y) : null,
-          gemelnetYield5y: item.gemelnet_yield_5y !== null && item.gemelnet_yield_5y !== undefined ? Number(item.gemelnet_yield_5y) : null,
-          gemelnetPeriod: item.gemelnet_period || '',
-          notes: item.notes,
-          updatedAt: item.updated_at
-        }));
+        funds = data.map(item => {
+          const parsed = parseFundNotes(item.notes);
+          
+          return {
+            id: item.id,
+            owner: item.owner || (familyMembers[0] ? familyMembers[0].name : 'בובו'),
+            name: item.name,
+            type: item.type,
+            manager: item.manager,
+            trackId: item.track_id || '',
+            tracks: Array.isArray(item.tracks) ? item.tracks : [],
+            number: item.number,
+            deposits: Number(item.deposits) || 0,
+            balance: Number(item.balance) || 0,
+            monthlyDeposit: Number(item.monthly_deposit) || 0,
+            taxRate: item.tax_rate !== undefined && item.tax_rate !== null ? Number(item.tax_rate) : 25,
+            feeAccumulation: item.fee_accumulation,
+            feeDeposit: item.fee_deposit,
+            inceptionDate: item.inception_date || null,
+            isAnnuity: !!item.is_annuity,
+            
+            savingsGoal: parsed.goal,
+            agentName: parsed.agent,
+            agentPhone: parsed.phone,
+            notes: parsed.note,
+
+            gemelnetReturn: item.gemelnet_return_monthly !== null && item.gemelnet_return_monthly !== undefined ? Number(item.gemelnet_return_monthly) : null,
+            gemelnetYieldYtd: item.gemelnet_yield_ytd !== null && item.gemelnet_yield_ytd !== undefined ? Number(item.gemelnet_yield_ytd) : null,
+            gemelnetYield3y: item.gemelnet_yield_3y !== null && item.gemelnet_yield_3y !== undefined ? Number(item.gemelnet_yield_3y) : null,
+            gemelnetYield5y: item.gemelnet_yield_5y !== null && item.gemelnet_yield_5y !== undefined ? Number(item.gemelnet_yield_5y) : null,
+            gemelnetPeriod: item.gemelnet_period || '',
+            updatedAt: item.updated_at
+          };
+        });
 
         render();
 
@@ -1160,7 +1306,7 @@
       if (!filteredFunds || filteredFunds.length === 0) {
         feeDisplay.textContent = 'דמ״נ: ₪0';
         yieldDisplay.textContent = '0.0%';
-        return;
+        return 0; // return avgYield for digest
       }
 
       let totalFees = 0;
@@ -1184,6 +1330,8 @@
       feeDisplay.textContent = `דמ״נ: ${fmtILS(totalFees)}`;
       yieldDisplay.textContent = fmtPCT(avgYield);
       yieldDisplay.className = `text-lg font-black font-mono ${avgYield >= 0 ? 'text-emerald-700' : 'text-rose-600'}`;
+      
+      return avgYield;
     }
 
     function toggleCategory(catKey) {
@@ -1221,6 +1369,37 @@
 
       document.getElementById('pct-other').textContent = `${pOther}%`;
       document.getElementById('bar-other').style.height = `${Math.max(8, pOther * 0.45)}px`;
+    }
+
+    function renderBoboDigest(activeFunds, avgYield) {
+       const digestEl = document.getElementById('boboDigestCard');
+       if (!activeFunds.length || currentFilter !== 'ALL') {
+         digestEl.classList.add('hidden');
+         return;
+       }
+       digestEl.classList.remove('hidden');
+
+       let monthly = 0;
+       let staleCount = 0;
+       const now = new Date();
+
+       activeFunds.forEach(f => {
+         monthly += (Number(f.monthlyDeposit) || 0);
+         const daysOld = Math.floor((now - new Date(f.updatedAt)) / 86400000);
+         if (daysOld > 30) staleCount++;
+       });
+
+       let text = `החודש המשפחה מכוונת לחסוך <strong>${fmtILS(monthly)}</strong>. `;
+       if (avgYield !== 0) {
+           text += `התיק במגמה של <strong>${fmtPCT(avgYield)}</strong> מתחילת השנה. `;
+       }
+       if (staleCount > 0) {
+           text += `שימו לב: יש <strong class="text-rose-600">${staleCount} קופות</strong> שדורשות רענון יתרה כדי שנישאר מדויקים. `;
+       } else {
+           text += `כל היתרות מעודכנות לאחרונה, מעולה! `;
+       }
+
+       document.getElementById('boboDigestText').innerHTML = text;
     }
 
     function renderHomeView() {
@@ -1263,11 +1442,15 @@
       const grossProfit = bal - dep;
       const roi = dep > 0 ? (grossProfit / dep) * 100 : 0;
       const isPos = grossProfit >= 0;
-
       const hasMultiTracks = f.tracks && f.tracks.length > 1;
 
+      const daysSinceUpdate = Math.floor((new Date() - new Date(f.updatedAt)) / 86400000);
+      const isStale = daysSinceUpdate > 30;
+      const staleIndicator = isStale ? `<span class="absolute top-3 left-3 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white shadow-sm" title="דורש רענון יתרה"></span>` : '';
+
       return `
-        <div onclick="triggerHaptic(); openDetailModal('${f.id}')" class="squish-btn bg-creamCard border-2 border-orange-200/80 rounded-2xl p-3.5 shadow-card cursor-pointer">
+        <div onclick="triggerHaptic(); openDetailModal('${f.id}')" class="relative squish-btn bg-creamCard border-2 border-orange-200/80 rounded-2xl p-3.5 shadow-card cursor-pointer">
+          ${staleIndicator}
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
               <span class="text-2xl p-2 bg-creamBg border border-orange-100 rounded-xl">${getTypeIcon(f.type)}</span>
@@ -1358,13 +1541,14 @@
       const activeFunds = isHome ? funds : funds.filter(f => f.owner === currentFilter);
 
       document.getElementById('heroLabel').textContent = isHome ? 'סך הון נטו כולל' : `סך הון נטו (${currentFilter})`;
-      updatePeriodMetrics(activeFunds);
+      const avgYield = updatePeriodMetrics(activeFunds);
       updateAssetAllocation(activeFunds);
 
       if (funds.length === 0) {
         document.getElementById('homeMembersView').classList.add('hidden');
         document.getElementById('memberFundsView').classList.add('hidden');
         document.getElementById('emptyState').classList.remove('hidden');
+        document.getElementById('boboDigestCard').classList.add('hidden');
         updateHeroKPIs(0, 0);
         return;
       }
@@ -1383,7 +1567,20 @@
         totalMonthly += (Number(f.monthlyDeposit) || 0);
       });
       updateHeroKPIs(totalBal, totalMonthly);
-      updateTargetDisplay(totalBal);
+      
+      // Update Goals Target & Bobo Digest
+      const targetAmt = parseFloat(localStorage.getItem('bobo_target_amount')) || 0;
+      if (targetAmt > 0 && isHome) {
+        document.getElementById('targetMilestoneBox').classList.remove('hidden');
+        const pct = Math.min(100, Math.round((totalBal / targetAmt) * 100));
+        document.getElementById('targetGoalTitle').textContent = `🎯 יעד הון: ${fmtILS(targetAmt)}`;
+        document.getElementById('targetGoalProgress').textContent = `${pct}% הושג (${fmtILS(totalBal)})`;
+        document.getElementById('targetGoalBar').style.width = `${pct}%`;
+      } else {
+        document.getElementById('targetMilestoneBox').classList.add('hidden');
+      }
+
+      renderBoboDigest(activeFunds, avgYield);
     }
 
     function updateHeroKPIs(bal, monthly) {
@@ -1391,28 +1588,88 @@
       document.getElementById('heroMonthly').textContent = fmtILS(monthly);
     }
 
-    function updateTargetDisplay(currentTotal) {
-      const targetBox = document.getElementById('targetMilestoneBox');
-      const targetAmt = parseFloat(localStorage.getItem('bobo_target_amount')) || 0;
-
-      if (targetAmt > 0 && currentFilter === 'ALL') {
-        targetBox.classList.remove('hidden');
-        const pct = Math.min(100, Math.round((currentTotal / targetAmt) * 100));
-        document.getElementById('targetGoalTitle').textContent = `🎯 יעד הון: ${fmtILS(targetAmt)}`;
-        document.getElementById('targetGoalProgress').textContent = `${pct}% הושג (${fmtILS(currentTotal)})`;
-        document.getElementById('targetGoalBar').style.width = `${pct}%`;
-      } else {
-        targetBox.classList.add('hidden');
-      }
+    // --- Goals Modal (🎯) Logic ---
+    function openGoalsModal() {
+      renderGoalsModal();
+      document.getElementById('goalsModal').classList.remove('hidden');
     }
 
-    function openTargetPrompt() {
+    function closeGoalsModal() {
+      document.getElementById('goalsModal').classList.add('hidden');
+    }
+
+    function editOverallTargetPrompt() {
       const current = localStorage.getItem('bobo_target_amount') || '';
       const val = prompt('הכנס יעד הון משפחתי כולל בשקלים (למשל: 1500000):', current);
       if (val !== null) {
         localStorage.setItem('bobo_target_amount', parseFloat(val) || 0);
         render();
+        renderGoalsModal();
       }
+    }
+
+    function renderGoalsModal() {
+      const targetAmt = parseFloat(localStorage.getItem('bobo_target_amount')) || 0;
+      const currentTotal = funds.reduce((sum, f) => sum + (Number(f.balance) || 0), 0);
+      const totalMonthly = funds.reduce((sum, f) => sum + (Number(f.monthlyDeposit) || 0), 0);
+
+      document.getElementById('goalModalCurrentTotal').textContent = fmtILS(currentTotal);
+      document.getElementById('goalModalTargetTotal').textContent = `מתוך ${fmtILS(targetAmt)}`;
+
+      const pct = targetAmt > 0 ? Math.min(100, Math.round((currentTotal / targetAmt) * 100)) : 0;
+      document.getElementById('goalModalProgressBar').style.width = `${pct}%`;
+      document.getElementById('goalModalPctText').textContent = `${pct}% הושג`;
+
+      const remaining = Math.max(0, targetAmt - currentTotal);
+      document.getElementById('goalModalRemainingText').textContent = remaining > 0 ? `נותרו ${fmtILS(remaining)}` : '🎉 היעד הושג!';
+
+      const velEl = document.getElementById('goalModalVelocityText');
+      if (remaining <= 0) {
+        velEl.textContent = 'כל הכבוד! היעד המשפחתי הושלם במלואו.';
+      } else if (totalMonthly > 0) {
+        const monthsLeft = Math.ceil(remaining / totalMonthly);
+        const years = (monthsLeft / 12).toFixed(1);
+        velEl.textContent = `בקצב הפקדה של ${fmtILS(totalMonthly)}/חודש: כ-${monthsLeft} חודשים (${years} שנים) ליעד.`;
+      } else {
+        velEl.textContent = 'לא מוגדרות הפקדות חודשיות שוטפות לחישוב צפי התקדמות.';
+      }
+
+      // Group Funds by Savings Goal
+      const goalFunds = funds.filter(f => f.savingsGoal);
+      const listEl = document.getElementById('goalsSubList');
+      document.getElementById('goalSubCount').textContent = `${goalFunds.length} קופות מיועדות`;
+
+      if (goalFunds.length === 0) {
+        listEl.innerHTML = `
+          <div class="text-center py-5 bg-creamBg rounded-2xl border border-orange-100 text-xs text-warmBrown/50 shadow-sm">
+            טרם הוגדרו מטרות לקופות.<br>ניתן להגדיר "מטרת חיסכון" בעריכת כל קופה (למשל: דירה, לימודים).
+          </div>
+        `;
+        return;
+      }
+
+      listEl.innerHTML = goalFunds.map(f => {
+        const bal = Number(f.balance) || 0;
+        const monthly = Number(f.monthlyDeposit) || 0;
+        return `
+          <div onclick="closeGoalsModal(); openDetailModal('${f.id}')" class="squish-btn bg-creamCard border-2 border-orange-200/70 rounded-2xl p-3 flex items-center justify-between cursor-pointer shadow-sm">
+            <div class="flex items-center gap-3">
+              <span class="text-xl p-2 bg-creamBg rounded-xl border border-orange-100">🎯</span>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-xs font-black text-warmBrown">${f.savingsGoal}</span>
+                  <span class="text-[9px] bg-orange-50 px-1.5 py-0.5 rounded border border-orange-200 text-warmBrown/70 font-bold">${f.owner}</span>
+                </div>
+                <span class="text-[10px] text-warmBrown/50 font-medium block">${f.name}</span>
+              </div>
+            </div>
+            <div class="text-left font-mono">
+              <span class="text-xs font-black text-warmBrown block">${fmtILS(bal)}</span>
+              <span class="text-[9px] text-warmBrown/50">${monthly > 0 ? `+${fmtILS(monthly)}/ח` : 'ללא הו״ק'}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
     async function openDetailModal(id) {
@@ -1441,6 +1698,16 @@
       document.getElementById('detailBalance').textContent = fmtILS(bal);
       document.getElementById('detailUpdated').textContent = `עודכן: ${fmtDate(f.updatedAt)}`;
       document.getElementById('detailDeposits').textContent = fmtILS(dep);
+
+      // Stale Warning Check
+      const daysSinceUpdate = Math.floor((new Date() - new Date(f.updatedAt)) / 86400000);
+      const staleBanner = document.getElementById('detailStaleWarning');
+      if (daysSinceUpdate > 30) {
+         staleBanner.classList.remove('hidden');
+         document.getElementById('btnActionQuickStale').onclick = () => { closeDetailModal(); openQuickModal(f.id); };
+      } else {
+         staleBanner.classList.add('hidden');
+      }
 
       const goalBox = document.getElementById('detailGoalNotice');
       if (f.savingsGoal) {
@@ -1522,6 +1789,43 @@
       if (f.feeAccumulation) fees.push(`צבירה: ${f.feeAccumulation}%`);
       if (f.feeDeposit) fees.push(`הפקדה: ${f.feeDeposit}%`);
       document.getElementById('detailFees').textContent = fees.length ? fees.join(' • ') : 'לא צוין';
+
+      // Notes Display
+      const notesRow = document.getElementById('detailNotesRow');
+      if (f.notes) {
+         notesRow.classList.remove('hidden');
+         document.getElementById('detailNotesText').textContent = f.notes;
+      } else {
+         notesRow.classList.add('hidden');
+      }
+
+      // Agent & Portal Links
+      const linksBox = document.getElementById('detailLinksBox');
+      const portalBtn = document.getElementById('detailPortalLink');
+      const agentBtn = document.getElementById('detailAgentLink');
+      
+      let showLinksBox = false;
+      
+      const portalUrl = getManagerLink(f.manager);
+      if (portalUrl) {
+         portalBtn.href = portalUrl;
+         portalBtn.classList.remove('hidden');
+         showLinksBox = true;
+      } else {
+         portalBtn.classList.add('hidden');
+      }
+
+      if (f.agentPhone) {
+         agentBtn.href = formatWhatsApp(f.agentPhone);
+         document.getElementById('detailAgentNameTxt').textContent = f.agentName ? `וואטסאפ (${f.agentName})` : 'וואטסאפ לסוכן';
+         agentBtn.classList.remove('hidden');
+         showLinksBox = true;
+      } else {
+         agentBtn.classList.add('hidden');
+      }
+      
+      if (showLinksBox) linksBox.classList.remove('hidden');
+      else linksBox.classList.add('hidden');
 
       document.getElementById('btnActionQuick').onclick = () => { closeDetailModal(); openQuickModal(f.id); };
       document.getElementById('btnActionDeposit').onclick = () => { closeDetailModal(); openDepositModal(f.id); };
@@ -1619,7 +1923,6 @@
     function openAddModal() {
       document.getElementById('fundForm').reset();
       document.getElementById('fieldId').value = '';
-      document.getElementById('fieldSavingsGoal').value = '';
       document.getElementById('fieldGemelnetReturn').value = '';
       document.getElementById('fieldGemelnetYieldYtd').value = '';
       document.getElementById('fieldGemelnetYield3y').value = '';
@@ -1650,7 +1953,6 @@
       populateOwnerSelect(f.owner);
       document.getElementById('fieldName').value = f.name;
       document.getElementById('fieldType').value = f.type;
-      document.getElementById('fieldSavingsGoal').value = f.savingsGoal || '';
       document.getElementById('fieldManager').value = f.manager;
       document.getElementById('fieldNumber').value = f.number || '';
       document.getElementById('fieldInceptionDate').value = f.inceptionDate || '';
@@ -1661,7 +1963,12 @@
       document.getElementById('fieldFeeAcc').value = f.feeAccumulation || '';
       document.getElementById('fieldFeeDep').value = f.feeDeposit || '';
       document.getElementById('fieldIsAnnuity').checked = !!f.isAnnuity;
-      document.getElementById('fieldNotes').value = f.notes || '';
+
+      // Populate parsed notes & fields
+      document.getElementById('fieldSavingsGoal').value = f.savingsGoal || '';
+      document.getElementById('fieldAgentName').value = f.agentName || '';
+      document.getElementById('fieldAgentPhone').value = f.agentPhone || '';
+      document.getElementById('fieldNotesText').value = f.notes || '';
 
       document.getElementById('fieldGemelnetReturn').value = f.gemelnetReturn !== null ? f.gemelnetReturn : '';
       document.getElementById('fieldGemelnetYieldYtd').value = f.gemelnetYieldYtd !== null ? f.gemelnetYieldYtd : '';
@@ -1692,7 +1999,15 @@
       triggerHaptic();
       const id = document.getElementById('fieldId').value || ('fund_' + Date.now());
       const selectedOwner = document.getElementById('fieldOwnerSelect').value;
-      const savingsGoal = document.getElementById('fieldSavingsGoal').value.trim();
+      
+      // Serialize Notes & Contacts to JSON
+      const notesObj = {
+         goal: document.getElementById('fieldSavingsGoal').value.trim(),
+         agent: document.getElementById('fieldAgentName').value.trim(),
+         phone: document.getElementById('fieldAgentPhone').value.trim(),
+         note: document.getElementById('fieldNotesText').value.trim()
+      };
+      const finalNotesStr = JSON.stringify(notesObj);
 
       // Collect tracks
       const trackRows = document.querySelectorAll('#tracksContainer > div');
@@ -1754,9 +2069,6 @@
       const y5Val = document.getElementById('fieldGemelnetYield5y').value ? parseFloat(document.getElementById('fieldGemelnetYield5y').value) : null;
       const periodVal = document.getElementById('fieldGemelnetPeriod').value || (collectedTracks[0] ? collectedTracks[0].period : null);
 
-      const rawNotes = document.getElementById('fieldNotes').value;
-      const notesWithGoal = savingsGoal ? `GOAL:${savingsGoal} | ${rawNotes}` : rawNotes;
-
       const payload = {
         id,
         vault_id: SHARED_VAULT_ID,
@@ -1780,7 +2092,7 @@
         gemelnet_yield_3y: y3Val,
         gemelnet_yield_5y: y5Val,
         gemelnet_period: periodVal,
-        notes: notesWithGoal,
+        notes: finalNotesStr,
         updated_at: new Date().toISOString()
       };
 
