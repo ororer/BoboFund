@@ -331,6 +331,7 @@
         <span>מטרת החיסכון: <strong id="detailGoalText">--</strong></span>
       </div>
 
+      <!-- GemelNet Returns Box (Single or Multi-Track) -->
       <div id="detailGemelnetBox" class="hidden bg-emerald-50/80 border border-emerald-200 rounded-2xl p-3.5 mb-3">
         <div class="flex items-center justify-between mb-1">
           <span class="text-xs font-black text-emerald-950 flex items-center gap-1">
@@ -341,13 +342,19 @@
         </div>
         <div class="grid grid-cols-2 gap-2 pt-1 text-xs">
           <div>
-            <span class="text-warmBrown/60 block text-[10px] font-bold">ברוטו:</span>
+            <span class="text-warmBrown/60 block text-[10px] font-bold" id="detailGemelnetGrossLabel">ברוטו (משוקלל):</span>
             <span id="detailGemelnetGross" class="font-mono font-black text-emerald-800 text-sm">--</span>
           </div>
           <div>
             <span class="text-warmBrown/60 block text-[10px] font-bold">נטו (משוערת):</span>
             <span id="detailGemelnetNet" class="font-mono font-black text-emerald-900 text-sm">--</span>
           </div>
+        </div>
+
+        <!-- Sub-tracks Breakdown inside Detail Modal -->
+        <div id="detailTracksBreakdown" class="hidden mt-2 pt-2 border-t border-emerald-200/70 space-y-1 text-[11px]">
+          <span class="font-bold text-emerald-950 block text-[10px]">פירוט מסלולי ההשקעה:</span>
+          <div id="detailTracksList" class="space-y-1"></div>
         </div>
       </div>
 
@@ -439,18 +446,6 @@
           </div>
         </div>
 
-        <div>
-          <label class="block text-[11px] font-bold text-warmBrown/70 mb-0.5">קוד מסלול באוצר (מ״ה)</label>
-          <div class="flex gap-1.5">
-            <input type="text" id="fieldTrackId" placeholder="למשל: 7799" class="w-full bg-creamBg border border-orange-200 rounded-xl px-2.5 py-1.5 text-xs text-warmBrown font-mono focus:outline-none">
-            <button type="button" id="btnFetchTrack" onclick="fetchDetailsByTrackId()" class="squish-btn bg-skyPastel hover:bg-sky-200 text-warmBrown font-bold px-2.5 py-1.5 rounded-xl text-xs shrink-0 flex items-center gap-1 border border-sky-200">
-              <span>🔍</span>
-              <span id="fetchTrackText">משוך נתונים</span>
-            </button>
-          </div>
-          <div id="fetchReturnBadge" class="hidden mt-1 text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200 text-center"></div>
-        </div>
-
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="block text-[11px] font-bold text-warmBrown/70 mb-0.5">שם הקופה *</label>
@@ -471,11 +466,6 @@
           </div>
         </div>
 
-        <div>
-          <label class="block text-[11px] font-bold text-warmBrown/70 mb-0.5">מטרת החיסכון</label>
-          <input type="text" id="fieldSavingsGoal" placeholder="למשל: בר מצווה, לימודים, דירה..." class="w-full bg-creamBg border border-orange-200 rounded-xl px-2.5 py-1.5 text-xs text-warmBrown focus:outline-none">
-        </div>
-
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="block text-[11px] font-bold text-warmBrown/70 mb-0.5">גוף מנהל *</label>
@@ -485,6 +475,32 @@
             <label class="block text-[11px] font-bold text-warmBrown/70 mb-0.5">מספר חשבון</label>
             <input type="text" id="fieldNumber" placeholder="1234567" class="w-full bg-creamBg border border-orange-200 rounded-xl px-2.5 py-1.5 text-xs text-warmBrown font-mono focus:outline-none">
           </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-warmBrown/70 mb-0.5">מטרת החיסכון</label>
+          <input type="text" id="fieldSavingsGoal" placeholder="למשל: בר מצווה, לימודים, דירה..." class="w-full bg-creamBg border border-orange-200 rounded-xl px-2.5 py-1.5 text-xs text-warmBrown focus:outline-none">
+        </div>
+
+        <!-- Dynamic Multi-Track Management -->
+        <div class="bg-creamBg p-3 rounded-2xl border border-orange-200/80 space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="text-[11px] font-bold text-warmBrown flex items-center gap-1">
+              <span>🏛️</span>
+              <span>מסלולי השקעה (קודי מ״ה באוצר)</span>
+            </label>
+            <button type="button" onclick="addTrackRow()" class="squish-btn bg-softOrange text-warmBrown font-bold text-[10px] px-2 py-0.5 rounded-lg">
+              + הוסף מסלול
+            </button>
+          </div>
+
+          <div id="tracksContainer" class="space-y-1.5"></div>
+
+          <div class="flex justify-between items-center text-[10px] pt-1.5 border-t border-orange-100 font-bold">
+            <span class="text-warmBrown/60">סה״כ הקצאה למסלולים:</span>
+            <span id="tracksWeightTotal" class="font-mono text-emerald-700">100%</span>
+          </div>
+          <p class="text-[9px] text-warmBrown/50 leading-tight">ניתן להוסיף מסלול יחיד (100%) או לפצל בין מסלולים שונים (לדוגמה 70% מחקה מדד S&P ו-30% כללי). התשואה המשוקללת תחושב אוטומטית.</p>
         </div>
 
         <div class="grid grid-cols-3 gap-1.5 bg-creamBg p-2 rounded-xl border border-orange-100">
@@ -759,75 +775,91 @@
       }
     }
 
-    async function fetchDetailsByTrackId() {
-      const trackInput = document.getElementById('fieldTrackId');
-      const trackId = trackInput.value.trim();
-      const btnText = document.getElementById('fetchTrackText');
-      const badgeEl = document.getElementById('fetchReturnBadge');
+    // --- Dynamic Multi-Track Management Functions ---
+    function addTrackRow(trackId = '', name = '', weight = 100, monthly = null, ytd = null, y3 = null, period = '') {
+      const container = document.getElementById('tracksContainer');
+      const rowId = 'track_row_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
 
-      if (!trackId) {
-        alert('נא להזין קוד מ"ה קודם');
-        trackInput.focus();
+      const row = document.createElement('div');
+      row.className = 'flex items-center gap-1.5 bg-white p-2 rounded-xl border border-orange-200';
+      row.id = rowId;
+      if (monthly !== null) row.dataset.yieldMonthly = monthly;
+      if (ytd !== null) row.dataset.yieldYtd = ytd;
+      if (y3 !== null) row.dataset.yield3y = y3;
+      if (period) row.dataset.period = period;
+
+      row.innerHTML = `
+        <input type="text" placeholder="קוד מ״ה" value="${trackId}" class="track-code w-16 bg-creamBg border border-orange-200 rounded-lg px-2 py-1 text-xs font-mono text-center focus:outline-none">
+        <input type="text" placeholder="שם מסלול (S&P, כללי...)" value="${name}" class="track-name flex-1 bg-creamBg border border-orange-200 rounded-lg px-2 py-1 text-xs focus:outline-none">
+        <div class="flex items-center gap-0.5">
+          <input type="number" min="1" max="100" placeholder="%" value="${weight}" oninput="updateTracksWeightSum()" class="track-weight w-12 bg-creamBg border border-orange-200 rounded-lg px-1 py-1 text-xs font-mono text-center focus:outline-none">
+          <span class="text-[10px] text-warmBrown/60 font-bold">%</span>
+        </div>
+        <button type="button" onclick="fetchSingleTrackData('${rowId}')" title="משוך נתוני גמל-נט" class="text-xs p-1 bg-skyPastel rounded-lg hover:bg-sky-200 squish-btn">🔍</button>
+        <button type="button" onclick="removeTrackRow('${rowId}')" title="מחק מסלול" class="text-xs text-rose-400 hover:text-rose-600 p-1">✕</button>
+      `;
+
+      container.appendChild(row);
+      updateTracksWeightSum();
+    }
+
+    function removeTrackRow(rowId) {
+      const el = document.getElementById(rowId);
+      if (el) el.remove();
+      updateTracksWeightSum();
+    }
+
+    function updateTracksWeightSum() {
+      const weightInputs = document.querySelectorAll('#tracksContainer .track-weight');
+      let sum = 0;
+      weightInputs.forEach(input => { sum += (parseFloat(input.value) || 0); });
+
+      const totalEl = document.getElementById('tracksWeightTotal');
+      totalEl.textContent = `${sum}%`;
+      totalEl.className = `font-mono font-bold ${sum === 100 ? 'text-emerald-700' : 'text-rose-600'}`;
+    }
+
+    async function fetchSingleTrackData(rowId) {
+      const row = document.getElementById(rowId);
+      if (!row) return;
+
+      const codeInput = row.querySelector('.track-code');
+      const nameInput = row.querySelector('.track-name');
+      const code = codeInput.value.trim();
+
+      if (!code) {
+        alert('נא להזין קוד מסלול');
+        codeInput.focus();
         return;
       }
-
-      btnText.textContent = 'מושך... ⏳';
-      badgeEl.classList.add('hidden');
 
       const DATASTORE_API = 'https://data.gov.il/api/3/action/datastore_search';
       const RESOURCE_RETURNS = 'a30dcbea-a1d2-482c-ae29-8f781f5025fb';
 
       try {
-        const res = await fetch(`${DATASTORE_API}?resource_id=${RESOURCE_RETURNS}&q=${encodeURIComponent(trackId)}&limit=30`);
+        const res = await fetch(`${DATASTORE_API}?resource_id=${RESOURCE_RETURNS}&q=${encodeURIComponent(code)}&limit=10`);
         const data = await res.json();
         const records = data?.result?.records || [];
-
-        const match = records.find(r => String(r.FUND_ID || '').trim() === trackId) || records[0];
+        const match = records.find(r => String(r.FUND_ID || '').trim() === code) || records[0];
 
         if (match) {
-          const fundName = match.FUND_NAME || match.SHM_KUPA || '';
-          if (fundName) document.getElementById('fieldName').value = fundName;
-          
-          const rawCorp = match.MANAGING_CORPORATION || match.CORPORATION_NAME || '';
-          if (rawCorp) {
-            document.getElementById('fieldManager').value = rawCorp.replace(/בע"מ|בע״מ/g, '').trim();
+          if (!nameInput.value) {
+            nameInput.value = match.FUND_NAME || match.SHM_KUPA || '';
           }
-
-          const typeSelect = document.getElementById('fieldType');
-          if (fundName.includes('להשקעה')) typeSelect.value = 'קופת גמל להשקעה';
-          else if (fundName.includes('השתלמות')) typeSelect.value = 'קרן השתלמות';
-          else if (fundName.includes('חיסכון לכל ילד') || fundName.includes('לילד')) typeSelect.value = 'חיסכון לכל ילד';
-          else if (fundName.includes('פוליסת חיסכון')) typeSelect.value = 'פוליסת חיסכון';
-          handleTypeChange(typeSelect.value);
-
           const monthlyReturnVal = match.MONTHLY_YIELD !== undefined ? match.MONTHLY_YIELD : match.TSUA_HODSHIT;
-          const ytdVal = match.YEAR_TO_DATE_YIELD;
-          const y3Val = match.YIELD_TRAILING_3_YRS;
-          const y5Val = match.YIELD_TRAILING_5_YRS;
-          const periodStr = String(match.REPORT_PERIOD || 'אחרון').trim();
+          row.dataset.yieldMonthly = monthlyReturnVal !== undefined ? parseFloat(monthlyReturnVal) : 0;
+          row.dataset.yieldYtd = match.YEAR_TO_DATE_YIELD !== undefined ? parseFloat(match.YEAR_TO_DATE_YIELD) : 0;
+          row.dataset.yield3y = match.YIELD_TRAILING_3_YRS !== undefined ? parseFloat(match.YIELD_TRAILING_3_YRS) : 0;
+          row.dataset.period = String(match.REPORT_PERIOD || '').trim();
 
-          if (monthlyReturnVal !== undefined) {
-            const retNum = parseFloat(monthlyReturnVal) || 0;
-            document.getElementById('fieldGemelnetReturn').value = retNum;
-            document.getElementById('fieldGemelnetPeriod').value = periodStr;
-            badgeEl.textContent = `🏛️ תשואה חודשית: ${retNum >= 0 ? '+' : ''}${retNum.toFixed(2)}% | תקופה: ${periodStr}`;
-            badgeEl.classList.remove('hidden');
-          }
-
-          document.getElementById('fieldGemelnetYieldYtd').value = ytdVal ? parseFloat(ytdVal) : '';
-          document.getElementById('fieldGemelnetYield3y').value = y3Val ? parseFloat(y3Val) : '';
-          document.getElementById('fieldGemelnetYield5y').value = y5Val ? parseFloat(y5Val) : '';
-
-          btnText.textContent = 'הושלם! ✨';
-          setTimeout(() => { btnText.textContent = 'משוך נתונים'; }, 2000);
+          triggerHaptic();
+          alert(`נמשכו נתוני גמל-נט למסלול ${code} (${match.FUND_NAME || ''})! ✨`);
         } else {
-          alert(`לא נמצאו פרטים עבור מ"ה ${trackId}`);
-          btnText.textContent = 'משוך נתונים';
+          alert(`לא נמצאו פרטים עבור קוד ${code}`);
         }
       } catch (err) {
         console.error(err);
-        alert('שגיאה במשיכת נתונים');
-        btnText.textContent = 'משוך נתונים';
+        alert('שגיאה במשיכת נתונים למסלול');
       }
     }
 
@@ -842,7 +874,60 @@
       let updatedCount = 0;
 
       for (let f of funds) {
-        if (f.trackId) {
+        // Multi-track sync
+        if (f.tracks && Array.isArray(f.tracks) && f.tracks.length > 0) {
+          let updatedTracks = [];
+          let hasChange = false;
+
+          for (let t of f.tracks) {
+            let updatedT = { ...t };
+            if (t.trackId) {
+              try {
+                const res = await fetch(`${DATASTORE_API}?resource_id=${RESOURCE_RETURNS}&filters={"FUND_ID":"${t.trackId}"}&limit=5`);
+                const data = await res.json();
+                const record = data?.result?.records?.[0];
+                if (record) {
+                  const retVal = record.MONTHLY_YIELD !== undefined ? parseFloat(record.MONTHLY_YIELD) : parseFloat(record.TSUA_HODSHIT);
+                  const ytdVal = record.YEAR_TO_DATE_YIELD !== undefined ? parseFloat(record.YEAR_TO_DATE_YIELD) : null;
+                  const y3Val = record.YIELD_TRAILING_3_YRS !== undefined ? parseFloat(record.YIELD_TRAILING_3_YRS) : null;
+                  const periodStr = String(record.REPORT_PERIOD || '').trim();
+
+                  updatedT.gemelnetReturn = !isNaN(retVal) ? retVal : t.gemelnetReturn;
+                  updatedT.gemelnetYieldYtd = !isNaN(ytdVal) ? ytdVal : t.gemelnetYieldYtd;
+                  updatedT.gemelnetYield3y = !isNaN(y3Val) ? y3Val : t.gemelnetYield3y;
+                  updatedT.period = periodStr || t.period;
+                  hasChange = true;
+                }
+              } catch (e) {
+                console.warn(`Sync failed for sub-track ${t.trackId}:`, e);
+              }
+            }
+            updatedTracks.push(updatedT);
+          }
+
+          if (hasChange) {
+            let sumYtd = 0, sumMon = 0, sum3y = 0, totalW = 0;
+            updatedTracks.forEach(t => {
+              const w = Number(t.weight) || 0;
+              if (t.gemelnetYieldYtd !== null && !isNaN(t.gemelnetYieldYtd)) sumYtd += t.gemelnetYieldYtd * (w / 100);
+              if (t.gemelnetReturn !== null && !isNaN(t.gemelnetReturn)) sumMon += t.gemelnetReturn * (w / 100);
+              if (t.gemelnetYield3y !== null && !isNaN(t.gemelnetYield3y)) sum3y += t.gemelnetYield3y * (w / 100);
+              totalW += w;
+            });
+
+            await sbClient.from('funds').update({
+              tracks: updatedTracks,
+              gemelnet_return_monthly: totalW > 0 ? Number(sumMon.toFixed(2)) : f.gemelnetReturn,
+              gemelnet_yield_ytd: totalW > 0 ? Number(sumYtd.toFixed(2)) : f.gemelnetYieldYtd,
+              gemelnet_yield_3y: totalW > 0 ? Number(sum3y.toFixed(2)) : f.gemelnetYield3y,
+              updated_at: new Date().toISOString()
+            }).eq('id', f.id);
+
+            updatedCount++;
+          }
+        } 
+        // Single track legacy sync
+        else if (f.trackId) {
           try {
             const res = await fetch(`${DATASTORE_API}?resource_id=${RESOURCE_RETURNS}&filters={"FUND_ID":"${f.trackId}"}&limit=5`);
             const data = await res.json();
@@ -991,6 +1076,7 @@
           type: item.type,
           manager: item.manager,
           trackId: item.track_id || '',
+          tracks: Array.isArray(item.tracks) ? item.tracks : [],
           number: item.number,
           deposits: Number(item.deposits) || 0,
           balance: Number(item.balance) || 0,
@@ -1178,13 +1264,18 @@
       const roi = dep > 0 ? (grossProfit / dep) * 100 : 0;
       const isPos = grossProfit >= 0;
 
+      const hasMultiTracks = f.tracks && f.tracks.length > 1;
+
       return `
         <div onclick="triggerHaptic(); openDetailModal('${f.id}')" class="squish-btn bg-creamCard border-2 border-orange-200/80 rounded-2xl p-3.5 shadow-card cursor-pointer">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
               <span class="text-2xl p-2 bg-creamBg border border-orange-100 rounded-xl">${getTypeIcon(f.type)}</span>
               <div>
-                <span class="text-[9px] font-bold text-warmBrown/50 block">${f.manager}</span>
+                <div class="flex items-center gap-1">
+                  <span class="text-[9px] font-bold text-warmBrown/50">${f.manager}</span>
+                  ${hasMultiTracks ? `<span class="text-[8px] bg-skyPastel text-warmBrown px-1 py-0.2 rounded font-bold">${f.tracks.length} מסלולים</span>` : ''}
+                </div>
                 <h4 class="text-xs font-black text-warmBrown leading-tight">${f.name}</h4>
                 ${f.savingsGoal ? `<span class="text-[9px] text-amber-700 font-bold block mt-0.5">🎯 ${f.savingsGoal}</span>` : ''}
               </div>
@@ -1380,10 +1471,24 @@
       document.getElementById('detailNetBalance').textContent = fmtILS(netBalance);
       document.getElementById('detailTaxClarification').textContent = (taxPct > 0) ? '*לפני ניכוי מדד אינפלציה ריאלי' : (isTaxExemptAnnuity ? '🛡️ פטור מלא במשיכה כקצבה' : '🛡️ פטור ממס רווחי הון');
 
-      document.getElementById('detailTrackId').textContent = f.trackId || 'לא הוגדר';
+      const trackRowEl = document.getElementById('detailTrackIdRow');
+      const hasMulti = f.tracks && f.tracks.length > 0;
+      if (hasMulti) {
+        trackRowEl.classList.remove('hidden');
+        document.getElementById('detailTrackId').textContent = `${f.tracks.length} מסלולים משולבים`;
+      } else if (f.trackId) {
+        trackRowEl.classList.remove('hidden');
+        document.getElementById('detailTrackId').textContent = f.trackId;
+      } else {
+        document.getElementById('detailTrackId').textContent = 'לא הוגדר';
+      }
+
       document.getElementById('detailInception').textContent = f.inceptionDate ? fmtDate(f.inceptionDate) : 'לא הוגדר';
 
       const gemelBox = document.getElementById('detailGemelnetBox');
+      const breakdownBox = document.getElementById('detailTracksBreakdown');
+      const tracksListEl = document.getElementById('detailTracksList');
+
       if (f.gemelnetReturn !== null && f.gemelnetReturn !== undefined) {
         gemelBox.classList.remove('hidden');
         document.getElementById('detailGemelnetPeriod').textContent = f.gemelnetPeriod ? `תקופה: ${f.gemelnetPeriod}` : 'חודש אחרון';
@@ -1392,8 +1497,23 @@
         const feeAccMonthly = (Number(f.feeAccumulation) || 0) / 12;
         const netReturnEstimated = f.gemelnetReturn - feeAccMonthly;
         document.getElementById('detailGemelnetNet').textContent = `${fmtPCT(netReturnEstimated)} (בניכוי ${feeAccMonthly.toFixed(2)}% דמ״נ)`;
+
+        if (hasMulti) {
+          breakdownBox.classList.remove('hidden');
+          tracksListEl.innerHTML = f.tracks.map(t => `
+            <div class="flex justify-between items-center bg-white/70 px-2 py-1 rounded-lg border border-emerald-100">
+              <span class="font-medium text-emerald-900">${t.name || t.trackId} <strong class="text-emerald-700 font-mono">(${t.weight}%)</strong></span>
+              <span class="font-mono font-bold ${t.gemelnetReturn !== null && t.gemelnetReturn >= 0 ? 'text-emerald-800' : 'text-rose-600'}">
+                ${t.gemelnetReturn !== null && t.gemelnetReturn !== undefined ? fmtPCT(t.gemelnetReturn) : '--'}
+              </span>
+            </div>
+          `).join('');
+        } else {
+          breakdownBox.classList.add('hidden');
+        }
       } else {
         gemelBox.classList.add('hidden');
+        breakdownBox.classList.add('hidden');
       }
 
       document.getElementById('detailMonthly').textContent = f.monthlyDeposit ? `${fmtILS(f.monthlyDeposit)}/חודש` : 'אין הוראת קבע';
@@ -1505,9 +1625,11 @@
       document.getElementById('fieldGemelnetYield3y').value = '';
       document.getElementById('fieldGemelnetYield5y').value = '';
       document.getElementById('fieldGemelnetPeriod').value = '';
-      document.getElementById('fetchReturnBadge').classList.add('hidden');
       document.getElementById('fieldInceptionDate').value = new Date().toISOString().slice(0, 10);
-      
+
+      document.getElementById('tracksContainer').innerHTML = '';
+      addTrackRow('', '', 100);
+
       const defaultOwner = (currentFilter !== 'ALL') ? currentFilter : (familyMembers[0] ? familyMembers[0].name : 'בובו');
       populateOwnerSelect(defaultOwner);
       handleTypeChange('קופת גמל להשקעה');
@@ -1530,7 +1652,6 @@
       document.getElementById('fieldType').value = f.type;
       document.getElementById('fieldSavingsGoal').value = f.savingsGoal || '';
       document.getElementById('fieldManager').value = f.manager;
-      document.getElementById('fieldTrackId').value = f.trackId || '';
       document.getElementById('fieldNumber').value = f.number || '';
       document.getElementById('fieldInceptionDate').value = f.inceptionDate || '';
       document.getElementById('fieldDeposits').value = f.deposits;
@@ -1547,7 +1668,19 @@
       document.getElementById('fieldGemelnetYield3y').value = f.gemelnetYield3y !== null ? f.gemelnetYield3y : '';
       document.getElementById('fieldGemelnetYield5y').value = f.gemelnetYield5y !== null ? f.gemelnetYield5y : '';
       document.getElementById('fieldGemelnetPeriod').value = f.gemelnetPeriod || '';
-      document.getElementById('fetchReturnBadge').classList.add('hidden');
+
+      // Populate tracks
+      const container = document.getElementById('tracksContainer');
+      container.innerHTML = '';
+      if (f.tracks && Array.isArray(f.tracks) && f.tracks.length > 0) {
+        f.tracks.forEach(t => {
+          addTrackRow(t.trackId || '', t.name || '', t.weight ?? 100, t.gemelnetReturn, t.gemelnetYieldYtd, t.gemelnetYield3y, t.period);
+        });
+      } else if (f.trackId) {
+        addTrackRow(f.trackId, f.name, 100, f.gemelnetReturn, f.gemelnetYieldYtd, f.gemelnetYield3y, f.gemelnetPeriod);
+      } else {
+        addTrackRow('', '', 100);
+      }
 
       handleTypeChange(f.type);
       document.getElementById('modalTitle').textContent = 'עריכת קופה ✏️';
@@ -1561,11 +1694,65 @@
       const selectedOwner = document.getElementById('fieldOwnerSelect').value;
       const savingsGoal = document.getElementById('fieldSavingsGoal').value.trim();
 
-      const retVal = document.getElementById('fieldGemelnetReturn').value;
-      const ytdVal = document.getElementById('fieldGemelnetYieldYtd').value;
-      const y3Val = document.getElementById('fieldGemelnetYield3y').value;
-      const y5Val = document.getElementById('fieldGemelnetYield5y').value;
-      const periodVal = document.getElementById('fieldGemelnetPeriod').value;
+      // Collect tracks
+      const trackRows = document.querySelectorAll('#tracksContainer > div');
+      const collectedTracks = [];
+      let totalW = 0;
+
+      trackRows.forEach(row => {
+        const code = row.querySelector('.track-code').value.trim();
+        const name = row.querySelector('.track-name').value.trim();
+        const weight = parseFloat(row.querySelector('.track-weight').value) || 0;
+
+        if (code || name) {
+          totalW += weight;
+          collectedTracks.push({
+            trackId: code,
+            name: name || code,
+            weight: weight,
+            gemelnetReturn: row.dataset.yieldMonthly ? parseFloat(row.dataset.yieldMonthly) : null,
+            gemelnetYieldYtd: row.dataset.yieldYtd ? parseFloat(row.dataset.yieldYtd) : null,
+            gemelnetYield3y: row.dataset.yield3y ? parseFloat(row.dataset.yield3y) : null,
+            period: row.dataset.period || ''
+          });
+        }
+      });
+
+      // Calculate weighted returns across sub-tracks
+      let weightedMonthly = null;
+      let weightedYtd = null;
+      let weighted3y = null;
+
+      if (collectedTracks.length > 0 && totalW > 0) {
+        let sumMon = 0, sumYtd = 0, sum3y = 0;
+        let hasMon = false, hasYtd = false, has3y = false;
+
+        collectedTracks.forEach(t => {
+          const factor = (t.weight / 100);
+          if (t.gemelnetReturn !== null && !isNaN(t.gemelnetReturn)) {
+            sumMon += t.gemelnetReturn * factor;
+            hasMon = true;
+          }
+          if (t.gemelnetYieldYtd !== null && !isNaN(t.gemelnetYieldYtd)) {
+            sumYtd += t.gemelnetYieldYtd * factor;
+            hasYtd = true;
+          }
+          if (t.gemelnetYield3y !== null && !isNaN(t.gemelnetYield3y)) {
+            sum3y += t.gemelnetYield3y * factor;
+            has3y = true;
+          }
+        });
+
+        if (hasMon) weightedMonthly = Number(sumMon.toFixed(2));
+        if (hasYtd) weightedYtd = Number(sumYtd.toFixed(2));
+        if (has3y) weighted3y = Number(sum3y.toFixed(2));
+      }
+
+      const retVal = weightedMonthly !== null ? weightedMonthly : (document.getElementById('fieldGemelnetReturn').value ? parseFloat(document.getElementById('fieldGemelnetReturn').value) : null);
+      const ytdVal = weightedYtd !== null ? weightedYtd : (document.getElementById('fieldGemelnetYieldYtd').value ? parseFloat(document.getElementById('fieldGemelnetYieldYtd').value) : null);
+      const y3Val = weighted3y !== null ? weighted3y : (document.getElementById('fieldGemelnetYield3y').value ? parseFloat(document.getElementById('fieldGemelnetYield3y').value) : null);
+      const y5Val = document.getElementById('fieldGemelnetYield5y').value ? parseFloat(document.getElementById('fieldGemelnetYield5y').value) : null;
+      const periodVal = document.getElementById('fieldGemelnetPeriod').value || (collectedTracks[0] ? collectedTracks[0].period : null);
 
       const rawNotes = document.getElementById('fieldNotes').value;
       const notesWithGoal = savingsGoal ? `GOAL:${savingsGoal} | ${rawNotes}` : rawNotes;
@@ -1577,7 +1764,8 @@
         name: document.getElementById('fieldName').value,
         type: document.getElementById('fieldType').value,
         manager: document.getElementById('fieldManager').value,
-        track_id: document.getElementById('fieldTrackId').value.trim() || null,
+        track_id: collectedTracks.length === 1 ? collectedTracks[0].trackId : (collectedTracks[0] ? collectedTracks[0].trackId : null),
+        tracks: collectedTracks,
         number: document.getElementById('fieldNumber').value,
         inception_date: document.getElementById('fieldInceptionDate').value || null,
         is_annuity: document.getElementById('fieldIsAnnuity').checked,
@@ -1587,11 +1775,11 @@
         tax_rate: parseFloat(document.getElementById('fieldTaxRate').value) || 0,
         fee_accumulation: document.getElementById('fieldFeeAcc').value ? Number(document.getElementById('fieldFeeAcc').value) : null,
         fee_deposit: document.getElementById('fieldFeeDep').value ? Number(document.getElementById('fieldFeeDep').value) : null,
-        gemelnet_return_monthly: retVal !== '' ? parseFloat(retVal) : null,
-        gemelnet_yield_ytd: ytdVal !== '' ? parseFloat(ytdVal) : null,
-        gemelnet_yield_3y: y3Val !== '' ? parseFloat(y3Val) : null,
-        gemelnet_yield_5y: y5Val !== '' ? parseFloat(y5Val) : null,
-        gemelnet_period: periodVal || null,
+        gemelnet_return_monthly: retVal,
+        gemelnet_yield_ytd: ytdVal,
+        gemelnet_yield_3y: y3Val,
+        gemelnet_yield_5y: y5Val,
+        gemelnet_period: periodVal,
         notes: notesWithGoal,
         updated_at: new Date().toISOString()
       };
@@ -1906,6 +2094,7 @@
                 type: type || 'קופת גמל להשקעה',
                 manager: manager || '',
                 track_id: trackId || null,
+                tracks: trackId ? [{ trackId, name: name || 'מסלול ראשי', weight: 100 }] : [],
                 deposits: parseFloat(deposits) || 0,
                 balance: parseFloat(balance) || 0,
                 monthly_deposit: parseFloat(monthly) || 0,
